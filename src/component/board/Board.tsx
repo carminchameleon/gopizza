@@ -5,6 +5,9 @@ const Board = () => {
     return (
         <Boarddiv>
             hello world!
+            <ul>
+                <li>1</li>
+            </ul>
         </Boarddiv>
     )
 }
