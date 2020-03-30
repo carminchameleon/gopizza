@@ -7,7 +7,7 @@ ${reset}
     box-sizing:border-box;
 }
 body{
-    background-color:orange;
+    background-color:#ffffff;
     font-family:sans-serif;
     color:black;
 
@@ -31,7 +31,5 @@ img {
     height: 100%;
 }
 `;
-
-
 
 export default GlobalStyle;
