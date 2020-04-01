@@ -2,13 +2,14 @@ import { createGlobalStyle } from 'styled-components';
 import reset from 'styled-reset';
 
 const GlobalStyle = createGlobalStyle`
+@import url('https://fonts.googleapis.com/css?family=Bebas+Neue&display=swap');
 ${reset}
 *{
     box-sizing:border-box;
 }
 body{
     background-color:#ffffff;
-    font-family:sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
     color:black;
 
 }
