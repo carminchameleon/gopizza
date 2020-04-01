@@ -1,0 +1,79 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "name": "이익준",
+      "image": "http://img.lifestyler.co.kr/NewIMG/frontenm/ch/tvn/2020/20200305_doctorlife_info/images/1_img_01.png",
+      "store_id": 1,
+      "store_name": "상수직영점",
+      "count": 13,
+      "average_time": 180.0,
+      "shortest_time": 170,
+      "quality": 89.0,
+      "sauce": 80.0,
+      "cheese": 70.0,
+      "topping": 99.0,
+      "completion_score": 338
+    },
+    {
+      "id": 19,
+      "name": "안정원",
+      "image": "http://img.lifestyler.co.kr/NewIMG/frontenm/ch/tvn/2020/20200305_doctorlife_info/images/2_img_01.png",
+      "store_id": 3,
+      "store_name": "평촌직영점",
+      "count": 115,
+      "average_time": 190.0,
+      "shortest_time": 160,
+      "quality": 79.0,
+      "sauce": 89.0,
+      "cheese": 90.0,
+      "topping": 79.0,
+      "completion_score": 337
+    },
+    {
+      "id": 6,
+      "name": "김준완",
+      "image": "http://img.lifestyler.co.kr/NewIMG/frontenm/ch/tvn/2020/20200305_doctorlife_info/images/3_img_01.png",
+      "store_id": 5,
+      "store_name": "대치본점",
+      "count": 114,
+      "average_time": 185.0,
+      "shortest_time": 134,
+      "quality": 96.0,
+      "sauce": 85.0,
+      "cheese": 74.0,
+      "topping": 98.0,
+      "completion_score": 353
+    },
+    {
+      "id": 46,
+      "name": "양석형",
+      "image": "http://img.lifestyler.co.kr/NewIMG/frontenm/ch/tvn/2020/20200305_doctorlife_info/images/4_img_01.png",
+      "store_id": 18,
+      "store_name": "고대안암점",
+      "count": 155,
+      "average_time": 182.0,
+      "shortest_time": 152,
+      "quality": 64.0,
+      "sauce": 84.0,
+      "cheese": 53.0,
+      "topping": 75.0,
+      "completion_score": 276
+    },
+    {
+      "id": 24,
+      "name": "채송화",
+      "image": "http://img.lifestyler.co.kr/NewIMG/frontenm/ch/tvn/2020/20200305_doctorlife_info/images/5_img_01.png",
+      "store_id": 8,
+      "store_name": "명지대점",
+      "count": 19,
+      "average_time": 200.0,
+      "shortest_time": 158,
+      "quality": 67.0,
+      "sauce": 84.0,
+      "cheese": 74.0,
+      "topping": 85.0,
+      "completion_score": 313
+    }
+  ]
+}
