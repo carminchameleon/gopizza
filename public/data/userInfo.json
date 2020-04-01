@@ -1,0 +1,12 @@
+{
+    "user_id": 1,
+    "name": "이현서",
+    "store": "상수직영점",
+    "count": 3,
+    "average_time": 266.6667,
+    "shortest_time": 200,
+    "quality": 165.0,
+    "sauce": 80.6667,
+    "cheese": 87.3333,
+    "topping": 56.6667
+}
