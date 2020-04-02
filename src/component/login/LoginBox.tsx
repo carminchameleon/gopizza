@@ -94,6 +94,8 @@ const LoginBox: React.FC<Props> = (props: Props) => {
   );
 };
 
+export default withRouter(LoginBox);
+
 const Wrapper = styled.div`
   padding: 80px 0;
   width: 380px;
@@ -148,5 +150,3 @@ const FindPwd = styled.span`
   font-size: 11px;
   cursor: pointer;
 `;
-
-export default withRouter(LoginBox);
