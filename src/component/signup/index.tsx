@@ -12,6 +12,8 @@ const index = () => {
   );
 };
 
+export default index;
+
 const Wrapper = styled.div`
   height: 100vh;
   display: flex;
@@ -19,5 +21,3 @@ const Wrapper = styled.div`
   align-items: center;
   background-color: orange;
 `;
-
-export default index;
