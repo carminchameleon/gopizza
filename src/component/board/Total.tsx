@@ -4,11 +4,12 @@ import axios, { AxiosResponse } from 'axios';
 import { BOARDCREWURL } from 'config';
 import { BOARDSTOREURL } from 'config';
 
-function Completion() {
+function Total() {
   const [data, setData] = useState([]);
   const [duration, setDuration] = useState(1);
   const [crew, setCrew] = useState(true);
   const [loading, isLoading] = useState(true);
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -22,7 +23,7 @@ function Completion() {
       .get(
         `${
           crew ? BOARDCREWURL : BOARDSTOREURL
-        }?limit=20&time_delta=${duration}&order_by=completion_score`,
+        }?limit=20&time_delta=${duration}&order_by=total_score`,
       )
       .then((response: AxiosResponse): void => {
         setData(response.data.ranking);
@@ -34,9 +35,7 @@ function Completion() {
   const fetchHistory = (): void => {
     axios
       .get(
-        `${
-          crew ? BOARDCREWURL : BOARDSTOREURL
-        }?limit=20&order_by=completion_score`,
+        `${crew ? BOARDCREWURL : BOARDSTOREURL}?limit=20&order_by=total_score`,
       )
       .then((response: AxiosResponse): void => {
         setData(response.data.ranking);
@@ -69,10 +68,10 @@ function Completion() {
       <MainHolder>
         <HeaderContainer>
           <HeaderTitleBox>
-            <HeaderTitle>Completion Ranking</HeaderTitle>
-            <Description>피자의 완성도로 보는 랭킹</Description>
+            <HeaderTitle>Total Ranking</HeaderTitle>
+            <Description>고피자의 피자 최강자는 누구일까요?</Description>
             <Description>
-              토핑, 소스, 치즈, 퀄리티 하나도 놓치지 않을거에요!
+              두구두구두구 완성도, 시간, 판수를 종합한 피자 점수를 공개합니다!!
             </Description>
           </HeaderTitleBox>
           <SelectContainer>
@@ -125,10 +124,9 @@ function Completion() {
                 <TableHeadHeadingTotalScore>
                   Total Score
                 </TableHeadHeadingTotalScore>
-                <TableHeadDetailScore>Quality</TableHeadDetailScore>
-                <TableHeadDetailScore>Sauce</TableHeadDetailScore>
-                <TableHeadDetailScore>Cheese</TableHeadDetailScore>
-                <TableHeadDetailScore>Topping</TableHeadDetailScore>
+                <TableHeadDetailScore>Completion</TableHeadDetailScore>
+                <TableHeadDetailScore>Time</TableHeadDetailScore>
+                <TableHeadDetailScore>Count</TableHeadDetailScore>
               </TableHeadRow>
             </TableHead>
             <TableBody>
@@ -166,11 +164,10 @@ function Completion() {
                         <StoreName>{item.name}</StoreName>
                       )}
                     </PersonInfo>
-                    <TotalScore>{item.completion_score}</TotalScore>
-                    <DetailScore>{item.quality}</DetailScore>
-                    <DetailScore>{item.sauce}</DetailScore>
-                    <DetailScore>{item.cheese}</DetailScore>
-                    <DetailScore>{item.topping}</DetailScore>
+                    <TotalScore>{item.total_score}</TotalScore>
+                    <DetailScore>{item.completion_score}</DetailScore>
+                    <DetailScore>{item.average_time}</DetailScore>
+                    <DetailScore>{item.count}</DetailScore>
                   </TableBodyTableRow>
                 );
               })}
@@ -182,7 +179,9 @@ function Completion() {
   );
 }
 
-export default Completion;
+export default Total;
+
+const TotalContainer = styled.div``;
 
 const Container = styled.div`
   width: 100%;
@@ -320,17 +319,17 @@ const TableHeadHeadingRank = styled.th`
 
 const TableHeadHeadingName = styled.th`
   text-align: start;
-  width: 30%;
+  width: 20%;
 `;
 
 const TableHeadHeadingTotalScore = styled.th`
   text-align: start;
-  width: 20%;
+  width: 22%;
 `;
 
 const TableHeadDetailScore = styled.th`
   text-align: start;
-  width: 10%;
+  width: 13%;
 `;
 
 const TableBody = styled.tbody``;
@@ -355,7 +354,7 @@ const RankingNumber = styled.span`
   padding: 3px 0 0;
   text-align: center;
   color: #999999;
-  font: 1.2rem 'Bebas Neue', cursive;
+  font: 1.3rem 'Bebas Neue', cursive;
 `;
 
 const RankingGold = styled.span`
@@ -368,6 +367,7 @@ const RankingGold = styled.span`
   border: 2px solid #dab509;
   text-align: center;
   color: #dab509;
+  font: 1.1rem 'Bebas Neue', cursive;
 `;
 
 const RankingSilver = styled.span`
@@ -380,6 +380,7 @@ const RankingSilver = styled.span`
   border: 2px solid #a1a1a1;
   text-align: center;
   color: #a1a1a1;
+  font: 1.1rem 'Bebas Neue', cursive;
 `;
 
 const RankingBronze = styled.span`
@@ -392,6 +393,7 @@ const RankingBronze = styled.span`
   border: 2px solid #ae7058;
   text-align: center;
   color: #ae7058;
+  font: 1.1rem 'Bebas Neue', cursive;
 `;
 
 const TotalScore = styled.td`

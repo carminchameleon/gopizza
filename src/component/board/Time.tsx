@@ -3,32 +3,57 @@ import styled from 'styled-components';
 import axios, { AxiosResponse } from 'axios';
 import { BOARDCREWURL } from 'config';
 import { BOARDSTOREURL } from 'config';
+import { PIZZALISTURL } from 'config';
 
-function Completion() {
+function Time() {
   const [data, setData] = useState([]);
-  const [duration, setDuration] = useState(1);
+  const [pizzaList, setPizzaList] = useState([]);
   const [crew, setCrew] = useState(true);
-  const [loading, isLoading] = useState(true);
+  const [duration, setDuration] = useState(1);
+  const [record, setRecord] = useState('shortest_time');
+  const [shortest, setShortest] = useState(true);
+  const [pizzaId, setPizzaId] = useState(1);
+  const [pizzaEnName, setPizzaEnName] = useState('Classic Cheese Pizza');
+  const [pizzaKoName, setPizzaKoName] = useState('클래식 치즈 피자');
+
   useEffect(() => {
+    fetchPizzaList();
     fetchData();
   }, []);
 
   useEffect(() => {
     fetchData();
-  }, [crew, duration]);
+  }, [crew, duration, record, pizzaId]);
+
+  const handleSeconds = (sec: number): string => {
+    const Min = Math.floor(sec / 60);
+    const Sec = Math.round((sec % 60) * 100) / 100;
+    return `${Min}분 ${Sec}초`;
+  };
+
+  const fetchPizzaList = (): void => {
+    axios.get(PIZZALISTURL).then((response: AxiosResponse): void => {
+      setPizzaList(response.data.pizza);
+    });
+  };
+
+  const handlePizza = (num: number): void => {
+    setPizzaId(num);
+    const currentPizza = pizzaList[num - 1];
+    setPizzaKoName(currentPizza['name_kr']);
+    setPizzaEnName(currentPizza['name_en']);
+  };
 
   const fetchData = (): void => {
     axios
       .get(
         `${
           crew ? BOARDCREWURL : BOARDSTOREURL
-        }?limit=20&time_delta=${duration}&order_by=completion_score`,
+        }?limit=20&time_delta=${duration}&order_by=${record}&pizza_id=${pizzaId}`,
       )
       .then((response: AxiosResponse): void => {
         setData(response.data.ranking);
       });
-
-    console.log('firstData');
   };
 
   const fetchHistory = (): void => {
@@ -36,12 +61,11 @@ function Completion() {
       .get(
         `${
           crew ? BOARDCREWURL : BOARDSTOREURL
-        }?limit=20&order_by=completion_score`,
+        }/record/store?limit=10&time_delta=${duration}&order_by=${record}&pizza_id=${pizzaId}}`,
       )
       .then((response: AxiosResponse): void => {
         setData(response.data.ranking);
       });
-    console.log(data);
   };
 
   const selectDuration = (event: any) => {
@@ -64,17 +88,67 @@ function Completion() {
     setCrew(boolean);
   };
 
+  const handleRecord = (boolean: boolean): void => {
+    if (boolean) {
+      setShortest(true);
+      setRecord('shortest_time');
+    } else {
+      setShortest(false);
+      setRecord('average_time');
+    }
+  };
+
   return (
     <Container>
       <MainHolder>
         <HeaderContainer>
           <HeaderTitleBox>
-            <HeaderTitle>Completion Ranking</HeaderTitle>
-            <Description>피자의 완성도로 보는 랭킹</Description>
-            <Description>
-              토핑, 소스, 치즈, 퀄리티 하나도 놓치지 않을거에요!
-            </Description>
+            <HeaderTitle>Time Ranking</HeaderTitle>
+            <Description>피자를 만드는데 걸리는 시간은 얼마일까요?</Description>
+            <Description>상위 Top 20의 피자 타임 랭킹 공개합니다!</Description>
           </HeaderTitleBox>
+          <RecordContainer>
+            {shortest ? (
+              <CurrentRecordBox onClick={() => handleRecord(true)}>
+                최단 시간
+              </CurrentRecordBox>
+            ) : (
+              <RecordBox onClick={() => handleRecord(true)}>
+                최단 시간
+              </RecordBox>
+            )}
+            {shortest ? (
+              <RecordBox onClick={() => handleRecord(false)}>
+                평균 시간
+              </RecordBox>
+            ) : (
+              <CurrentRecordBox onClick={() => handleRecord(false)}>
+                평균 시간
+              </CurrentRecordBox>
+            )}
+          </RecordContainer>
+          <PizzaContainer>
+            {pizzaList.map((item: any, index: number) => {
+              return (
+                <PizzaBox
+                  key={item.id}
+                  onClick={() => {
+                    handlePizza(item.id);
+                  }}
+                >
+                  <PizzaImageBox>
+                    <PizzaImage src={item.image}></PizzaImage>
+                  </PizzaImageBox>
+                  <PizzaEnName>{item.name_en}</PizzaEnName>
+                  <PizzaKoName>{item.name_kr}</PizzaKoName>
+                </PizzaBox>
+              );
+            })}
+          </PizzaContainer>
+          <PizzaTitleContainer>
+            <PizzaEnTitle>{pizzaEnName}</PizzaEnTitle>
+            <PizzaKoTitle>{pizzaKoName}</PizzaKoTitle>
+          </PizzaTitleContainer>
           <SelectContainer>
             <RangeContainer>
               <TitleContainer>
@@ -111,7 +185,6 @@ function Completion() {
             </DropdownContainer>
           </SelectContainer>
         </HeaderContainer>
-
         <TableSection>
           <TableContainer>
             <TableHead>
@@ -123,12 +196,9 @@ function Completion() {
                   <TableHeadHeadingName>Store</TableHeadHeadingName>
                 )}
                 <TableHeadHeadingTotalScore>
-                  Total Score
+                  {record}
                 </TableHeadHeadingTotalScore>
-                <TableHeadDetailScore>Quality</TableHeadDetailScore>
-                <TableHeadDetailScore>Sauce</TableHeadDetailScore>
-                <TableHeadDetailScore>Cheese</TableHeadDetailScore>
-                <TableHeadDetailScore>Topping</TableHeadDetailScore>
+                <TableHeadDetailScore>Seconds</TableHeadDetailScore>
               </TableHeadRow>
             </TableHead>
             <TableBody>
@@ -166,11 +236,8 @@ function Completion() {
                         <StoreName>{item.name}</StoreName>
                       )}
                     </PersonInfo>
-                    <TotalScore>{item.completion_score}</TotalScore>
-                    <DetailScore>{item.quality}</DetailScore>
-                    <DetailScore>{item.sauce}</DetailScore>
-                    <DetailScore>{item.cheese}</DetailScore>
-                    <DetailScore>{item.topping}</DetailScore>
+                    <TotalScore>{handleSeconds(item[record])}</TotalScore>
+                    <TotalScore>{item[record]}</TotalScore>
                   </TableBodyTableRow>
                 );
               })}
@@ -181,8 +248,7 @@ function Completion() {
     </Container>
   );
 }
-
-export default Completion;
+export default Time;
 
 const Container = styled.div`
   width: 100%;
@@ -201,7 +267,7 @@ const HeaderContainer = styled.div`
 `;
 
 const HeaderTitleBox = styled.div`
-  margin-bottom: 40px;
+  margin-bottom: 15px;
 `;
 
 const HeaderTitle = styled.div`
@@ -213,6 +279,61 @@ const HeaderTitle = styled.div`
   font: 2.5rem/1.071rem 'Bebas Neue', cursive;
   margin-bottom: 20px;
 `;
+
+const Description = styled.div`
+  text-align: center;
+  letter-spacing: 0.1rem;
+  color: #948780;
+  font-weight: 300;
+  line-height: 20px;
+`;
+
+const RecordContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const RecordBox = styled.div`
+  width: 10%;
+  height: 35px;
+  border: 2px solid #ff6d00;
+  background-color: #ff6d00;
+  border-radius: 3px;
+  line-height: 30px;
+  text-align: center;
+  color: white;
+  opacity: 0.9;
+  margin-right: 4px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  :hover {
+    cursor: pointer;
+    opacity: 0.7;
+  }
+`;
+
+const CurrentRecordBox = styled.div`
+  width: 10%;
+  height: 35px;
+  border: 2px solid #ff6d00;
+  background-color: #ff6d00;
+  border-radius: 3px;
+  line-height: 30px;
+  text-align: center;
+  color: white;
+  opacity: 0.9;
+  margin-right: 4px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  color: yellow;
+  :hover {
+    cursor: pointer;
+    opacity: 0.7;
+  }
+`;
+
 const SelectContainer = styled.div`
   width: 100%;
   height: 60px;
@@ -274,173 +395,6 @@ const DurationOptions = styled.select``;
 const Duration = styled.option`
   color: blue;
 `;
-const Description = styled.div`
-  text-align: center;
-  letter-spacing: 0.1rem;
-  color: #948780;
-  font-weight: 300;
-  line-height: 20px;
-`;
-
-const TableSection = styled.section`
-  width: 100%;
-`;
-
-const TableContainer = styled.table`
-  table-layout: fixed;
-  margin: 0 0 60px;
-  border-collapse: collapse;
-  width: 100%;
-  color: #999;
-`;
-
-const TableHead = styled.thead`
-  display: table-header-group;
-  vertical-align: middle;
-  border-color: inherit;
-`;
-
-const TableHeadRow = styled.tr`
-  font-size: 0.814rem;
-  line-height: 1.172em;
-  color: #999;
-  text-transform: uppercase;
-  font-weight: 700;
-  display: table-row;
-  height: 30px;
-  border-bottom: 1px solid #ddd;
-  font: 1.2rem 'Bebas Neue', cursive;
-`;
-
-const TableHeadHeadingRank = styled.th`
-  width: 9%;
-  white-space: nowrap;
-  text-align: start;
-`;
-
-const TableHeadHeadingName = styled.th`
-  text-align: start;
-  width: 30%;
-`;
-
-const TableHeadHeadingTotalScore = styled.th`
-  text-align: start;
-  width: 20%;
-`;
-
-const TableHeadDetailScore = styled.th`
-  text-align: start;
-  width: 10%;
-`;
-
-const TableBody = styled.tbody``;
-
-const TableBodyTableRow = styled.tr`
-  height: 80px;
-  text-align: center;
-  border-bottom: 1px solid #ddd;
-`;
-
-const Ranking = styled.td`
-  vertical-align: middle;
-  text-align: start;
-  padding-left: 10px;
-`;
-
-const RankingNumber = styled.span`
-  display: inline-block;
-  vertical-align: middle;
-  width: 30px;
-  height: 30px;
-  padding: 3px 0 0;
-  text-align: center;
-  color: #999999;
-  font: 1.2rem 'Bebas Neue', cursive;
-`;
-
-const RankingGold = styled.span`
-  display: inline-block;
-  vertical-align: middle;
-  border-radius: 30px;
-  width: 30px;
-  height: 30px;
-  padding: 3px 0 0;
-  border: 2px solid #dab509;
-  text-align: center;
-  color: #dab509;
-`;
-
-const RankingSilver = styled.span`
-  display: inline-block;
-  vertical-align: middle;
-  border-radius: 30px;
-  width: 30px;
-  height: 30px;
-  padding: 3px 0 0;
-  border: 2px solid #a1a1a1;
-  text-align: center;
-  color: #a1a1a1;
-`;
-
-const RankingBronze = styled.span`
-  display: inline-block;
-  vertical-align: middle;
-  border-radius: 30px;
-  width: 30px;
-  height: 30px;
-  padding: 3px 0 0;
-  border: 2px solid #ae7058;
-  text-align: center;
-  color: #ae7058;
-`;
-
-const TotalScore = styled.td`
-  vertical-align: middle;
-  text-align: start;
-  font: 1.2rem 'Bebas Neue', cursive;
-`;
-
-const DetailScore = styled.td`
-  text-align: start;
-  vertical-align: middle;
-  font: 1rem 'Bebas Neue', cursive;
-`;
-
-const PersonInfo = styled.td`
-  vertical-align: middle;
-`;
-const PersonBox = styled.div`
-  display: flex;
-  flex-direction: row;
-  text-align: start;
-`;
-const PhotoBox = styled.div`
-  width: 20%;
-  height: 100%;
-`;
-const ProfileImg = styled.img`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-`;
-const InfoBox = styled.div`
-  margin-left: 10px;
-  width: 80%;
-  display: flex;
-  flex-direction: column;
-`;
-const Name = styled.strong`
-  height: 50%;
-  font-size: 17px;
-  font-weight: 500;
-  color: #333;
-  line-height: 20px;
-`;
-const Store = styled.div`
-  height: 50%;
-  line-height: 20px;
-  font-size: 15px;
-`;
 
 const RangeContainer = styled.div`
   height: 40px;
@@ -485,6 +439,244 @@ const CurrentRangeTitle = styled.button`
   margin-right: 2px;
   margin-bottom: 3px;
   opacity: 0.8;
+`;
+
+const PizzaContainer = styled.div`
+  margin-top: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  overflow: hidden;
+  overflow-x: scroll;
+  margin-bottom: 20px;
+  ::-webkit-scrollbar {
+    width: 0px;
+  }
+`;
+
+const PizzaBox = styled.div`
+  margin-right: 20px;
+  :hover {
+    cursor: pointer;
+    opacity: 0.8;
+  }
+`;
+const PizzaImageBox = styled.div`
+  width: 164px;
+  height: 164px;
+  background-color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  border-radius: 50%;
+  margin-bottom: 9px;
+`;
+
+const PizzaImage = styled.img`
+  margin-top: 20%;
+  width: 140px;
+  height: 90px;
+`;
+const PizzaEnName = styled.div`
+  text-align: center;
+  color: #918983;
+  font: 1rem 'Bebas Neue', cursive;
+  letter-spacing: 0.9px;
+  cursor: pointer;
+  opacity: 0.7;
+`;
+const PizzaKoName = styled.div`
+  text-align: center;
+  font: 0.9rem 'Bebas Neue', cursive;
+  color: #918983;
+  margin-bottom: 10px;
+  opacity: 0.7;
+`;
+
+const PizzaTitleContainer = styled.div`
+  padding-top: 15px;
+  width: 100%;
+
+  /* background-color: #00a6cb; */
+  /* opacity: 0.7; */
+  padding-bottom: 15px;
+  margin-bottom: 10px;
+  color: #00a6cb;
+  /* background-color: rgb(255, 109, 0); */
+  border-radius: 10px;
+`;
+const PizzaEnTitle = styled.div`
+  /* text-align: center; */
+  font: 1.8rem 'Bebas Neue', cursive;
+`;
+
+const PizzaKoTitle = styled.div`
+  /* text-align: center; */
+  font: 1rem 'Bebas Neue', cursive;
+  letter-spacing: 3px;
+`;
+
+const TableSection = styled.section`
+  width: 100%;
+`;
+
+const TableContainer = styled.table`
+  table-layout: fixed;
+  margin: 0 0 60px;
+  border-collapse: collapse;
+  width: 100%;
+  color: #999;
+`;
+
+const TableHead = styled.thead`
+  display: table-header-group;
+  vertical-align: middle;
+  border-color: inherit;
+`;
+
+const TableHeadRow = styled.tr`
+  font-size: 0.814rem;
+  line-height: 1.172em;
+  color: #999;
+  text-transform: uppercase;
+  font-weight: 700;
+  display: table-row;
+  height: 30px;
+  border-bottom: 1px solid #ddd;
+  font: 1.2rem 'Bebas Neue', cursive;
+`;
+
+const TableHeadHeadingRank = styled.th`
+  width: 9%;
+  white-space: nowrap;
+  text-align: start;
+`;
+
+const TableHeadHeadingName = styled.th`
+  text-align: start;
+  width: 20%;
+`;
+
+const TableHeadHeadingTotalScore = styled.th`
+  text-align: start;
+  width: 22%;
+`;
+
+const TableHeadDetailScore = styled.th`
+  text-align: start;
+  width: 13%;
+`;
+
+const TableBody = styled.tbody``;
+
+const TableBodyTableRow = styled.tr`
+  height: 80px;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+`;
+
+const Ranking = styled.td`
+  vertical-align: middle;
+  text-align: start;
+  padding-left: 10px;
+`;
+
+const RankingNumber = styled.span`
+  display: inline-block;
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  padding: 3px 0 0;
+  text-align: center;
+  color: #999999;
+  font: 1.3rem 'Bebas Neue', cursive;
+`;
+
+const RankingGold = styled.span`
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 30px;
+  width: 30px;
+  height: 30px;
+  padding: 3px 0 0;
+  border: 2px solid #dab509;
+  text-align: center;
+  color: #dab509;
+  font: 1.1rem 'Bebas Neue', cursive;
+`;
+
+const RankingSilver = styled.span`
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 30px;
+  width: 30px;
+  height: 30px;
+  padding: 3px 0 0;
+  border: 2px solid #a1a1a1;
+  text-align: center;
+  color: #a1a1a1;
+  font: 1.1rem 'Bebas Neue', cursive;
+`;
+
+const RankingBronze = styled.span`
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 30px;
+  width: 30px;
+  height: 30px;
+  padding: 3px 0 0;
+  border: 2px solid #ae7058;
+  text-align: center;
+  color: #ae7058;
+  font: 1.1rem 'Bebas Neue', cursive;
+`;
+
+const TotalScore = styled.td`
+  vertical-align: middle;
+  text-align: start;
+  font: 1.2rem 'Bebas Neue', cursive;
+  letter-spacing: 1px;
+`;
+
+const DetailScore = styled.td`
+  text-align: start;
+  vertical-align: middle;
+  font: 1rem 'Bebas Neue', cursive;
+`;
+
+const PersonInfo = styled.td`
+  vertical-align: middle;
+`;
+const PersonBox = styled.div`
+  display: flex;
+  flex-direction: row;
+  text-align: start;
+`;
+const PhotoBox = styled.div`
+  width: 20%;
+  height: 100%;
+`;
+const ProfileImg = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+`;
+const InfoBox = styled.div`
+  margin-left: 10px;
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+`;
+const Name = styled.strong`
+  height: 50%;
+  font-size: 17px;
+  font-weight: 500;
+  color: #333;
+  line-height: 20px;
+`;
+const Store = styled.div`
+  height: 50%;
+  line-height: 20px;
+  font-size: 15px;
 `;
 
 const RangeBar = styled.nav`
