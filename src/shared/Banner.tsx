@@ -1,16 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import Header from '../../shared/Header';
-import Completion from './Completion';
-import Total from './Total';
-import Time from './Time';
-import Count from './Count';
-const Board = () => {
-  const [current, setCurrent] = useState(['Total']);
 
+const Banner = () => {
   return (
-    <Container>
-      <Header />
+    <BannerComponent>
       <BannerContainer>
         <BannerHolder>
           <BannerTitle>Go ranking</BannerTitle>
@@ -20,7 +13,7 @@ const Board = () => {
         <NavHolder>
           <NavWrapper>
             <NavList>
-              <NavLink>Total Ranking</NavLink>
+              <NavLink>Overall Ranking</NavLink>
             </NavList>
             <NavList>
               <NavLink>Completion Ranking</NavLink>
@@ -34,20 +27,13 @@ const Board = () => {
           </NavWrapper>
         </NavHolder>
       </NavConatiner>
-      {/* <Total /> */}
-      {/* <Completion /> */}
-      <Count />
-      {/* <Time /> */}
-    </Container>
+    </BannerComponent>
   );
 };
 
-export default Board;
+export default Banner;
 
-const Container = styled.div`
-  width: 100%;
-`;
-
+const BannerComponent = styled.div``;
 const NavConatiner = styled.nav`
   width: 100%;
   height: 40px;
@@ -57,7 +43,7 @@ const NavConatiner = styled.nav`
   color: #fff;
   width: 100%;
   text-transform: uppercase;
-  margin-bottom: 60px;
+  margin: 0 0 60px;
 `;
 
 const NavHolder = styled.div`

@@ -4,11 +4,16 @@ import axios, { AxiosResponse } from 'axios';
 import { BOARDCREWURL } from 'config';
 import { BOARDSTOREURL } from 'config';
 
-function Completion() {
+function Count() {
   const [data, setData] = useState([]);
-  const [duration, setDuration] = useState(1);
   const [crew, setCrew] = useState(true);
-  const [loading, isLoading] = useState(true);
+  const [duration, setDuration] = useState(1);
+
+  const handleRange = (boolean: boolean): void => {
+    setData([]);
+    setCrew(boolean);
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -22,26 +27,21 @@ function Completion() {
       .get(
         `${
           crew ? BOARDCREWURL : BOARDSTOREURL
-        }?limit=20&time_delta=${duration}&order_by=completion_score`,
+        }?limit=20&time_delta=${duration}&order_by=total_count`,
       )
       .then((response: AxiosResponse): void => {
         setData(response.data.ranking);
       });
-
-    console.log('firstData');
   };
 
   const fetchHistory = (): void => {
     axios
       .get(
-        `${
-          crew ? BOARDCREWURL : BOARDSTOREURL
-        }?limit=20&order_by=completion_score`,
+        `${crew ? BOARDCREWURL : BOARDSTOREURL}?limit=20&order_by=total_count`,
       )
       .then((response: AxiosResponse): void => {
         setData(response.data.ranking);
       });
-    console.log(data);
   };
 
   const selectDuration = (event: any) => {
@@ -59,21 +59,14 @@ function Completion() {
     }
   };
 
-  const handleRange = (boolean: boolean): void => {
-    setData([]);
-    setCrew(boolean);
-  };
-
   return (
     <Container>
       <MainHolder>
         <HeaderContainer>
           <HeaderTitleBox>
-            <HeaderTitle>Completion Ranking</HeaderTitle>
-            <Description>피자의 완성도로 보는 랭킹</Description>
-            <Description>
-              토핑, 소스, 치즈, 퀄리티 하나도 놓치지 않을거에요!
-            </Description>
+            <HeaderTitle>Count Ranking</HeaderTitle>
+            <Description>우리는 피자를 얼마나 만들었을까요?</Description>
+            <Description>상위 Top 20의 피자 카운트 공개합니다!</Description>
           </HeaderTitleBox>
           <SelectContainer>
             <RangeContainer>
@@ -111,78 +104,12 @@ function Completion() {
             </DropdownContainer>
           </SelectContainer>
         </HeaderContainer>
-
-        <TableSection>
-          <TableContainer>
-            <TableHead>
-              <TableHeadRow style={{ color: '#4d4d4d' }}>
-                <TableHeadHeadingRank>Rank</TableHeadHeadingRank>
-                {crew ? (
-                  <TableHeadHeadingName>Partictipant</TableHeadHeadingName>
-                ) : (
-                  <TableHeadHeadingName>Store</TableHeadHeadingName>
-                )}
-                <TableHeadHeadingTotalScore>
-                  Total Score
-                </TableHeadHeadingTotalScore>
-                <TableHeadDetailScore>Quality</TableHeadDetailScore>
-                <TableHeadDetailScore>Sauce</TableHeadDetailScore>
-                <TableHeadDetailScore>Cheese</TableHeadDetailScore>
-                <TableHeadDetailScore>Topping</TableHeadDetailScore>
-              </TableHeadRow>
-            </TableHead>
-            <TableBody>
-              {data.map((item: any, index: number) => {
-                const numberUI = (index: number) => {
-                  if (index === 0) {
-                    return <RankingGold>G</RankingGold>;
-                  }
-                  if (index === 1) {
-                    return <RankingSilver>S</RankingSilver>;
-                  }
-                  if (index === 2) {
-                    return <RankingBronze>B</RankingBronze>;
-                  }
-                  {
-                    return <RankingNumber>{index + 1}</RankingNumber>;
-                  }
-                };
-
-                return (
-                  <TableBodyTableRow>
-                    <Ranking>{numberUI(index)}</Ranking>
-                    <PersonInfo>
-                      {crew ? (
-                        <PersonBox>
-                          <PhotoBox>
-                            <ProfileImg src="http://localhost:3000/images/defaultProfile.png"></ProfileImg>
-                          </PhotoBox>
-                          <InfoBox>
-                            <Name>{item.name}</Name>
-                            <Store>{item.store_name}</Store>
-                          </InfoBox>
-                        </PersonBox>
-                      ) : (
-                        <StoreName>{item.name}</StoreName>
-                      )}
-                    </PersonInfo>
-                    <TotalScore>{item.completion_score}</TotalScore>
-                    <DetailScore>{item.quality}</DetailScore>
-                    <DetailScore>{item.sauce}</DetailScore>
-                    <DetailScore>{item.cheese}</DetailScore>
-                    <DetailScore>{item.topping}</DetailScore>
-                  </TableBodyTableRow>
-                );
-              })}
-            </TableBody>
-          </TableContainer>
-        </TableSection>
       </MainHolder>
     </Container>
   );
 }
 
-export default Completion;
+export default Count;
 
 const Container = styled.div`
   width: 100%;
@@ -201,7 +128,7 @@ const HeaderContainer = styled.div`
 `;
 
 const HeaderTitleBox = styled.div`
-  margin-bottom: 40px;
+  margin-bottom: 15px;
 `;
 
 const HeaderTitle = styled.div`
@@ -212,6 +139,14 @@ const HeaderTitle = styled.div`
   margin: 0;
   font: 2.5rem/1.071rem 'Bebas Neue', cursive;
   margin-bottom: 20px;
+`;
+
+const Description = styled.div`
+  text-align: center;
+  letter-spacing: 0.1rem;
+  color: #948780;
+  font-weight: 300;
+  line-height: 20px;
 `;
 const SelectContainer = styled.div`
   width: 100%;
@@ -273,13 +208,6 @@ const DurationOptions = styled.select``;
 
 const Duration = styled.option`
   color: blue;
-`;
-const Description = styled.div`
-  text-align: center;
-  letter-spacing: 0.1rem;
-  color: #948780;
-  font-weight: 300;
-  line-height: 20px;
 `;
 
 const TableSection = styled.section`
