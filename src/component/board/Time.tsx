@@ -7,12 +7,12 @@ import { PIZZALISTURL } from 'config';
 
 function Time() {
   const [data, setData] = useState([]);
-  const [pizzaList, setPizzaList] = useState([]);
   const [crew, setCrew] = useState(true);
   const [duration, setDuration] = useState(1);
   const [record, setRecord] = useState('shortest_time');
   const [shortest, setShortest] = useState(true);
   const [pizzaId, setPizzaId] = useState(1);
+  const [pizzaList, setPizzaList] = useState([]);
   const [pizzaEnName, setPizzaEnName] = useState('Classic Cheese Pizza');
   const [pizzaKoName, setPizzaKoName] = useState('클래식 치즈 피자');
 
@@ -204,23 +204,23 @@ function Time() {
             <TableBody>
               {data.map((item: any, index: number) => {
                 const numberUI = (index: number) => {
-                  if (index === 0) {
+                  if (index === 1) {
                     return <RankingGold>G</RankingGold>;
                   }
-                  if (index === 1) {
+                  if (index === 2) {
                     return <RankingSilver>S</RankingSilver>;
                   }
-                  if (index === 2) {
+                  if (index === 3) {
                     return <RankingBronze>B</RankingBronze>;
                   }
                   {
-                    return <RankingNumber>{index + 1}</RankingNumber>;
+                    return <RankingNumber>{index}</RankingNumber>;
                   }
                 };
 
                 return (
-                  <TableBodyTableRow>
-                    <Ranking>{numberUI(index)}</Ranking>
+                  <TableBodyTableRow key={index}>
+                    <Ranking>{numberUI(item.rank)}</Ranking>
                     <PersonInfo>
                       {crew ? (
                         <PersonBox>
