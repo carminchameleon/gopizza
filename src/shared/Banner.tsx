@@ -6,10 +6,10 @@ const Banner = () => {
     <BannerComponent>
       <BannerContainer>
         <BannerHolder>
-          <BannerTitle>Go ranking</BannerTitle>
+          <BannerTitle>REWARD SYSTEM</BannerTitle>
         </BannerHolder>
       </BannerContainer>
-      <NavConatiner>
+      {/*<NavConatiner>
         <NavHolder>
           <NavWrapper>
             <NavList>
@@ -26,7 +26,7 @@ const Banner = () => {
             </NavList>
           </NavWrapper>
         </NavHolder>
-      </NavConatiner>
+      </NavConatiner>*/}
     </BannerComponent>
   );
 };

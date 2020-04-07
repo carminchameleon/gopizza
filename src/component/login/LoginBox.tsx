@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactModal from 'react-modal';
 import { withRouter } from 'react-router-dom';
 import { History, LocationState } from 'history';
 import { URL } from 'config';
@@ -11,6 +12,7 @@ interface Props {
 const LoginBox: React.FC<Props> = (props: Props) => {
   const [email, setEmail] = useState<string>('');
   const [pwd, setPwd] = useState<string>('');
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
   const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(event.target.value);
@@ -60,6 +62,15 @@ const LoginBox: React.FC<Props> = (props: Props) => {
       });
   };
 
+  const isModalBtnClicked = () => {
+    //fetch보내기
+    //fetch 조건: @,. 들어가야 fetch 보낼 수 있도록 함
+    //response200 오면 alert("새로운 비밀번호가 이메일로 전송되었습니다"
+    alert('이메일로 새로운 비밀번호가 전송되었습니다. 이메일을 확인해주세요');
+    // props.history.push('/login');
+    window.location.reload(true);
+  };
+
   return (
     <>
       <Wrapper>
@@ -86,24 +97,77 @@ const LoginBox: React.FC<Props> = (props: Props) => {
           </Div>
           <Div>
             비밀번호를 잊으셨나요?
-            <FindPwd>비밀번호찾기</FindPwd>
+            <FindPwd onClick={() => setModalIsOpen(true)}>비밀번호찾기</FindPwd>
           </Div>
         </Container>
+        <ReactModal
+          isOpen={modalIsOpen}
+          onRequestClose={() => setModalIsOpen(false)}
+          style={{
+            overlay: {
+              backgroundColor: 'rgba(0, 0, 0, 0.8)',
+            },
+            content: {
+              border: 'none',
+              backgroundColor: 'white',
+              overflow: 'hidden',
+              fontSize: '100px',
+              position: 'absolute',
+              width: '500px',
+              height: '200px',
+              margin: '300px 0 0 -250px',
+              left: '50%',
+              // fontFamily: 'nationale-regular',
+            },
+          }}
+        >
+          <ModalContent>
+            <ModalTitle>가입하신 이메일을 입력하세요</ModalTitle>
+            <ModalInput></ModalInput>
+            <ModalBtn onClick={isModalBtnClicked}>확인</ModalBtn>
+          </ModalContent>
+        </ReactModal>
       </Wrapper>
     </>
   );
 };
 
+export default withRouter(LoginBox);
+
+const ModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 25px;
+`;
+const ModalTitle = styled.div`
+  font-size: 13px;
+  margin-bottom: 15px;
+`;
+const ModalInput = styled.input`
+  width: 280px;
+  height: 40px;
+  background-color: lightgray;
+  margin-bottom: 10px;
+`;
+const ModalBtn = styled.button`
+  font-size: 13px;
+  width: 70px;
+  height: 35px;
+  border-radius: 5px;
+  background-color: orange;
+  cursor: pointer;
+`;
+//여기까지 modal
 const Wrapper = styled.div`
   padding: 80px 0;
   width: 380px;
-  /* height: 400px; */
   background-color: white;
   text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  /* align-content: center; */
 `;
 const Title = styled.div`
   margin-bottom: 30px;
@@ -148,5 +212,3 @@ const FindPwd = styled.span`
   font-size: 11px;
   cursor: pointer;
 `;
-
-export default withRouter(LoginBox);

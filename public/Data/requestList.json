@@ -1,0 +1,22 @@
+{
+    "quests": [
+        {
+            "is_achieved": true,
+            "is_claimed": false,
+            "is_rewarded": false,
+            "quest__description": "토탈 카운트 10판을 달성하세요!",
+            "quest__goal": 10,
+            "quest__name": "초보 탈출!",
+            "quest_id": 1
+        },
+        {
+            "is_achieved": false,
+            "is_claimed": false,
+            "is_rewarded": false,
+            "quest__description": "토탈 카운트 777판을 달성하세요!",
+            "quest__goal": 777,
+            "quest__name": "Lucky!",
+            "quest_id": 2
+        }
+    ]
+}

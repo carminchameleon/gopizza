@@ -1,4 +1,5 @@
 import React from 'react';
+import styled from 'styled-components'
 
 interface props {
     average_time: number,
@@ -12,7 +13,7 @@ interface props {
 
 const MyCal = (props: props) => {
     return (
-        <div>
+        <MyCalBox>
             <h2>나의 수치</h2>
             <p>자세한 내 스펙들을 확인하세요</p>
             <dl>
@@ -53,8 +54,12 @@ const MyCal = (props: props) => {
                     </div>
                 </dd>
             </dl>
-        </div>
+        </MyCalBox>
     );
 };
+
+const MyCalBox = styled.div`
+
+`
 
 export default MyCal;
