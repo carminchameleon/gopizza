@@ -23,9 +23,16 @@ const FileUpload: React.FC<Props> = (props: Props) => {
   ) => {
     const fd = new FormData();
     fd.append('filename', img);
-    // console.log(fd);
+    console.log(fd);
+
+    const token = window.sessionStorage.getItem('token');
+    console.log(token);
+
     axios
-      .post(`${URL}/user/profile-upload`, fd)
+      .post(`${URL}/user/profile-upload`, fd, {
+        headers: { token: token },
+      })
+      //백엔드 api주소 넣기
       .then(res => {
         // console.log(res);
         console.log(res.data.image_url);
@@ -65,6 +72,7 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 const ImgBox = styled.div`
+  margin-bottom: 10px;
   width: 100px;
   height: 100px;
   border-radius: 50%;

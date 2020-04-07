@@ -35,8 +35,8 @@ const Board = () => {
         </NavHolder>
       </NavConatiner>
       {/* <Total /> */}
-      {/* <Completion /> */}
-      <Count />
+      <Completion />
+      {/* <Count /> */}
       {/* <Time /> */}
     </Container>
   );
