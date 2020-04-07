@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import styled, { css, keyframes } from 'styled-components'
+import { SYSTEMURL } from 'config';
 
 interface AniamtionProps {
     changeColor: boolean,
@@ -31,13 +32,7 @@ const MyRewardContCount = (props: any) => {
 
         if (count.quests[buttonId - 1].is_achieved) {
 
-            const loginCheck = await fetch(`http://localhost:3000/Data/requestList.json`, {
-                method: "POST",
-                body: JSON.stringify({
-                    is_claimed: true,
-                    quest_id: buttonId
-                })
-            });
+        } else {
 
         }
 
