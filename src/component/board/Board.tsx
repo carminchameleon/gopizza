@@ -6,7 +6,27 @@ import Total from './Total';
 import Time from './Time';
 import Count from './Count';
 const Board = () => {
-  const [current, setCurrent] = useState(['Total']);
+  const [currentPage, setCurrentPage] = useState(0);
+
+  const setPage = (pageId: number): void => {
+    setCurrentPage(pageId);
+    PageUI(pageId);
+  };
+
+  const PageUI = (currentPage: number) => {
+    if (currentPage === 0) {
+      return <Total />;
+    }
+    if (currentPage === 1) {
+      return <Completion />;
+    }
+    if (currentPage === 2) {
+      return <Time />;
+    }
+    if (currentPage === 3) {
+      return <Count />;
+    }
+  };
 
   return (
     <Container>
@@ -20,24 +40,45 @@ const Board = () => {
         <NavHolder>
           <NavWrapper>
             <NavList>
-              <NavLink>Total Ranking</NavLink>
+              <NavLink
+                onClick={() => {
+                  setPage(0);
+                }}
+              >
+                Total Ranking
+              </NavLink>
             </NavList>
             <NavList>
-              <NavLink>Completion Ranking</NavLink>
+              <NavLink
+                onClick={() => {
+                  setPage(1);
+                }}
+              >
+                Completion Ranking
+              </NavLink>
             </NavList>
             <NavList>
-              <NavLink>Time Ranking</NavLink>
+              <NavLink
+                onClick={() => {
+                  setPage(2);
+                }}
+              >
+                Time Ranking
+              </NavLink>
             </NavList>
             <NavList>
-              <NavLink>Count Ranking</NavLink>
+              <NavLink
+                onClick={() => {
+                  setPage(3);
+                }}
+              >
+                Count Ranking
+              </NavLink>
             </NavList>
           </NavWrapper>
         </NavHolder>
       </NavConatiner>
-      {/* <Total /> */}
-      {/* <Completion /> */}
-      <Count />
-      {/* <Time /> */}
+      <>{PageUI(currentPage)}</>
     </Container>
   );
 };
@@ -49,7 +90,6 @@ const Container = styled.div`
 `;
 
 const NavConatiner = styled.nav`
-  width: 100%;
   height: 40px;
   background-color: #a91419;
   font-size: 13px;
@@ -82,6 +122,7 @@ const NavList = styled.li`
   padding-top: 10px;
   :hover {
     background-color: rgba(222, 26, 33, 0.6);
+    cursor: pointer;
   }
   :acitve {
     opacity: 0.3;

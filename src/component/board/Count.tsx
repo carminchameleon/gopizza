@@ -1,13 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes, css } from 'styled-components';
 import axios, { AxiosResponse } from 'axios';
 import { BOARDCREWURL } from 'config';
 import { BOARDSTOREURL } from 'config';
 
-function Count() {
+// interface GrapProps {
+//   fillGrap: boolean;
+// }
+
+const Count: React.FC = () => {
   const [data, setData] = useState([]);
   const [crew, setCrew] = useState(true);
   const [duration, setDuration] = useState(1);
+  const [topCount, setTopCount] = useState();
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    fetchData();
+  }, [crew, duration]);
 
   const handleRange = (boolean: boolean): void => {
     setData([]);
@@ -31,6 +44,7 @@ function Count() {
       )
       .then((response: AxiosResponse): void => {
         setData(response.data.ranking);
+        setTopCount(response.data.ranking[0]['count']);
       });
   };
 
@@ -59,6 +73,12 @@ function Count() {
     }
   };
 
+  const getPercent = (count: number): number => {
+    return Math.round((count / topCount) * 100 * 100) / 100;
+  };
+  const getGoal = (count: number): number => {
+    return topCount - count;
+  };
   return (
     <Container>
       <MainHolder>
@@ -104,12 +124,89 @@ function Count() {
             </DropdownContainer>
           </SelectContainer>
         </HeaderContainer>
+        <TableSection>
+          <TableContainer>
+            <TableHead>
+              <TableHeadRow>
+                <TableHeadHeadingRank>Rank</TableHeadHeadingRank>
+                {crew ? (
+                  <TableHeadHeadingName>Partictipant</TableHeadHeadingName>
+                ) : (
+                  <TableHeadHeadingName>Store</TableHeadHeadingName>
+                )}
+                <TableHeadHeadingCounts>Counts</TableHeadHeadingCounts>
+                <TableHeadPercent>Percentage</TableHeadPercent>
+                <TableHeadGoal>Goal</TableHeadGoal>
+              </TableHeadRow>
+            </TableHead>
+            <TableBody>
+              {data.map((item: any, index: any) => {
+                const numberUI = (rank: number) => {
+                  if (rank === 1) {
+                    return <RankingGold>G</RankingGold>;
+                  }
+                  if (rank === 2) {
+                    return <RankingSilver>S</RankingSilver>;
+                  }
+                  if (rank === 3) {
+                    return <RankingBronze>B</RankingBronze>;
+                  }
+                  {
+                    return <RankingNumber>{rank}</RankingNumber>;
+                  }
+                };
+                const WinnerUI = (rank: number) => {
+                  if (rank === 0) {
+                    return 'Winner';
+                  } else {
+                    return `${getGoal(item.count)}판`;
+                  }
+                };
+                return (
+                  <TableBodyTableRow>
+                    <Ranking>{numberUI(item.rank)}</Ranking>
+                    <PersonInfo>
+                      {crew ? (
+                        <PersonBox>
+                          <PhotoBox>
+                            <ProfileImg src="http://localhost:3000/images/defaultProfile.png"></ProfileImg>
+                          </PhotoBox>
+                          <InfoBox>
+                            <Name>{item.name}</Name>
+                            <Store>{item.store_name}</Store>
+                          </InfoBox>
+                        </PersonBox>
+                      ) : (
+                        <StoreName>{item.name}</StoreName>
+                      )}
+                    </PersonInfo>
+                    <GoalScore>{item.count}</GoalScore>
+                    <PercentContainer>
+                      <PercentBar
+                        style={{ width: `${getPercent(item.count)}%` }}
+                      >
+                        {getPercent(item.count)}
+                      </PercentBar>
+                    </PercentContainer>
+                    <GoalScore>{WinnerUI(index)}</GoalScore>
+                    {/* <GoalScore>{getGoal(item.count)}</GoalScore> */}
+                  </TableBodyTableRow>
+                );
+              })}
+            </TableBody>
+          </TableContainer>
+        </TableSection>
       </MainHolder>
     </Container>
   );
-}
+};
 
 export default Count;
+
+const Load = keyframes`
+from {width: 0%}
+to {width: getPercent(item.count)%}
+`;
 
 const Container = styled.div`
   width: 100%;
@@ -148,6 +245,7 @@ const Description = styled.div`
   font-weight: 300;
   line-height: 20px;
 `;
+
 const SelectContainer = styled.div`
   width: 100%;
   height: 60px;
@@ -161,7 +259,6 @@ const TitleContainer = styled.div`
   flex-direction: row;
   justify-content: start;
   position: relative;
-  /* margin-bottom: 20px; */
 `;
 const DropdownContainer = styled.div`
   position: absolute;
@@ -210,6 +307,50 @@ const Duration = styled.option`
   color: blue;
 `;
 
+const RangeContainer = styled.div`
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  border-bottom: 3px solid #00c8cb;
+  opacity: 0.7;
+  z-index: 10;
+`;
+
+const RangeTitle = styled.button`
+  width: 10%;
+  padding: 10px;
+  color: #b8bfc2;
+  font: 1rem 'Bebas Neue', cursive;
+  border-top: 2px solid #b8bfc2;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-left: 2px solid #b8bfc2;
+  border-right: 2px solid #b8bfc2;
+  border-bottom: 0px;
+  position: relative;
+  margin-right: 2px;
+  margin-bottom: 3px;
+  opacity: 0.8;
+`;
+
+const CurrentRangeTitle = styled.button`
+  width: 10%;
+  color: #00c8cb;
+  padding: 10px;
+  font: 1rem 'Bebas Neue', cursive;
+  border-top: 2px solid #00c8cb;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-left: 2px solid #00c8cb;
+  border-right: 2px solid #00c8cb;
+  border-bottom: 0px;
+  position: relative;
+  margin-right: 2px;
+  margin-bottom: 3px;
+  opacity: 0.8;
+`;
+
 const TableSection = styled.section`
   width: 100%;
 `;
@@ -241,24 +382,29 @@ const TableHeadRow = styled.tr`
 `;
 
 const TableHeadHeadingRank = styled.th`
-  width: 9%;
+  width: 5%;
   white-space: nowrap;
   text-align: start;
 `;
 
 const TableHeadHeadingName = styled.th`
   text-align: start;
-  width: 30%;
-`;
-
-const TableHeadHeadingTotalScore = styled.th`
-  text-align: start;
-  width: 20%;
-`;
-
-const TableHeadDetailScore = styled.th`
-  text-align: start;
   width: 10%;
+`;
+
+const TableHeadHeadingCounts = styled.th`
+  text-align: start;
+  width: 5%;
+`;
+
+const TableHeadPercent = styled.th`
+  text-align: start;
+  width: 40%;
+`;
+
+const TableHeadGoal = styled.th`
+  text-align: start;
+  width: 5%;
 `;
 
 const TableBody = styled.tbody``;
@@ -283,7 +429,7 @@ const RankingNumber = styled.span`
   padding: 3px 0 0;
   text-align: center;
   color: #999999;
-  font: 1.2rem 'Bebas Neue', cursive;
+  font: 1.3rem 'Bebas Neue', cursive;
 `;
 
 const RankingGold = styled.span`
@@ -296,6 +442,7 @@ const RankingGold = styled.span`
   border: 2px solid #dab509;
   text-align: center;
   color: #dab509;
+  font: 1.1rem 'Bebas Neue', cursive;
 `;
 
 const RankingSilver = styled.span`
@@ -308,6 +455,7 @@ const RankingSilver = styled.span`
   border: 2px solid #a1a1a1;
   text-align: center;
   color: #a1a1a1;
+  font: 1.1rem 'Bebas Neue', cursive;
 `;
 
 const RankingBronze = styled.span`
@@ -320,18 +468,34 @@ const RankingBronze = styled.span`
   border: 2px solid #ae7058;
   text-align: center;
   color: #ae7058;
+  font: 1.1rem 'Bebas Neue', cursive;
 `;
 
-const TotalScore = styled.td`
+const GoalScore = styled.td`
   vertical-align: middle;
   text-align: start;
   font: 1.2rem 'Bebas Neue', cursive;
+  letter-spacing: 1px;
 `;
 
-const DetailScore = styled.td`
-  text-align: start;
+const PercentContainer = styled.td`
   vertical-align: middle;
-  font: 1rem 'Bebas Neue', cursive;
+  text-align: end;
+  font: 1.2rem 'Bebas Neue', cursive;
+  width: 100%;
+  padding-right: 20px;
+`;
+
+const PercentBar = styled.div`
+  padding-right: 10px;
+  width: 100%;
+  height: 50%;
+  background: linear-gradient(-25deg, #00c8cb, #9198e5);
+  opacity: 0.7;
+  color: white;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  animation: ${Load} 1.5s forwards;
 `;
 
 const PersonInfo = styled.td`
@@ -340,11 +504,13 @@ const PersonInfo = styled.td`
 const PersonBox = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: start;
   text-align: start;
 `;
 const PhotoBox = styled.div`
   width: 20%;
   height: 100%;
+  margin-right: 9%;
 `;
 const ProfileImg = styled.img`
   width: 50px;
@@ -353,7 +519,7 @@ const ProfileImg = styled.img`
 `;
 const InfoBox = styled.div`
   margin-left: 10px;
-  width: 80%;
+
   display: flex;
   flex-direction: column;
 `;
@@ -368,51 +534,6 @@ const Store = styled.div`
   height: 50%;
   line-height: 20px;
   font-size: 15px;
-`;
-
-const RangeContainer = styled.div`
-  height: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  border-bottom: 3px solid #00c8cb;
-  opacity: 0.7;
-  z-index: 10;
-`;
-
-const RangeTitle = styled.button`
-  width: 10%;
-  padding: 10px;
-  color: #b8bfc2;
-  font: 1rem 'Bebas Neue', cursive;
-  border-top: 2px solid #b8bfc2;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  border-left: 2px solid #b8bfc2;
-  border-right: 2px solid #b8bfc2;
-  /* border: 1px solid #aaa; */
-  border-bottom: 0px;
-  position: relative;
-  margin-right: 2px;
-  margin-bottom: 3px;
-  opacity: 0.8;
-`;
-
-const CurrentRangeTitle = styled.button`
-  width: 10%;
-  color: #00c8cb;
-  padding: 10px;
-  font: 1rem 'Bebas Neue', cursive;
-  border-top: 2px solid #00c8cb;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  border-left: 2px solid #00c8cb;
-  border-right: 2px solid #00c8cb;
-  border-bottom: 0px;
-  position: relative;
-  margin-right: 2px;
-  margin-bottom: 3px;
-  opacity: 0.8;
 `;
 
 const RangeBar = styled.nav`

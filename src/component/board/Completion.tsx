@@ -41,7 +41,6 @@ function Completion() {
       .then((response: AxiosResponse): void => {
         setData(response.data.ranking);
       });
-    console.log(data);
   };
 
   const selectDuration = (event: any) => {
@@ -134,23 +133,23 @@ function Completion() {
             <TableBody>
               {data.map((item: any, index: number) => {
                 const numberUI = (index: number) => {
-                  if (index === 0) {
+                  if (index === 1) {
                     return <RankingGold>G</RankingGold>;
                   }
-                  if (index === 1) {
+                  if (index === 2) {
                     return <RankingSilver>S</RankingSilver>;
                   }
-                  if (index === 2) {
+                  if (index === 3) {
                     return <RankingBronze>B</RankingBronze>;
                   }
                   {
-                    return <RankingNumber>{index + 1}</RankingNumber>;
+                    return <RankingNumber>{index}</RankingNumber>;
                   }
                 };
 
                 return (
-                  <TableBodyTableRow>
-                    <Ranking>{numberUI(index)}</Ranking>
+                  <TableBodyTableRow key={index}>
+                    <Ranking>{numberUI(item.rank)}</Ranking>
                     <PersonInfo>
                       {crew ? (
                         <PersonBox>
@@ -226,7 +225,6 @@ const TitleContainer = styled.div`
   flex-direction: row;
   justify-content: start;
   position: relative;
-  /* margin-bottom: 20px; */
 `;
 const DropdownContainer = styled.div`
   position: absolute;
@@ -462,7 +460,6 @@ const RangeTitle = styled.button`
   border-top-right-radius: 3px;
   border-left: 2px solid #b8bfc2;
   border-right: 2px solid #b8bfc2;
-  /* border: 1px solid #aaa; */
   border-bottom: 0px;
   position: relative;
   margin-right: 2px;
@@ -485,20 +482,6 @@ const CurrentRangeTitle = styled.button`
   margin-right: 2px;
   margin-bottom: 3px;
   opacity: 0.8;
-`;
-
-const RangeBar = styled.nav`
-  max-width: 1090px;
-  width: 100%;
-  height: 4px;
-  background-color: #aaa;
-`;
-
-const TitleBar = styled.div`
-  width: 900px;
-  height: 3px;
-  background-color: black;
-  display: block;
 `;
 
 const StoreName = styled.div`

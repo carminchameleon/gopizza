@@ -3,16 +3,15 @@ import styled from 'styled-components';
 import axios, { AxiosResponse } from 'axios';
 import { BOARDCREWURL } from 'config';
 import { BOARDSTOREURL } from 'config';
+import Winner from './Winner'
 
 function Total() {
+  
   const [data, setData] = useState([]);
   const [duration, setDuration] = useState(1);
   const [crew, setCrew] = useState(true);
   const [loading, isLoading] = useState(true);
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const [topCrew, setTopCrew] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -26,10 +25,9 @@ function Total() {
         }?limit=20&time_delta=${duration}&order_by=total_score`,
       )
       .then((response: AxiosResponse): void => {
-        setData(response.data.ranking);
+        setData(response.data.ranking.splice(3, 20));
+        setTopCrew(response.data.ranking.splice(0, 3));
       });
-
-    console.log('firstData');
   };
 
   const fetchHistory = (): void => {
@@ -40,11 +38,9 @@ function Total() {
       .then((response: AxiosResponse): void => {
         setData(response.data.ranking);
       });
-    console.log(data);
   };
 
   const selectDuration = (event: any) => {
-    console.log(typeof event.target.value);
     if (event.target.value === '0') {
       setDuration(1);
     } else if (event.target.value === '1') {
@@ -74,6 +70,7 @@ function Total() {
               두구두구두구 완성도, 시간, 판수를 종합한 피자 점수를 공개합니다!!
             </Description>
           </HeaderTitleBox>
+         <Winner/>
           <SelectContainer>
             <RangeContainer>
               <TitleContainer>
@@ -110,7 +107,6 @@ function Total() {
             </DropdownContainer>
           </SelectContainer>
         </HeaderContainer>
-
         <TableSection>
           <TableContainer>
             <TableHead>
@@ -132,23 +128,23 @@ function Total() {
             <TableBody>
               {data.map((item: any, index: number) => {
                 const numberUI = (index: number) => {
-                  if (index === 0) {
+                  if (index === 1) {
                     return <RankingGold>G</RankingGold>;
                   }
-                  if (index === 1) {
+                  if (index === 2) {
                     return <RankingSilver>S</RankingSilver>;
                   }
-                  if (index === 2) {
+                  if (index === 3) {
                     return <RankingBronze>B</RankingBronze>;
                   }
                   {
-                    return <RankingNumber>{index + 1}</RankingNumber>;
+                    return <RankingNumber>{index}</RankingNumber>;
                   }
                 };
 
                 return (
-                  <TableBodyTableRow>
-                    <Ranking>{numberUI(index)}</Ranking>
+                  <TableBodyTableRow key={index}>
+                    <Ranking>{numberUI(item.rank)}</Ranking>
                     <PersonInfo>
                       {crew ? (
                         <PersonBox>
@@ -164,7 +160,7 @@ function Total() {
                         <StoreName>{item.name}</StoreName>
                       )}
                     </PersonInfo>
-                    <TotalScore>{item.total_score}</TotalScore>
+                    <TotalScore>{item.total_score * 100}</TotalScore>
                     <DetailScore>{item.completion_score}</DetailScore>
                     <DetailScore>{item.average_time}</DetailScore>
                     <DetailScore>{item.count}</DetailScore>
@@ -464,7 +460,6 @@ const RangeTitle = styled.button`
   border-top-right-radius: 3px;
   border-left: 2px solid #b8bfc2;
   border-right: 2px solid #b8bfc2;
-  /* border: 1px solid #aaa; */
   border-bottom: 0px;
   position: relative;
   margin-right: 2px;
