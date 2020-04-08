@@ -14,11 +14,11 @@ interface props {
 const MyCal = (props: props) => {
     return (
         <MyCalBox>
-            <h2>나의 수치</h2>
-            <p>자세한 내 스펙들을 확인하세요</p>
-            <dl>
-                <dt>Time</dt>
-                <dd>
+            <MyCalTitle>나의 수치</MyCalTitle>
+            <MyCalSubTitle>자세한 내 스펙들을 확인하세요</MyCalSubTitle>
+            <MyCalSpecList>
+                <MyCalSpecTitle>Time</MyCalSpecTitle>
+                <MyCalSpecDetail>
                     <div>
                         <em>평균 시간</em>
                         <p>{props.average_time}</p>
@@ -27,15 +27,20 @@ const MyCal = (props: props) => {
                         <em>최소시간</em>
                         <p>{props.shortest_time}</p>
                     </div>
-                </dd>
-            </dl>
-            <dl>
-                <dt>Count</dt>
-                <dd>{props.count}</dd>
-            </dl>
-            <dl>
-                <dt>Quality</dt>
-                <dd>
+                </MyCalSpecDetail>
+            </MyCalSpecList>
+            <MyCalSpecList>
+                <MyCalSpecTitle>Count</MyCalSpecTitle>
+                <MyCalSpecDetail>
+                    <div>
+                        <em>전체 개수</em>
+                        <p>{props.count}</p>
+                    </div>
+                </MyCalSpecDetail>
+            </MyCalSpecList>
+            <MyCalSpecList>
+                <MyCalSpecTitle>Quality</MyCalSpecTitle>
+                <MyCalSpecDetail>
                     <div>
                         <em>평균 점수</em>
                         <p>{props.quality}</p>
@@ -52,14 +57,43 @@ const MyCal = (props: props) => {
                         <em>Topping</em>
                         <p>{props.topping}</p>
                     </div>
-                </dd>
-            </dl>
+                </MyCalSpecDetail>
+            </MyCalSpecList>
         </MyCalBox>
     );
 };
 
 const MyCalBox = styled.div`
+    min-width: 300px;
+    padding: 30px;
+`
 
+const MyCalTitle = styled.h2`
+    margin-bottom: 20px;
+    font-size: 26px;
+    font-weight: 500;
+`
+const MyCalSubTitle = styled.p`
+    margin-bottom: 20px;
+`
+
+const MyCalSpecList = styled.dl`
+    margin-bottom: 15px;
+`
+
+const MyCalSpecTitle = styled.dt`
+    margin-bottom: 10px;
+    padding: 10px;
+    color: #fff;
+    background-color: #4b6d82;
+`
+const MyCalSpecDetail = styled.dd`
+    >div{
+        display:flex;
+        margin-bottom: 15px;
+        padding: 0 10px;
+        justify-content:space-between
+    }
 `
 
 export default MyCal;

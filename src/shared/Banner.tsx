@@ -3,17 +3,17 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 interface Props {
-  title: String;
-  menu1: String;
-  menu2?: String;
-  menu3?: String;
-  menu4?: String;
-  routes1: any;
+  title?: string;
+  menu1?: string;
+  menu2?: string;
+  menu3?: string;
+  menu4?: string;
+  routes1?: any;
   routes2?: any;
   routes3?: any;
   routes4?: any;
-  background: any;
-  navBackground: any;
+  background?: any;
+  navBackground?: any;
 }
 
 const Banner: React.FC<Props> = (props: Props) => {
