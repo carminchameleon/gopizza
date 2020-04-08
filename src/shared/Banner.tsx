@@ -114,7 +114,6 @@ const NavLink = styled.li`
 const BannerContainer = styled.div`
   background: #333;
   text-align: center;
-
   position: relative;
   background-color: #ed1941;
 `;

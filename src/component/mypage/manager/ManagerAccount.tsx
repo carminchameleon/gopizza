@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from 'shared/Header';
 import Banner from 'shared/Banner';
+import AccountFrom from '../AccountForm';
 import styled from 'styled-components';
 
 const ManagerAccount = () => {
@@ -16,6 +17,7 @@ const ManagerAccount = () => {
         routes1="/manage_crew"
         routes2="/manager_account"
       />
+      <AccountFrom />
     </Wrapper>
   );
 };

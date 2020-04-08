@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import ReactModal from 'react-modal';
 import { URL } from 'config';
+import axios from 'axios';
 import Header from 'shared/Header';
 import Banner from 'shared/Banner';
 import styled from 'styled-components';
@@ -12,27 +13,53 @@ const DeleteAccount: React.FC<RouteComponentProps> = ({
 }: RouteComponentProps) => {
   const [password, setPassword] = useState<String>('');
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [idNumber, setIdNumber] = useState<any>([]);
+
+  const token = window.sessionStorage.getItem('token');
 
   const handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(event.target.value);
+    // console.log(event.target.value);
     setPassword(event.target.value);
+  };
+
+  const isBtnClicked = () => {
+    if (token) {
+      fetch(`${URL}/user/check-password`, {
+        method: 'POST',
+        headers: { Authorization: token },
+        body: JSON.stringify({
+          password: password,
+        }),
+      })
+        .then(res => res.json())
+        .then(res => {
+          // console.log(res.user_id);
+          if (res.user_id) {
+            setIdNumber(res.user_id);
+            setModalIsOpen(true);
+          }
+          if (res.message === 'WRONG_PASSWORD') {
+            alert('비밀번호가 잘못 입력되었습니다. 다시 입력해주세요.');
+          }
+        });
+    }
   };
 
   //백엔드 fetch 보내기
   const isModalBtnClicked = () => {
-    const token = window.sessionStorage.getItem('token');
     console.log(token);
     if (token) {
-      fetch(`${URL}`, {
+      fetch(`${URL}/user/delete/${idNumber}`, {
         method: 'DELETE',
-        headers: { token: token },
+        headers: { Authorization: token },
         body: JSON.stringify({
           password: password,
         }),
       }).then(res => {
-        console.log(res);
+        // console.log(res);
         if (res.status === 200) {
           alert('탈퇴가 완료되었습니다');
+          window.sessionStorage.removeItem('token');
           history.push('/login');
         }
       });
@@ -55,7 +82,7 @@ const DeleteAccount: React.FC<RouteComponentProps> = ({
         <Box>
           <Title> 비밀번호를 입력하세요</Title>
           <Input onChange={handleInput}></Input>
-          <Btn onClick={() => setModalIsOpen(true)}>탈퇴</Btn>
+          <Btn onClick={isBtnClicked}>탈퇴</Btn>
           <ReactModal
             isOpen={modalIsOpen}
             onRequestClose={() => setModalIsOpen(false)}

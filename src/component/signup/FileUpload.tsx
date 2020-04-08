@@ -45,7 +45,7 @@ const FileUpload: React.FC<Props> = (props: Props) => {
       <InputBox>
         <ImgInput
           type="file"
-          accept="image/png, image/jpeg, image/jpg"
+          accept="image/jpeg, image/jpg"
           onChange={isSelectedImg}
         />
         <ImgBtn type="submit" onClick={isUploadedImg}>
