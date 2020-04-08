@@ -3,7 +3,6 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { URL } from 'config';
 import FileUpload from 'component/signup/FileUpload';
 import styled from 'styled-components';
-// import { ENOMEM } from 'constants';
 
 interface storeList {
   id: number;
@@ -24,6 +23,7 @@ const SignUpBox: React.FC<RouteComponentProps> = ({
   const [store, setStore] = useState<string>('대치본점');
   const [storeId, setStoreId] = useState<number>(1);
   const [pwError, setPwError] = useState<Boolean>(false);
+  const [img, setImg] = useState<any>('');
 
   //storeData 저장
   useEffect(() => {
@@ -43,7 +43,6 @@ const SignUpBox: React.FC<RouteComponentProps> = ({
     }
     if (option === 'passwordCheck') {
       setPasswordAgain(e.target.value);
-      // checkPasswordAgain();
     }
     if (option === 'store') {
       setStore(e.target.value); // 지점 이름 저장
@@ -56,8 +55,6 @@ const SignUpBox: React.FC<RouteComponentProps> = ({
       }
     }
   };
-  useEffect(() => checkPassword(), [password]);
-  //콜백함수 쓰면 한 박자씩 느린것을 해결할 수 있음
 
   //이메일 인증
   const emailVerification = (
@@ -78,10 +75,16 @@ const SignUpBox: React.FC<RouteComponentProps> = ({
         if (res.status === 200) {
           alert('인증 이메일을 보냈습니다:) 확인해주세요!');
         }
+        if (res.status === 500) {
+          alert('존재하지 않는 이메일 입니다. 이메일을 다시 확인해주세요');
+        }
       });
     }
   };
 
+  //비밀번호 유효성 검사
+  useEffect(() => checkPassword(), [password]);
+  //콜백함수 쓰면 한 박자씩 느린것을 해결할 수 있음
   const checkPassword = () => {
     const check_num = /[0-9]/;
     const check_eng = /[a-z]/;
@@ -103,6 +106,7 @@ const SignUpBox: React.FC<RouteComponentProps> = ({
       password: password,
       passwordAgian: passwordAgain,
       store: storeId,
+      image_url: img,
     };
     console.log(sendData);
 
@@ -125,10 +129,15 @@ const SignUpBox: React.FC<RouteComponentProps> = ({
       });
   };
 
+  //fileUpload 컴포넌트에서 url 가져오기 위한 함수
+  const imgStore = (img: String) => {
+    setImg(img);
+  };
+
   return (
     <Wrapper>
       <Title>SIGN-UP</Title>
-      <FileUpload />
+      <FileUpload imgStore={imgStore} />
       <Container>
         <Div>
           <Label>이름(실명)</Label>
