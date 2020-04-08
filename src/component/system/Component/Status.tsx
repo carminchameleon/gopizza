@@ -12,7 +12,8 @@ const Status = () => {
             <dl>
                 <dt>쿠폰개수</dt>
                 <dd>7</dd>
-            </dl>*/}
+            </dl>*/
+            }
         </StatusSection>
     )
 }
