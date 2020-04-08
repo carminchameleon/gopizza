@@ -11,20 +11,20 @@ const MyInfo = (props: props) => {
             <div>프로필사진</div>
             <ul>
                 <li>
-                    <em>멤버쉽 번호</em>
-                    <p>10101010</p>
-                </li>
-                <li>
                     <em>이름</em>
                     <p>{props.name}</p>
                 </li>
                 <li>
-                    <em>지역</em>
-                    <p>서울</p>
-                </li>
-                <li>
                     <em>지점</em>
                     <p>{props.store}</p>
+                </li>
+                <li>
+                    <em>뱃지레벨</em>
+                    <p>Lv. 2</p>
+                </li>
+                <li>
+                    <em>쿠폰개수</em>
+                    <p>7</p>
                 </li>
             </ul>
         </div>

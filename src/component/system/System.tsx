@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { SYSTEMURL } from 'config';
 import Header from "../../shared/Header"
 import Banner from "../../shared/Banner"
-import Status from "./Component/Status"
 import MyCal from "./Component/MyCal"
 import MyGraph from "./Component/MyGraph"
 import MyInfo from "./Component/MyInfo"
@@ -100,7 +100,12 @@ const System: React.SFC = () => {
 
     const requestList = async () => {
 
-        const info = await fetch("http://localhost:3000/Data/requestList.json")
+        const info = await fetch(`${SYSTEMURL}/quest`, {
+            method: "GET",
+            headers: {
+                Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxMzd9.vpQMWR9OlJiCXWe73hiGCHEXaKCVa35Loqm0_jNIkgU"
+            }
+        })
 
         const infoJson = await info.json();
 
@@ -109,6 +114,22 @@ const System: React.SFC = () => {
         })
 
         console.log(infoJson);
+    }
+
+    const requestPost = async () => {
+        console.log("a");
+
+        const loginCheck = await fetch(`${SYSTEMURL}/Data/requestList.json`, {
+            method: "POST",
+            body: JSON.stringify({
+                is_claimed: true,
+                quest_id: 1
+            })
+        });
+
+        if (loginCheck.status === 404) {
+            console.log("a");
+        }
     }
 
     const renderSwitch = () => {
@@ -132,7 +153,6 @@ const System: React.SFC = () => {
             <Header />
             <Banner />
             <SystemSection>
-                <Status />
                 <UserSection>
                     <MyInfo name={userInfo.name} store={userInfo.store} />
                     <MyCal shortest_time={userScore.shortest_time} count={userScore.count} topping={userScore.topping} cheese={userScore.cheese} sauce={userScore.sauce} average_time={userScore.average_time} quality={userScore.quality} />
