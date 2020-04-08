@@ -1,111 +1,140 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import {  PROFILEURL } from 'config';
 
-const goldMedal: string =
-  'https://images.velog.io/images/carminchameleon/post/ae473433-bf70-473c-86a2-7e4d0d119191/image.png';
-const silverMedal: string =
-  'https://images.velog.io/images/carminchameleon/post/b6ba17e4-7737-4af3-af34-b433dea2884c/image.png';
+interface CrewInfo {
+  rank?: any,
+  name?: string,
+  store_name?: string,
+  total_score?: number,
+  average_time?: number,
+  count?: number,
+  completion_score?:number,
+  image?:string
+}
 
-const bronzeMedal: string =
-  'https://images.velog.io/images/carminchameleon/post/fe2c6aa9-a4a8-4a92-9d36-118e83ca26d0/image.png';
+interface Props  {
+  topCrew : Array<CrewInfo>,
+  crew : boolean
+}
 
-const Winner : React.FC = () =>{
+const Winner:React.FC<Props> =  (props : Props ) => {
+const [data, setData ] = useState(props.topCrew)
+console.log(props.crew)
+const changeLeft = (num:number):any => {
+  if(num === 1){
+    return '35%'
+  } else if (num === 2){
+    return '3%'
+  } else {
+    return '67%'
+  }
+}
+
+const changeTop = (num:number):any => {
+  if(num === 1){
+    return '0'
+  } else if (num === 2){
+    return '0'
+  } else {
+    return '0'
+  }
+}
+
+const changeMedal = (num :number) : any => {
+  if(num === 1){
+    return goldMedal
+  } else if (num === 2){
+    return silverMedal
+  } else {
+    return bronzeMedal
+  }
+}
+
+            
+        
+
 return(
-  
           <WinnerContainer>
-            <WinnerBox>
-              <MedalImage alt="#" src={goldMedal}></MedalImage>
-              <WinnerInfoBox>
+          {props.topCrew.map((item:CrewInfo, index: number )=>{
+               const profilePic = ( url: string | undefined ) => {
+                 if( url !== null){
+                   return <WinnerImg src={item.image}></WinnerImg>
+                 } else {
+                   return <WinnerImg src="PROFILEURL"></WinnerImg>
+                 }
+               }
+            return(<WinnerBox>
+              <MedalImage alt="#" src={changeMedal(item.rank)}></MedalImage>
+             {props.crew ?       <WinnerInfoBox>
                 <WinnerImgBox>
-                  <WinnerImg src="http://img.lifestyler.co.kr/NewIMG/frontenm/ch/tvn/2020/20200305_doctorlife_info/images/1_img_01.png"></WinnerImg>
-                </WinnerImgBox>
-<WinnerName></WinnerName>
-                <WinnerStore>평촌직영점</WinnerStore>
-              </WinnerInfoBox>
+                   {profilePic(item.image)}               
+                 </WinnerImgBox>
+                  <WinnerName>{item.name}</WinnerName>
+                  <WinnerStore>{item.store_name}</WinnerStore>
+              </WinnerInfoBox> : 
+              <StoreInfoBox>
+                <WinnerName>{item.name}</WinnerName>
+                <WinnerStore>{item.store_name}</WinnerStore>
+              </StoreInfoBox>}
+
               <WinnerScoreBox>
-                <WinnerDetailScore>Completion: 79</WinnerDetailScore>
-                <WinnerDetailScore>Time: 13.53</WinnerDetailScore>
-                <WinnerDetailScore>Count: 100</WinnerDetailScore>
-                <WinnerTotalScore>Total Score:</WinnerTotalScore>
+                < WinnerDetailScore>Completion:{item.completion_score}</WinnerDetailScore>
+                <WinnerDetailScore>Time: {item.average_time}</WinnerDetailScore>
+                <WinnerDetailScore>Count:{item.count}</WinnerDetailScore>
+                <WinnerTotalScore>Total Score: {item.total_score}</WinnerTotalScore>
               </WinnerScoreBox>
             </WinnerBox>
-             <WinnerBox>
-              <MedalImage alt="#" src={goldMedal}></MedalImage>
-              <WinnerInfoBox>
-                <WinnerImgBox>
-                  <WinnerImg src="http://img.lifestyler.co.kr/NewIMG/frontenm/ch/tvn/2020/20200305_doctorlife_info/images/1_img_01.png"></WinnerImg>
-                </WinnerImgBox>
-                <WinnerName>황은지</WinnerName>
-                <WinnerStore>평촌직영점</WinnerStore>
-              </WinnerInfoBox>
-              <WinnerScoreBox>
-                <WinnerDetailScore>Completion: 79</WinnerDetailScore>
-                <WinnerDetailScore>Time: 13.53</WinnerDetailScore>
-                <WinnerDetailScore>Count: 100</WinnerDetailScore>
-                <WinnerTotalScore>Total Score:</WinnerTotalScore>
-              </WinnerScoreBox>
-            </WinnerBox>
-             <WinnerBox>
-              <MedalImage alt="#" src={goldMedal}></MedalImage>
-              <WinnerInfoBox>
-                <WinnerImgBox>
-                  <WinnerImg src="http://img.lifestyler.co.kr/NewIMG/frontenm/ch/tvn/2020/20200305_doctorlife_info/images/1_img_01.png"></WinnerImg>
-                </WinnerImgBox>
-                <WinnerName>황은지</WinnerName>
-                <WinnerStore>평촌직영점</WinnerStore>
-              </WinnerInfoBox>
-              <WinnerScoreBox>
-                <WinnerDetailScore>Completion: 79</WinnerDetailScore>
-                <WinnerDetailScore>Time: 13.53</WinnerDetailScore>
-                <WinnerDetailScore>Count: 100</WinnerDetailScore>
-                <WinnerTotalScore>Total Score:</WinnerTotalScore>
-              </WinnerScoreBox>
-            </WinnerBox>
-          </WinnerContainer>)
+           )})}
+    </WinnerContainer>)
 }
 
 export default Winner;
 
-
 const WinnerContainer = styled.div`
-  width: 100%;
-  height: 300px;
+
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  flex-direction:row;
+  width: 100%;
+  border: 3px solid rgb(63,158,207, 0.7);
+  border-top: 0;
+  margin-bottom: 30px;
+  height: 220px;
+  justify-content: center;
+;
 `;
 
 const WinnerBox = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  width: 30%;
-  height: 70%;
-  border: 3px solid #ad6fd1;
-  border-radius: 15px;
+  width: 32%;
+  height: 100%;
   text-align: center;
-  position: relative;
   font: 1.2rem 'Bebas Neue', cursive;
   color: #999999;
-  background-color: #faf4ff;
+  background-color: #fffff;
+  position:relative
 `;
 
 const WinnerImgBox = styled.div`
   margin-bottom: 9px;
 `;
+
 const WinnerImg = styled.img`
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  border: 1px solid #5e2b7c;
+  border: 2px solid #999999;
 `;
+
 const MedalImage = styled.img`
   position: absolute;
   width: 40px;
   height: 70px;
   object-fit: cover;
-  left: 3%;
-  top: -1;
+  left: 0%;
+  top:0px;
 `;
 
 const WinnerInfoBox = styled.div`
@@ -118,13 +147,14 @@ const WinnerInfoBox = styled.div`
 
 const WinnerTotalScore = styled.div`
   font-size: 1.4rem;
-  color: #854bc2;
+  color: #999999;
   margin-top: 10px;
 `;
 
 const WinnerDetailScore = styled.div`
   margin-bottom: 6px;
-  color: #9f71d0;
+  color: #999999;
+  opacity: 0.7;
 `;
 
 const WinnerScoreBox = styled.div`
@@ -144,3 +174,25 @@ const WinnerStore = styled.div`
   color: gray;
   font-size: 0.7rem;
 `;
+
+const Test = styled.img`
+position: absolute;
+top: 50%;
+width: 1090px;
+height: 200px;
+object-fit: over;
+`
+const StoreInfoBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 15%;`
+
+const goldMedal: string =
+  'https://images.velog.io/images/carminchameleon/post/ae473433-bf70-473c-86a2-7e4d0d119191/image.png';
+const silverMedal: string =
+  'https://images.velog.io/images/carminchameleon/post/b6ba17e4-7737-4af3-af34-b433dea2884c/image.png';
+
+const bronzeMedal: string =
+  'https://images.velog.io/images/carminchameleon/post/fe2c6aa9-a4a8-4a92-9d36-118e83ca26d0/image.png';
+
