@@ -1,17 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios, { AxiosResponse } from 'axios';
-import { BOARDCREWURL } from 'config';
-import { BOARDSTOREURL } from 'config';
+import { BOARDCREWURL, BOARDSTOREURL , PROFILEURL } from 'config';
 import Winner from './Winner'
+
+
+
+interface CrewInfo {
+  rank: number,
+  name: string,
+  store_name: string,
+  total_score: number,
+  average_time: number,
+  count: number,
+  completion_score:number,
+  image: string
+}
+
 
 function Total() {
   
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any>([]);
   const [duration, setDuration] = useState(1);
   const [crew, setCrew] = useState(true);
   const [loading, isLoading] = useState(true);
-  const [topCrew, setTopCrew] = useState([]);
+  const [topCrew, setTopCrew] = useState<any>([]);
 
   useEffect(() => {
     fetchData();
@@ -36,8 +49,9 @@ function Total() {
         `${crew ? BOARDCREWURL : BOARDSTOREURL}?limit=20&order_by=total_score`,
       )
       .then((response: AxiosResponse): void => {
-        setData(response.data.ranking);
-      });
+     setData(response.data.ranking.splice(3, 20));
+     setTopCrew(response.data.ranking.splice(0, 3));
+              });
   };
 
   const selectDuration = (event: any) => {
@@ -54,6 +68,7 @@ function Total() {
     }
   };
 
+ 
   const handleRange = (boolean: boolean): void => {
     setData([]);
     setCrew(boolean);
@@ -70,7 +85,6 @@ function Total() {
               두구두구두구 완성도, 시간, 판수를 종합한 피자 점수를 공개합니다!!
             </Description>
           </HeaderTitleBox>
-         <Winner/>
           <SelectContainer>
             <RangeContainer>
               <TitleContainer>
@@ -106,6 +120,8 @@ function Total() {
               </Dropdown>
             </DropdownContainer>
           </SelectContainer>
+          <Winner topCrew={topCrew} crew={crew}/>
+
         </HeaderContainer>
         <TableSection>
           <TableContainer>
@@ -126,7 +142,7 @@ function Total() {
               </TableHeadRow>
             </TableHead>
             <TableBody>
-              {data.map((item: any, index: number) => {
+              {data.map((item : CrewInfo, index: number) => {
                 const numberUI = (index: number) => {
                   if (index === 1) {
                     return <RankingGold>G</RankingGold>;
@@ -142,6 +158,14 @@ function Total() {
                   }
                 };
 
+               const profilePic = ( url : string|null) => {
+                 if( url !== null){
+                   return <ProfileImg src={item.image}></ProfileImg>
+                 } else {
+                   return <ProfileImg src={PROFILEURL}></ProfileImg>
+
+                 }
+               }
                 return (
                   <TableBodyTableRow key={index}>
                     <Ranking>{numberUI(item.rank)}</Ranking>
@@ -149,7 +173,7 @@ function Total() {
                       {crew ? (
                         <PersonBox>
                           <PhotoBox>
-                            <ProfileImg src="http://localhost:3000/images/defaultProfile.png"></ProfileImg>
+                          {profilePic(item.image)}
                           </PhotoBox>
                           <InfoBox>
                             <Name>{item.name}</Name>
@@ -160,7 +184,7 @@ function Total() {
                         <StoreName>{item.name}</StoreName>
                       )}
                     </PersonInfo>
-                    <TotalScore>{item.total_score * 100}</TotalScore>
+                    <TotalScore>{Math.floor(item.total_score * 100)}</TotalScore>
                     <DetailScore>{item.completion_score}</DetailScore>
                     <DetailScore>{item.average_time}</DetailScore>
                     <DetailScore>{item.count}</DetailScore>
@@ -210,7 +234,7 @@ const HeaderTitle = styled.div`
 `;
 const SelectContainer = styled.div`
   width: 100%;
-  height: 60px;
+  height: 40px;
   position: relative;
 `;
 
