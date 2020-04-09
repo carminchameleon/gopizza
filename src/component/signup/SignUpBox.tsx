@@ -176,9 +176,11 @@ const SignUpBox: React.FC<RouteComponentProps> = ({
 export default withRouter(SignUpBox);
 
 const Wrapper = styled.div`
-  width: 380px;
+  width: 700px;
   height: 550px;
   background-color: #fff;
+  /* border: solid 2px rgba(252, 109, 2); */
+  /* border-radius: 21px; */
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -187,7 +189,7 @@ const Wrapper = styled.div`
 
 const Title = styled.div`
   margin-bottom: 35px;
-  color: orange;
+  color: rgba(252, 109, 2);
   font-size: 20px;
   font-weight: bold;
 `;
@@ -206,11 +208,11 @@ const Div = styled.div`
 
 const Label = styled.label`
   font-size: 12px;
-  margin-right: 5px;
+  margin-right: 10px;
 `;
 
 const Input = styled.input`
-  width: 200px;
+  width: 300px;
   height: 35px;
   background-color: lightgray;
   /* border: 1px solid red; */
@@ -223,7 +225,7 @@ const EmailBtn = styled.button`
   top: 0px;
   right: 0px;
   font-size: 12px;
-  background-color: orange;
+  background-color: rgba(252, 109, 2);
   border-radius: 3px;
   cursor: pointer;
   &:hover {
@@ -232,7 +234,7 @@ const EmailBtn = styled.button`
 `;
 
 const Select = styled.select`
-  width: 200px;
+  width: 300px;
   height: 35px;
   background-color: lightgray;
   &:focus {
@@ -249,7 +251,7 @@ const AccountBtn = styled.div`
   align-items: center;
   color: white;
   height: 30px;
-  background-color: orange;
+  background-color: rgba(252, 109, 2);
   border-radius: 3px;
   cursor: pointer;
   &:hover {

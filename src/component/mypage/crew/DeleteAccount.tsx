@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import ReactModal from 'react-modal';
 import { URL } from 'config';
-import axios from 'axios';
 import Header from 'shared/Header';
 import Banner from 'shared/Banner';
 import styled from 'styled-components';
-// ReactModal.setAppElement('#main');
+ReactModal.setAppElement('#root');
 
 const DeleteAccount: React.FC<RouteComponentProps> = ({
   history,
@@ -78,39 +77,45 @@ const DeleteAccount: React.FC<RouteComponentProps> = ({
         routes1="/crew_account"
         routes2="/delete_account"
       />
-      <Container>
-        <Box>
-          <Title> 비밀번호를 입력하세요</Title>
-          <Input onChange={handleInput}></Input>
-          <Btn onClick={isBtnClicked}>탈퇴</Btn>
-          <ReactModal
-            isOpen={modalIsOpen}
-            onRequestClose={() => setModalIsOpen(false)}
-            style={{
-              overlay: {
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-              },
-              content: {
-                border: 'none',
-                backgroundColor: 'white',
-                overflow: 'hidden',
-                fontSize: '100px',
-                position: 'absolute',
-                width: '400px',
-                height: '150px',
-                margin: '400px 0 0 -150px',
-                left: '50%',
-                // fontFamily: 'nationale-regular',
-              },
-            }}
-          >
-            <ModalContent>
-              <ModalTitle>정말 탈퇴하시겠습니까?</ModalTitle>
-              <ModalBtn onClick={isModalBtnClicked}>네</ModalBtn>
-            </ModalContent>
-          </ReactModal>
-        </Box>
-      </Container>
+      <InnerWarapper>
+        <HeaderTitleBox>
+          <HeaderTitle>Delete Account</HeaderTitle>
+          <Description>계정을 삭제할 수 있습니다</Description>
+        </HeaderTitleBox>
+        <Container>
+          <Box>
+            <Title> 비밀번호를 입력하세요</Title>
+            <Input onChange={handleInput}></Input>
+            <Btn onClick={isBtnClicked}>탈퇴</Btn>
+            <ReactModal
+              isOpen={modalIsOpen}
+              onRequestClose={() => setModalIsOpen(false)}
+              style={{
+                overlay: {
+                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                },
+                content: {
+                  border: 'none',
+                  backgroundColor: 'white',
+                  overflow: 'hidden',
+                  fontSize: '100px',
+                  position: 'absolute',
+                  width: '400px',
+                  height: '150px',
+                  margin: '400px 0 0 -150px',
+                  left: '50%',
+                  // fontFamily: 'nationale-regular',
+                },
+              }}
+            >
+              <ModalContent>
+                <ModalTitle>정말 탈퇴하시겠습니까?</ModalTitle>
+                <ModalBtn onClick={isModalBtnClicked}>네</ModalBtn>
+              </ModalContent>
+            </ReactModal>
+          </Box>
+        </Container>
+      </InnerWarapper>
     </Wrapper>
   );
 };
@@ -118,6 +123,33 @@ const DeleteAccount: React.FC<RouteComponentProps> = ({
 export default withRouter(DeleteAccount);
 
 const Wrapper = styled.div``;
+const InnerWarapper = styled.div`
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 1090px;
+`;
+const HeaderTitleBox = styled.div`
+  width: 100%;
+`;
+const HeaderTitle = styled.div`
+  margin-bottom: 20px;
+  text-align: center;
+  letter-spacing: 0.1rem;
+  color: #333;
+  text-transform: uppercase;
+  font: 2.5rem/1.071rem 'Bebas Neue', cursive;
+`;
+const Description = styled.div`
+  padding-bottom: 50px;
+  text-align: center;
+  letter-spacing: 0.1rem;
+  color: #948780;
+  font-weight: 300;
+  line-height: 20px;
+  border-bottom: solid 3px rgb(252, 109, 2);
+`;
 const Container = styled.div`
   display: flex;
   justify-content: center;
@@ -147,8 +179,11 @@ const Btn = styled.button`
   border-radius: 5px;
   font-size: 13px;
   color: white;
-  background-color: orange;
+  background-color: rgb(252, 109, 2);
   cursor: pointer;
+  &:hover {
+    background-color: orange;
+  }
 `;
 //modal style
 const ModalContent = styled.div`
@@ -167,6 +202,6 @@ const ModalBtn = styled.button`
   width: 70px;
   height: 35px;
   border-radius: 5px;
-  background-color: orange;
+  background-color: rgb(252, 109, 2);
   cursor: pointer;
 `;

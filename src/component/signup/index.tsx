@@ -19,5 +19,5 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: orange;
+  background-color: rgba(252, 109, 2);
 `;

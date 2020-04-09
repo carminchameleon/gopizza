@@ -75,15 +75,16 @@ const FileUpload: React.FC<Props> = (props: Props) => {
 export default FileUpload;
 
 const Wrapper = styled.div`
+  margin-top: 40px;
   margin-bottom: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
 `;
 const ImgBox = styled.div`
-  margin-bottom: 10px;
-  width: 100px;
-  height: 100px;
+  margin-bottom: 30px;
+  width: 200px;
+  height: 200px;
   border-radius: 50%;
   /* background-image: url('https://www.nelson-chambers.co.uk/front/images/default-user.jpg'); */
   background-color: lightgray;
@@ -96,14 +97,16 @@ const Img = styled.img`
 `;
 const InputBox = styled.div``;
 const ImgInput = styled.input`
-  width: 140px;
+  width: 160px;
+  font-size: 13px;
   cursor: pointer;
 `;
 const ImgBtn = styled.button`
-  width: 50px;
+  width: 70px;
   color: white;
   border-radius: 5px;
   background-color: orange;
+  font-size: 15px;
   cursor: pointer;
   &:hover {
     background-color: orangered;

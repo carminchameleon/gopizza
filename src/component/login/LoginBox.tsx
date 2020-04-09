@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { History, LocationState } from 'history';
 import { URL } from 'config';
 import styled from 'styled-components';
+ReactModal.setAppElement('#root');
 
 interface Props {
   history: History<LocationState>;
@@ -136,8 +137,10 @@ export default withRouter(LoginBox);
 
 const Wrapper = styled.div`
   padding: 80px 0;
-  width: 380px;
+  width: 555px;
   background-color: white;
+  /* border: solid 2px rgba(252, 109, 2); */
+  /* border-radius: 21px; */
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -145,7 +148,7 @@ const Wrapper = styled.div`
 `;
 const Title = styled.div`
   margin-bottom: 30px;
-  color: orange;
+  color: rgba(252, 109, 2);
   font-size: 20px;
   font-weight: bold;
 `;
@@ -167,7 +170,7 @@ const LoginBtn = styled.button`
   margin-bottom: 10px;
   width: 280px;
   height: 45px;
-  background-color: orange;
+  background-color: rgba(252, 109, 2);
   cursor: pointer;
 `;
 const Div = styled.div`
@@ -176,13 +179,13 @@ const Div = styled.div`
 `;
 const Register = styled.span`
   margin-left: 8px;
-  color: orange;
+  color: rgba(252, 109, 2);
   font-size: 11px;
   cursor: pointer;
 `;
 const FindPwd = styled.span`
   margin-left: 8px;
-  color: orange;
+  color: rgba(252, 109, 2);
   font-size: 11px;
   cursor: pointer;
 `;
@@ -209,6 +212,6 @@ const ModalBtn = styled.button`
   width: 70px;
   height: 35px;
   border-radius: 5px;
-  background-color: orange;
+  background-color: rgba(252, 109, 2);
   cursor: pointer;
 `;
