@@ -65,10 +65,12 @@ const Wrapper = styled.div`
   align-items: center;
 `;
 const ImgBox = styled.div`
+  margin-bottom: 10px;
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background-image: url('https://www.nelson-chambers.co.uk/front/images/default-user.jpg');
+  background-color: lightgray;
+  /* background-image: url('https://www.nelson-chambers.co.uk/front/images/default-user.jpg'); */
   background-size: 100%;
 `;
 const Img = styled.img`
@@ -85,7 +87,7 @@ const ImgBtn = styled.button`
   width: 50px;
   color: white;
   border-radius: 5px;
-  background-color: orange;
+  background-color: rgba(252, 109, 2);
   cursor: pointer;
   &:hover {
     background-color: orangered;

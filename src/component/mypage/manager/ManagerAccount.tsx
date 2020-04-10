@@ -14,7 +14,7 @@ const ManagerAccount = () => {
         menu2="내 계정"
         background="#fcb131"
         navBackground="#f69d04"
-        routes1="/manage_crew"
+        routes1="/manager_page"
         routes2="/manager_account"
       />
       <AccountFrom />

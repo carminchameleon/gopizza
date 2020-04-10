@@ -24,4 +24,7 @@ const CrewAccount = () => {
 
 export default CrewAccount;
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  height: 100vh;
+  /* background-color: lightgray; */
+`;

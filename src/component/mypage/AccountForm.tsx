@@ -4,6 +4,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import ReactModal from 'react-modal';
 import FileUpload from './FileUpload';
 import styled from 'styled-components';
+ReactModal.setAppElement('#root');
 
 const AccountForm: React.FC<RouteComponentProps> = ({
   history,
@@ -25,7 +26,7 @@ const AccountForm: React.FC<RouteComponentProps> = ({
       })
         .then(res => res.json())
         .then(res => {
-          console.log(res.user_info[0]);
+          // console.log(res.user_info[0]);
           setData(res.user_info[0]);
         });
     }
@@ -118,6 +119,11 @@ const AccountForm: React.FC<RouteComponentProps> = ({
 
   return (
     <Wrapper>
+      <HeaderTitleBox>
+        <HeaderTitle>Modify Account</HeaderTitle>
+        <Description>이미지 수정, 비밀번호 변경이 가능합니다</Description>
+      </HeaderTitleBox>
+
       <Container>
         <FileUpload image={data.image} />
         <Box>
@@ -183,12 +189,41 @@ const AccountForm: React.FC<RouteComponentProps> = ({
 
 export default withRouter(AccountForm);
 
-const Wrapper = styled.div``;
-const Container = styled.div`
-  padding-top: 50px;
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: auto;
+  max-width: 1090px;
+`;
+const HeaderTitleBox = styled.div`
+  margin-bottom: 50px;
+`;
+const HeaderTitle = styled.div`
+  margin-bottom: 20px;
+  text-align: center;
+  letter-spacing: 0.1rem;
+  color: #333;
+  text-transform: uppercase;
+  font: 2.5rem/1.071rem 'Bebas Neue', cursive;
+`;
+const Description = styled.div`
+  text-align: center;
+  letter-spacing: 0.1rem;
+  color: #948780;
+  font-weight: 300;
+  line-height: 20px;
+`;
+const Container = styled.div`
+  width: 80%;
+  border-top: solid 3px rgb(252, 109, 2);
+  padding-top: 50px;
+  padding-bottom: 50px;
+  display: flex;
+  justify-content: space-around;
+  /* flex-direction: column;
+  align-items: center; */
+  background-color: white;
 `;
 const Box = styled.div`
   margin-top: 20px;
@@ -200,35 +235,38 @@ const Box = styled.div`
 `;
 const InputBox = styled.div`
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 40px;
   position: relative;
 `;
 const Title = styled.div`
   margin-right: 10px;
-  width: 60px;
+  width: 80px;
   display: flex;
   align-items: center;
-  font-size: 12px;
+  font-size: 17px;
 `;
 const Input = styled.div`
-  width: 200px;
-  height: 30px;
-  background-color: lightgray;
+  width: 400px;
+  height: 50px;
+  /* background-color: lightgray; */
+  border: solid 2px rgb(252, 109, 2);
   display: flex;
   align-items: center;
   padding-left: 10px;
   font-size: 12px;
 `;
 const PwdInput = styled.input`
-  width: 200px;
-  height: 30px;
-  background-color: lightgray;
+  width: 400px;
+  height: 50px;
+  /* background-color: lightgray; */
+  border: solid 2px rgb(252, 109, 2);
   padding-left: 10px;
   font-size: 12px;
 `;
 
 const PwdBtn = styled.button`
-  height: 30px;
+  width: 70px;
+  height: 50px;
   color: white;
   position: absolute;
   top: 0px;
