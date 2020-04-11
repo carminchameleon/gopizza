@@ -48,14 +48,30 @@ const MyGraph = (props: any) => {
 
     return (
         <GraphBox>
-            <MyGraphTitle>능숙도</MyGraphTitle>
-            <MyGraphSubTitle>내 수치를 그래프로 확인하세요!</MyGraphSubTitle>
-            <RadarChart cx={195} cy={210} outerRadius={150} width={500} height={400} data={props.data}>
-                <PolarGrid />
-                <PolarAngleAxis dataKey="subject" tick={customTick} />
-                <PolarRadiusAxis angle={90} />
-                <Radar name="" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.4} />
-            </RadarChart>
+            <div>
+                <MyGraphTitle>백분위 점수</MyGraphTitle>
+                <MyGraphSubTitle>백분위 점수로 변환한 내 그래프를 확인하세요!</MyGraphSubTitle>
+                <RadarChart cx={195} cy={190} outerRadius={150} width={400} height={270} data={props.data}>
+                    <PolarGrid />
+                    <PolarAngleAxis dataKey="subject" tick={customTick} />
+                    <PolarRadiusAxis angle={90} domain={[0, 100]} />
+                    <Radar name="" dataKey="A" stroke="#efe944" fill="#efe144" fillOpacity={0.4} />
+                </RadarChart>
+            </div>
+            <MyGraphScoreBox>
+                <dl>
+                    <dt>Time</dt>
+                    <dd>{props.data[1].A}%</dd>
+                </dl>
+                <dl>
+                    <dt>Count</dt>
+                    <dd>{props.data[0].A}%</dd>
+                </dl>
+                <dl>
+                    <dt>Quality</dt>
+                    <dd>{props.data[2].A}%</dd>
+                </dl>
+            </MyGraphScoreBox>
         </GraphBox>
     );
 };
@@ -63,22 +79,60 @@ const MyGraph = (props: any) => {
 const GraphBox = styled.section`
     overflow:hidden;
     width: 460px;
-    height: 450px;
-    padding: 30px;
-    background-color: #f8f8f8;
-    border-radius: 10px;
+    height: auto;
 
     >div {
+        padding: 30px;
+        background-color: #f8f8f8;
+        border-radius: 10px;
+    }
 
+    > div:last-child{
+        padding: 11px 0;
     }
 `
 const MyGraphTitle = styled.h2`
     margin-bottom: 20px;
     font-size: 26px;
     font-weight: 500;
+    font-family:'Bebas Neue',cursive;
 `
 const MyGraphSubTitle = styled.p`
     margin-bottom: 20px;
+`
+
+const MyGraphScoreBox = styled.div`
+    display:flex;
+    justify-content: space-between;
+    margin-top: 21px;
+    padding: 15px 10px 8px;
+    background-color:#fff;
+    border-radius: 10px;
+
+    dl{
+        width: 33.3%;
+        margin-left: 10px;
+        text-align: center;
+        border-right: 1px solid #ccc;
+    }
+
+    dl:last-child{
+        margin-right: 0;
+        border-right: 0;
+    }
+
+    dt{
+        color: #666;
+        font-size: 13px;
+    }
+
+    dd{
+        padding: 10px 0 0;
+        font-size: 26px;
+        letter-spacing:0.3px;
+        color: #c3c065;
+        font-family: 'Bebas Neue',cursive;
+    }
 `
 
 export default MyGraph;

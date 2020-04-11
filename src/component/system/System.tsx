@@ -12,8 +12,7 @@ import MyRewardContQuality from "./Component/MyRewardContQuality"
 import MyRewardTap from "./Component/MyRewardTap"
 
 interface _props {
-    is_achieved: boolean,
-    buttonId: number
+    status: boolean,
 }
 
 const System: React.SFC = () => {
@@ -24,6 +23,8 @@ const System: React.SFC = () => {
         image: null,
         name: "",
         store: "",
+        badge: 0,
+        coupon: 0,
     })
 
     const [userScore, setUserSocre] = useState({
@@ -64,49 +65,60 @@ const System: React.SFC = () => {
 
     const TabClick = (arg: string) => {
         setTabName(arg);
-        console.log("a");
     }
 
     const fetchInfo = async () => {
 
-        const info = await fetch(`${URL}/user/info`, {
+        const info = await fetch(`${URL}/record/user/137`, {
             method: "GET",
             headers: {
                 Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxMzd9.vpQMWR9OlJiCXWe73hiGCHEXaKCVa35Loqm0_jNIkgU"
             }
         })
 
-        if (info.status === 200) {
+
+
+        const score = await fetch(`${URL}/quest/reward/137`, {
+            method: "GET",
+            headers: {
+                Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxMzd9.vpQMWR9OlJiCXWe73hiGCHEXaKCVa35Loqm0_jNIkgU"
+            }
+        })
+
+        if (info.status === 200 && score.status === 200) {
             const infoJson = await info.json();
+            const scoreJson = await score.json();
 
             console.log(infoJson)
 
             setUserInfo({
-                image: infoJson.user_info[0].name,
-                name: infoJson.user_info[0].name,
-                store: infoJson.user_info[0].store__name
+                image: infoJson.user_info.image,
+                name: infoJson.user_info.name,
+                store: infoJson.user_info.store_name,
+                badge: scoreJson.reward.badge_count,
+                coupon: scoreJson.reward.coupon_count
             })
 
             setUserSocre({
-                average_time: infoJson.average_time,
-                shortest_time: infoJson.shortest_time,
-                count: infoJson.count,
-                quality: infoJson.quality,
-                sauce: infoJson.sauce,
-                cheese: infoJson.cheese,
-                topping: infoJson.topping
+                average_time: infoJson.user_info.average_time,
+                shortest_time: infoJson.user_info.shortest_time,
+                count: infoJson.user_info.total_count,
+                quality: infoJson.user_info.average_quality,
+                sauce: infoJson.user_info.average_sauce,
+                cheese: infoJson.user_info.average_cheese,
+                topping: infoJson.user_info.average_topping
             })
 
             setGraphData(
                 [
                     {
-                        subject: 'Count', A: infoJson.quality, fullMark: 100,
+                        subject: 'Count', A: Math.floor(infoJson.user_info.count_standard), fullMark: 100,
                     },
                     {
-                        subject: 'Quality', A: 48, fullMark: 100,
+                        subject: 'Quality', A: Math.floor(infoJson.user_info.completion_standard), fullMark: 100,
                     },
                     {
-                        subject: 'Time', A: 86, fullMark: 100,
+                        subject: 'Time', A: Math.floor(infoJson.user_info.time_standard), fullMark: 100,
                     },
                 ]
             )
@@ -136,8 +148,6 @@ const System: React.SFC = () => {
             const infoJson = await info.json();
             const myScoreJson = await myScore.json();
 
-            console.log(infoJson, myScoreJson)
-
             setquestList({
                 questList: infoJson
             })
@@ -150,9 +160,15 @@ const System: React.SFC = () => {
     }
 
     const requestPost = async (arg: _props) => {
-        console.log(arg);
 
-        console.log(arg, "내용이 있으면~~~~~~~ fetch 다시 불러오고~~~ 내용 다시 불러오기~~~")
+        if (arg.status) {
+
+            console.log(arg);
+
+            fetchInfo();
+            requestList();
+
+        }
     }
 
     const renderSwitch = () => {
@@ -174,10 +190,10 @@ const System: React.SFC = () => {
     return (
         <>
             <Header />
-            <Banner title="REWARD SYSTEM" />
+            <Banner title="REWARD SYSTEM" background="rgb(222, 222, 80)" navBackground="rgb(206, 208, 29)" />
             <SystemSection>
                 <UserSection>
-                    <MyInfo name={userInfo.name} store={userInfo.store} />
+                    <MyInfo image={userInfo.image} name={userInfo.name} store={userInfo.store} badge={userInfo.badge} coupon={userInfo.coupon} />
                     <MyCal shortest_time={userScore.shortest_time} count={userScore.count} topping={userScore.topping} cheese={userScore.cheese} sauce={userScore.sauce} average_time={userScore.average_time} quality={userScore.quality} />
                     <MyGraph data={graphData} />
                 </UserSection>
