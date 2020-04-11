@@ -1,18 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import styled, { keyframes, css } from 'styled-components';
 import axios, { AxiosResponse } from 'axios';
-import { BOARDCREWURL } from 'config';
-import { BOARDSTOREURL } from 'config';
+import { BOARDCREWURL, BOARDSTOREURL, PROFILEURL } from 'config';
+import Summary from './Summary';
+import StoreSummary from './StoreSummary';
+import Modal from 'react-modal';
 
-// interface GrapProps {
-//   fillGrap: boolean;
-// }
+interface CrewInfo {
+  rank: number;
+  name: string;
+  store_name: string;
+  total_score: number;
+  average_time: number;
+  count: number;
+  completion_score: number;
+  image: string;
+  id: number;
+}
 
 const Count: React.FC = () => {
   const [data, setData] = useState([]);
   const [crew, setCrew] = useState(true);
   const [duration, setDuration] = useState(1);
   const [topCount, setTopCount] = useState();
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState();
 
   useEffect(() => {
     fetchData();
@@ -23,7 +35,6 @@ const Count: React.FC = () => {
   }, [crew, duration]);
 
   const handleRange = (boolean: boolean): void => {
-    setData([]);
     setCrew(boolean);
   };
 
@@ -55,11 +66,11 @@ const Count: React.FC = () => {
       )
       .then((response: AxiosResponse): void => {
         setData(response.data.ranking);
+        setTopCount(response.data.ranking[0]['count']);
       });
   };
 
   const selectDuration = (event: any) => {
-    console.log(typeof event.target.value);
     if (event.target.value === '0') {
       setDuration(1);
     } else if (event.target.value === '1') {
@@ -76,17 +87,28 @@ const Count: React.FC = () => {
   const getPercent = (count: number): number => {
     return Math.round((count / topCount) * 100 * 100) / 100;
   };
+
   const getGoal = (count: number): number => {
     return topCount - count;
   };
+
+  const handleModal = (boolean: boolean, userId: number) => {
+    setModalIsOpen(true);
+    setCurrentUser(userId);
+  };
+
   return (
     <Container>
       <MainHolder>
         <HeaderContainer>
           <HeaderTitleBox>
             <HeaderTitle>Count Ranking</HeaderTitle>
-            <Description>우리는 피자를 얼마나 만들었을까요?</Description>
-            <Description>상위 Top 20의 피자 카운트 공개합니다!</Description>
+            <Description>
+              고피자에서 피자를 가장 많이 만든 사람은 누구일까요?
+            </Description>
+            <Description>
+              랭킹 넘버원과 나의 차이! 지금 확인해 보아요~
+            </Description>
           </HeaderTitleBox>
           <SelectContainer>
             <RangeContainer>
@@ -135,12 +157,12 @@ const Count: React.FC = () => {
                   <TableHeadHeadingName>Store</TableHeadHeadingName>
                 )}
                 <TableHeadHeadingCounts>Counts</TableHeadHeadingCounts>
-                <TableHeadPercent>Percentage</TableHeadPercent>
+                <TableHeadPercent>Percentage 1등 대비 달성률</TableHeadPercent>
                 <TableHeadGoal>Goal</TableHeadGoal>
               </TableHeadRow>
             </TableHead>
             <TableBody>
-              {data.map((item: any, index: any) => {
+              {data.map((item: CrewInfo, index: number) => {
                 const numberUI = (rank: number) => {
                   if (rank === 1) {
                     return <RankingGold>G</RankingGold>;
@@ -157,20 +179,34 @@ const Count: React.FC = () => {
                 };
                 const WinnerUI = (rank: number) => {
                   if (rank === 0) {
-                    return 'Winner';
+                    return (
+                      <GoalScore style={{ color: '#00c8cb' }}>Winner</GoalScore>
+                    );
                   } else {
-                    return `${getGoal(item.count)}판`;
+                    return <GoalScore>{getGoal(item.count)}판</GoalScore>;
                   }
                 };
+
+                const profilePic = (url: string | null) => {
+                  if (url !== null) {
+                    return <ProfileImg src={item.image}></ProfileImg>;
+                  } else {
+                    return <ProfileImg src={PROFILEURL}></ProfileImg>;
+                  }
+                };
+
                 return (
-                  <TableBodyTableRow>
+                  <TableBodyTableRow
+                    key={index}
+                    onClick={() => {
+                      handleModal(true, item.id);
+                    }}
+                  >
                     <Ranking>{numberUI(item.rank)}</Ranking>
                     <PersonInfo>
                       {crew ? (
                         <PersonBox>
-                          <PhotoBox>
-                            <ProfileImg src="http://localhost:3000/images/defaultProfile.png"></ProfileImg>
-                          </PhotoBox>
+                          <PhotoBox>{profilePic(item.image)}</PhotoBox>
                           <InfoBox>
                             <Name>{item.name}</Name>
                             <Store>{item.store_name}</Store>
@@ -180,16 +216,16 @@ const Count: React.FC = () => {
                         <StoreName>{item.name}</StoreName>
                       )}
                     </PersonInfo>
-                    <GoalScore>{item.count}</GoalScore>
+                    <GoalScore>{item.count}판</GoalScore>
                     <PercentContainer>
                       <PercentBar
                         style={{ width: `${getPercent(item.count)}%` }}
                       >
-                        {getPercent(item.count)}
+                        {getPercent(item.count)}%
                       </PercentBar>
                     </PercentContainer>
-                    <GoalScore>{WinnerUI(index)}</GoalScore>
-                    {/* <GoalScore>{getGoal(item.count)}</GoalScore> */}
+
+                    {WinnerUI(index)}
                   </TableBodyTableRow>
                 );
               })}
@@ -197,6 +233,36 @@ const Count: React.FC = () => {
           </TableContainer>
         </TableSection>
       </MainHolder>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => {
+          setModalIsOpen(false);
+        }}
+        style={{
+          overlay: {
+            backgroundColor: 'rgba(0,0,0,0.75)',
+          },
+          content: {
+            width: '660px',
+            height: '460px',
+            boxSizing: 'border-box',
+            padding: 0,
+            borderRadius: '10px',
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+          },
+        }}
+      >
+        {crew ? (
+          <Summary currentUser={currentUser} />
+        ) : (
+          <StoreSummary currentUser={currentUser} />
+        )}
+      </Modal>
     </Container>
   );
 };
@@ -332,6 +398,9 @@ const RangeTitle = styled.button`
   margin-right: 2px;
   margin-bottom: 3px;
   opacity: 0.8;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const CurrentRangeTitle = styled.button`
@@ -349,6 +418,9 @@ const CurrentRangeTitle = styled.button`
   margin-right: 2px;
   margin-bottom: 3px;
   opacity: 0.8;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const TableSection = styled.section`
@@ -413,6 +485,10 @@ const TableBodyTableRow = styled.tr`
   height: 80px;
   text-align: center;
   border-bottom: 1px solid #ddd;
+  :hover {
+    cursor: pointer;
+    background-color: #e5e5e5;
+  }
 `;
 
 const Ranking = styled.td`
@@ -441,7 +517,8 @@ const RankingGold = styled.span`
   padding: 3px 0 0;
   border: 2px solid #dab509;
   text-align: center;
-  color: #dab509;
+  background-color: #dab509;
+  color: white;
   font: 1.1rem 'Bebas Neue', cursive;
 `;
 
@@ -454,7 +531,8 @@ const RankingSilver = styled.span`
   padding: 3px 0 0;
   border: 2px solid #a1a1a1;
   text-align: center;
-  color: #a1a1a1;
+  color: white;
+  background-color: #a1a1a1;
   font: 1.1rem 'Bebas Neue', cursive;
 `;
 
@@ -467,7 +545,8 @@ const RankingBronze = styled.span`
   padding: 3px 0 0;
   border: 2px solid #ae7058;
   text-align: center;
-  color: #ae7058;
+  color: white;
+  background-color: #ae7058;
   font: 1.1rem 'Bebas Neue', cursive;
 `;
 

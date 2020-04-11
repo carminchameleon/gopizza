@@ -5,8 +5,10 @@ import Completion from './Completion';
 import Total from './Total';
 import Time from './Time';
 import Count from './Count';
+
 const Board = () => {
   const [currentPage, setCurrentPage] = useState(0);
+  const [totalOpen, setTotalOpen] = useState(true);
 
   const setPage = (pageId: number): void => {
     setCurrentPage(pageId);
@@ -15,6 +17,7 @@ const Board = () => {
 
   const PageUI = (currentPage: number) => {
     if (currentPage === 0) {
+      console.log(currentPage);
       return <Total />;
     }
     if (currentPage === 1) {
@@ -39,45 +42,98 @@ const Board = () => {
       <NavConatiner>
         <NavHolder>
           <NavWrapper>
-            <NavList>
-              <NavLink
-                onClick={() => {
-                  setPage(0);
-                }}
-              >
-                Total Ranking
-              </NavLink>
-            </NavList>
-            <NavList>
-              <NavLink
-                onClick={() => {
-                  setPage(1);
-                }}
-              >
-                Completion Ranking
-              </NavLink>
-            </NavList>
-            <NavList>
-              <NavLink
-                onClick={() => {
-                  setPage(2);
-                }}
-              >
-                Time Ranking
-              </NavLink>
-            </NavList>
-            <NavList>
-              <NavLink
-                onClick={() => {
-                  setPage(3);
-                }}
-              >
-                Count Ranking
-              </NavLink>
-            </NavList>
+            {currentPage === 0 ? (
+              <ColorList>
+                <NavLink
+                  onClick={() => {
+                    setPage(0);
+                  }}
+                >
+                  Total Ranking
+                </NavLink>
+              </ColorList>
+            ) : (
+              <NavList>
+                <NavLink
+                  onClick={() => {
+                    setPage(0);
+                  }}
+                >
+                  Total Ranking
+                </NavLink>
+              </NavList>
+            )}
+            {currentPage === 1 ? (
+              <ColorList>
+                <NavLink
+                  onClick={() => {
+                    setPage(1);
+                    setTotalOpen(true);
+                  }}
+                >
+                  Completion Ranking
+                </NavLink>
+              </ColorList>
+            ) : (
+              <NavList>
+                <NavLink
+                  onClick={() => {
+                    setPage(1);
+                  }}
+                >
+                  Completion Ranking
+                </NavLink>
+              </NavList>
+            )}
+            {currentPage === 2 ? (
+              <ColorList>
+                <NavLink
+                  onClick={() => {
+                    setPage(2);
+                  }}
+                >
+                  Time Ranking
+                </NavLink>
+              </ColorList>
+            ) : (
+              <NavList>
+                <NavLink
+                  onClick={() => {
+                    setPage(2);
+                  }}
+                >
+                  Time Ranking
+                </NavLink>
+              </NavList>
+            )}
+            {currentPage === 3 ? (
+              <ColorList>
+                <NavLink
+                  onClick={() => {
+                    setPage(3);
+                  }}
+                >
+                  Count Ranking
+                </NavLink>
+              </ColorList>
+            ) : (
+              <NavList>
+                <NavLink
+                  onClick={() => {
+                    setPage(3);
+                  }}
+                >
+                  Count Ranking
+                </NavLink>
+              </NavList>
+            )}
           </NavWrapper>
         </NavHolder>
+        {/* <NavMoveBar>
+          <Bar></Bar>
+        </NavMoveBar> */}
       </NavConatiner>
+
       <>{PageUI(currentPage)}</>
     </Container>
   );
@@ -101,7 +157,6 @@ const NavConatiner = styled.nav`
 `;
 
 const NavHolder = styled.div`
-  /* padding: 10px 15px 9px 5px; */
   max-width: 1070px;
   margin: 0 auto;
 `;
@@ -120,12 +175,25 @@ const NavList = styled.li`
   float: left;
   height: 40px;
   padding-top: 10px;
+
   :hover {
     background-color: rgba(222, 26, 33, 0.6);
     cursor: pointer;
   }
   :acitve {
     opacity: 0.3;
+  }
+`;
+
+const ColorList = styled.div`
+  float: left;
+  height: 40px;
+  padding-top: 10px;
+  border-bottom: 5px solid;
+  border-bottom-color: #ee6c71;
+  :hover {
+    background-color: rgba(222, 26, 33, 0.6);
+    cursor: pointer;
   }
 `;
 
@@ -140,7 +208,6 @@ const NavLink = styled.li`
 const BannerContainer = styled.div`
   background: #333;
   text-align: center;
-
   position: relative;
   background-color: #ed1941;
 `;
@@ -159,4 +226,16 @@ const BannerTitle = styled.h1`
   font-weight: 400;
   text-transform: uppercase;
   margin: 0 0 33px;
+`;
+
+const NavMoveBar = styled.div`
+  width: 100%;
+  height: 7px;
+  background-color: yellow;
+`;
+
+const Bar = styled.div`
+  width: 100%;
+  height: 7px;
+  background-color: yellow;
 `;
