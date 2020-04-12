@@ -23,16 +23,8 @@ const Reward = () => {
   const [filterSearch, setFilterSearch] = useState<any>([]);
   const [select, setSelect] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1); //pagination
-  const [PostsPerPage] = useState(5); //한페이지에 보이는 포스트 갯수
+  const [PostsPerPage] = useState(10); //한페이지에 보이는 포스트 갯수
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
-
-  // Get current posts
-  const indexOfLastPosts = currentPage * PostsPerPage;
-  const indexOfFirstPost = indexOfLastPosts - PostsPerPage;
-  const currentPosts = filterSearch.slice(indexOfFirstPost, indexOfLastPosts);
-
-  // Change page
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   //Data 저장
   const token = window.sessionStorage.getItem('token');
@@ -49,9 +41,14 @@ const Reward = () => {
         });
     }
   }, []);
-  // useEffect(() => {
-  //   console.log(data);
-  // });
+
+  //pagination
+  // Get current posts
+  const indexOfLastPosts = currentPage * PostsPerPage;
+  const indexOfFirstPost = indexOfLastPosts - PostsPerPage;
+  const currentPosts = filterSearch.slice(indexOfFirstPost, indexOfLastPosts);
+  // Change page
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const handleChange = (e: any) => {
     setSelect(e.target.value);

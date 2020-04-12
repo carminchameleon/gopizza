@@ -134,6 +134,7 @@ const AccountForm: React.FC<RouteComponentProps> = ({
           <InputBox>
             <Title>비밀번호</Title>
             <PwdInput
+              type="password"
               onChange={e => handleInput(e, 'password')}
               placeholder="비밀번호를 입력해주세요"
             ></PwdInput>
@@ -172,11 +173,13 @@ const AccountForm: React.FC<RouteComponentProps> = ({
           <ModalContent>
             <ModalTitle>새 비밀번호</ModalTitle>
             <ModalInput
+              type="password"
               onChange={e => handleInput(e, 'newPassword')}
               placeholder="  영소문자,숫자 혼합, 8자리 이상"
             ></ModalInput>
             <ModalTitle>새 비밀번호 확인</ModalTitle>
             <ModalInput
+              type="password"
               onChange={e => handleInput(e, 'checkNewPassword')}
             ></ModalInput>
             <ModalBtn onClick={isModalBtnClicked}>확인</ModalBtn>
