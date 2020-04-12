@@ -46,6 +46,8 @@ const MyRewardContCount = (props: any) => {
 
     }
 
+
+
     function afterOpenModal(refer: any, imgPath: any) {
 
         let imgString = imgPath.coupon !== undefined ? imgPath.coupon : imgPath.badge;
@@ -108,7 +110,7 @@ const MyRewardContCount = (props: any) => {
                                     <p>{item.quest__description}</p>
                                     <ProgressAll>
                                         <ProgressBarBox>
-                                            <ProgressBarWidth width={(370 / item.quest__goal) * (pizzaCount[item.quest__category__name] > item.quest__goal ? item.quest__goal : pizzaCount[item.quest__category__name])}>
+                                            <ProgressBarWidth width={String((370 / item.quest__goal) * (pizzaCount[item.quest__category__name] > item.quest__goal ? item.quest__goal : pizzaCount[item.quest__category__name]))}>
                                                 <ProgressBar changeColor={item.is_achieved ? "red" : "blue"}></ProgressBar>
                                             </ProgressBarWidth>
                                         </ProgressBarBox>
@@ -150,14 +152,15 @@ const Quest = styled.li`
     justify-content:flex-start;
     align-items: center;
     margin-top: 15px;
-    padding: 30px 20px;
+    padding: 30px 35px;
     background-color: #fff;
     border-radius: 38px;
+   
 `
 
 const QuestTitle = styled.div`
     width: 130px;
-    margin-right: 20px;
+    margin-right: 25px;
     text-align: center;
     line-height: 1.5;
     white-space: pre-line;
@@ -181,7 +184,7 @@ const ProgressBarBox = styled.div`
   border-radius: 7px;
 `
 
-const ProgressBarWidth = styled.div<{ width: number }> `
+const ProgressBarWidth = styled.div<{ width: string }> `
     width: ${props => props.width ? props.width + "px" : "0px"};
 `
 
@@ -207,14 +210,21 @@ const ProgressNum = styled.span`
 
 const QuestButton = styled.button<{ changeColor: string }>`
     padding: 20px 30px;
-    font-family:'Bebas Neue',cursive;
-    font-size: 24px;
-    letter-spacing: 0.8px;
+    font-family: 'Bevan',cursive;
+    font-size: 17px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
     color:${props => props.changeColor === "red" ? "#fd5a5a" : "#fff"};
     background: ${props => props.changeColor === "gray" ? "#c8cfd5" : props.changeColor === "blue" ? "#45b6fb" : ""};
     border: 2px solid ${props => props.changeColor === "red" ? "#fd5a5a" : ""};
     border-radius: 15px;
     cursor: ${props => props.changeColor === "blue" ? "pointer" : "auto"};
+    box-sizing: border-box;
+    outline: none;
+
+    &:focus {
+        outline: none;
+    }
 `
 
 const QuestButtonBox = styled.div`

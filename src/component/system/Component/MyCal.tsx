@@ -43,7 +43,7 @@ const MyCal = (props: props) => {
                 <MyCalSpecTitle>Quality</MyCalSpecTitle>
                 <MyCalSpecDetail>
                     <div>
-                        <em>평균 점수</em>
+                        <em>Quality</em>
                         <p>{Math.floor(props.quality)} 점</p>
                     </div>
                     <div>
@@ -108,9 +108,10 @@ const MyCalSpecDetail = styled.dd`
     }
 
     p{
-        font-family: 'Bebas Neue',cursive;
+        font-family: 'Bevan',cursive;
         font-size: 16px;
-        letter-spacing: 0.5px;
+        letter-spacing: 0.8px;
+        color: #444
     }
 `
 
