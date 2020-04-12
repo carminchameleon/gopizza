@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Header from 'shared/Header';
 import Banner from 'shared/Banner';
+import ReactModal from 'react-modal';
 import PagiNation from '../admin/PagiNation';
 import { Search } from '@styled-icons/boxicons-regular/Search';
 import { URL } from 'config';
@@ -24,6 +25,7 @@ const AdminPage = () => {
   const [select, setSelect] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1);
   const [PostsPerPage] = useState(10);
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
   //Data 저장
   const token = window.sessionStorage.getItem('token');
@@ -135,9 +137,46 @@ const AdminPage = () => {
                 <TableBodyName>{item.name}</TableBodyName>
                 <TableBodyStore>{item.store__name}</TableBodyStore>
                 <TableBodyPosition>{item.grade__name}</TableBodyPosition>
-                <TableBodyDelete onClick={() => isClickedDelet(item.id)}>
+                <TableBodyDelete onClick={() => setModalIsOpen(true)}>
                   Delete
                 </TableBodyDelete>
+                <ReactModal
+                  isOpen={modalIsOpen}
+                  onRequestClose={() => setModalIsOpen(false)}
+                  style={{
+                    overlay: {
+                      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    },
+                    content: {
+                      border: 'none',
+                      backgroundColor: 'white',
+                      overflow: 'hidden',
+                      fontSize: '100px',
+                      position: 'absolute',
+                      width: '400px',
+                      height: '150px',
+                      margin: '400px 0 0 -150px',
+                      left: '50%',
+                      // fontFamily: 'nationale-regular',
+                    },
+                  }}
+                >
+                  <ModalContent>
+                    <ModalTitle>정말 삭제하시겠습니까?</ModalTitle>
+                    <ModalBtnBox>
+                      <ModalBtn
+                        onClick={() => {
+                          window.location.reload();
+                        }}
+                      >
+                        아니오
+                      </ModalBtn>
+                      <ModalBtn onClick={() => isClickedDelet(item.id)}>
+                        네
+                      </ModalBtn>
+                    </ModalBtnBox>
+                  </ModalContent>
+                </ReactModal>
               </TableBody>
             );
           })}
@@ -289,5 +328,37 @@ const TableBodyDelete = styled.div`
   &:hover {
     /* color: #948780; */
     color: black;
+  }
+`;
+//modal style
+const ModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 25px;
+`;
+const ModalTitle = styled.div`
+  font-size: 15px;
+  margin-bottom: 15px;
+`;
+const ModalBtnBox = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+const ModalBtn = styled.button`
+  margin-left: 20px;
+  font-size: 14px;
+  color: white;
+  width: 70px;
+  height: 35px;
+  border-radius: 5px;
+  background-color: rgb(252, 109, 2);
+  cursor: pointer;
+  &:hover {
+    background-color: orange;
+  }
+  &:focus {
+    outline: none;
   }
 `;
