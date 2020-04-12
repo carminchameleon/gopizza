@@ -9,10 +9,22 @@ import Count from './Count';
 const Board = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [totalOpen, setTotalOpen] = useState(true);
+  const [currentTime, setCurrentTime] = useState();
+  useEffect(() => {
+    getTime();
+  }, []);
 
   const setPage = (pageId: number): void => {
     setCurrentPage(pageId);
     PageUI(pageId);
+  };
+
+  const getTime = (): void => {
+    var currentDate = new Date();
+    var msg = '현재 시간:' + currentDate.getHours() + '시';
+    msg += currentDate.getMinutes() + '분';
+    msg += currentDate.getSeconds() + '초';
+    setCurrentTime(msg);
   };
 
   const PageUI = (currentPage: number) => {
@@ -133,7 +145,6 @@ const Board = () => {
           <Bar></Bar>
         </NavMoveBar> */}
       </NavConatiner>
-
       <>{PageUI(currentPage)}</>
     </Container>
   );
@@ -238,4 +249,16 @@ const Bar = styled.div`
   width: 100%;
   height: 7px;
   background-color: yellow;
+`;
+
+const RefreshContainer = styled.div`
+  border: 2px solid red;
+  width: 100%;
+  height: 50px;
+`;
+
+const RefreshButton = styled.div`
+  width: 50px;
+  height: 50px;
+  border: 1px solid black;
 `;

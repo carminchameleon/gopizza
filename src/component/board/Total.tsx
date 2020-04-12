@@ -21,12 +21,18 @@ interface CrewInfo {
 
 function Total() {
   const [data, setData] = useState<CrewInfo[]>([]);
-  const [duration, setDuration] = useState(1);
+  const [duration, setDuration] = useState(0);
   const [crew, setCrew] = useState(true);
   const [topCrew, setTopCrew] = useState<CrewInfo[]>([]);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState();
+  const [currentTime, setCurrentTime] = useState();
+
   Modal.setAppElement('#root');
+
+  useEffect(() => {
+    handleRefresh();
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -58,7 +64,7 @@ function Total() {
 
   const selectDuration = (event: any) => {
     if (event.target.value === '0') {
-      setDuration(1);
+      setDuration(0);
     } else if (event.target.value === '1') {
       setDuration(7);
     } else if (event.target.value === '2') {
@@ -71,14 +77,25 @@ function Total() {
   };
 
   const handleRange = (boolean: boolean): void => {
-    // setData([]);
     setCrew(boolean);
   };
 
   const handleModal = (boolean: boolean, userId: number) => {
     setModalIsOpen(true);
     setCurrentUser(userId);
-    console.log(userId);
+  };
+
+  const handleRefresh = (): void => {
+    const Time = new Date();
+    const now =
+      Time.getHours() +
+      ' : ' +
+      Time.getMinutes() +
+      ' : ' +
+      Time.getMilliseconds();
+
+    setCurrentTime(now);
+    fetchData();
   };
 
   return (
@@ -92,6 +109,20 @@ function Total() {
               두구두구두구 완성도, 시간, 판수를 종합한 피자 점수를 공개합니다!!
             </Description>
           </HeaderTitleBox>
+          <TimeContainer>
+            <TimeBox>
+              <div>{currentTime}</div>
+            </TimeBox>
+            <RefreshButtonBox>
+              <RefreshButton
+                onClick={() => {
+                  handleRefresh();
+                }}
+              >
+                Refresh
+              </RefreshButton>
+            </RefreshButtonBox>
+          </TimeContainer>
           <SelectContainer>
             <RangeContainer>
               <TitleContainer>
@@ -259,9 +290,7 @@ const HeaderContainer = styled.div`
   flex-direction: column;
 `;
 
-const HeaderTitleBox = styled.div`
-  margin-bottom: 40px;
-`;
+const HeaderTitleBox = styled.div``;
 
 const HeaderTitle = styled.div`
   text-align: center;
@@ -570,3 +599,40 @@ const StoreName = styled.div`
 const StoreImg = styled.img``;
 
 const StoreBox = styled.div``;
+
+const TimeContainer = styled.div`
+  width: 100%;
+  font: 1.2rem 'Bebas Neue', cursive;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+
+const RefreshButton = styled.div`
+  font: 1.2rem 'Bebas Neue', cursive;
+  text-align: center;
+  line-height: 2rem;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const RefreshButtonBox = styled.div`
+  border-radius: 4px;
+  height: 30px;
+  border: 1px solid #d4d4d4;
+  width: 70px;
+  display: flex;
+  color: #d4d4d4;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const TimeBox = styled.div`
+  display: flex;
+  width: 100px;
+  color: #d4d4d4;
+  flex-direction: row;
+  justify-content: center;
+  line-height: 2rem;
+`;

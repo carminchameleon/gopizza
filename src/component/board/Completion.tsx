@@ -6,15 +6,29 @@ import Summary from './Summary';
 import StoreSummary from './StoreSummary';
 import Modal from 'react-modal';
 
+interface CrewInfo {
+  rank: number;
+  name: string;
+  store_name: string;
+  total_score: number;
+  average_time: number;
+  count: number;
+  completion_score: number;
+  image: string;
+  id: number;
+}
+
 function Completion() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<CrewInfo[]>([]);
   const [duration, setDuration] = useState(1);
   const [crew, setCrew] = useState(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState();
+  const [currentTime, setCurrentTime] = useState();
 
   useEffect(() => {
     fetchData();
+    handleRefresh();
   }, []);
 
   useEffect(() => {
@@ -68,6 +82,19 @@ function Completion() {
     setCurrentUser(userId);
   };
 
+  const handleRefresh = (): void => {
+    const Time = new Date();
+    const now =
+      Time.getHours() +
+      ' : ' +
+      Time.getMinutes() +
+      ' : ' +
+      Time.getMilliseconds();
+
+    setCurrentTime(now);
+    fetchData();
+  };
+
   return (
     <Container>
       <MainHolder>
@@ -79,6 +106,20 @@ function Completion() {
               토핑, 소스, 치즈, 퀄리티 하나도 놓치지 않을거에요!
             </Description>
           </HeaderTitleBox>
+          <TimeContainer>
+            <TimeBox>
+              <div>{currentTime}</div>
+            </TimeBox>
+            <RefreshButtonBox>
+              <RefreshButton
+                onClick={() => {
+                  handleRefresh();
+                }}
+              >
+                Refresh
+              </RefreshButton>
+            </RefreshButtonBox>
+          </TimeContainer>
           <SelectContainer>
             <RangeContainer>
               <TitleContainer>
@@ -550,4 +591,41 @@ const StoreName = styled.div`
   margin: 0 auto;
   text-align: start;
   color: black;
+`;
+
+const TimeContainer = styled.div`
+  width: 100%;
+  font: 1.2rem 'Bebas Neue', cursive;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+
+const RefreshButton = styled.div`
+  font: 1.2rem 'Bebas Neue', cursive;
+  text-align: center;
+  line-height: 2rem;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const RefreshButtonBox = styled.div`
+  border-radius: 4px;
+  height: 30px;
+  border: 1px solid #d4d4d4;
+  width: 70px;
+  display: flex;
+  color: #d4d4d4;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const TimeBox = styled.div`
+  display: flex;
+  width: 100px;
+  color: #d4d4d4;
+  flex-direction: row;
+  justify-content: center;
+  line-height: 2rem;
 `;

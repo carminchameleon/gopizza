@@ -7,7 +7,6 @@ import StoreSummary from './StoreSummary';
 import Modal from 'react-modal';
 
 interface CrewInfo {
-  rank: number;
   name: string;
   store_name: string;
   total_score: number;
@@ -15,10 +14,18 @@ interface CrewInfo {
   count: number;
   completion_score: number;
   image: string;
+  id: number;
+  rank: number;
+  record: string;
 }
-
+interface PizzaList {
+  id: number;
+  image: string;
+  name_en: string;
+  name_kr: string;
+}
 function Time() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<CrewInfo[]>([]);
   const [crew, setCrew] = useState(true);
   const [duration, setDuration] = useState(1);
   const [record, setRecord] = useState('shortest_time');
@@ -29,10 +36,12 @@ function Time() {
   const [pizzaKoName, setPizzaKoName] = useState('클래식 치즈 피자');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState();
+  const [currentTime, setCurrentTime] = useState();
 
   useEffect(() => {
     fetchPizzaList();
     fetchData();
+    handleRefresh();
   }, []);
 
   useEffect(() => {
@@ -62,6 +71,19 @@ function Time() {
     setModalIsOpen(true);
     setCurrentUser(userId);
     console.log(userId);
+  };
+
+  const handleRefresh = (): void => {
+    const Time = new Date();
+    const now =
+      Time.getHours() +
+      ' : ' +
+      Time.getMinutes() +
+      ' : ' +
+      Time.getMilliseconds();
+
+    setCurrentTime(now);
+    fetchData();
   };
 
   const fetchData = (): void => {
@@ -123,11 +145,27 @@ function Time() {
         <HeaderContainer>
           <HeaderTitleBox>
             <HeaderTitle>Time Ranking</HeaderTitle>
-            <Description>피자를 만드는데 걸리는 시간은 얼마일까요?</Description>
-            <Description>상위 Top 20의 피자 타임 랭킹 공개합니다!</Description>
+            <Description>
+              하나의 피자를 완성하는데 걸리는 시간은 얼마일까요?
+            </Description>
+            <Description>각각 피자별 시간을 확인해 보아요!</Description>
           </HeaderTitleBox>
+          <TimeContainer>
+            <TimeBox>
+              <div>{currentTime}</div>
+            </TimeBox>
+            <RefreshButtonBox>
+              <RefreshButton
+                onClick={() => {
+                  handleRefresh();
+                }}
+              >
+                Refresh
+              </RefreshButton>
+            </RefreshButtonBox>
+          </TimeContainer>
           <PizzaContainer>
-            {pizzaList.map((item: any, index: number) => {
+            {pizzaList.map((item: PizzaList, index: number) => {
               return (
                 <PizzaBox
                   key={item.id}
@@ -164,6 +202,7 @@ function Time() {
               </CurrentRecordBox>
             )}
           </RecordContainer>
+
           <PizzaTitleContainer>
             <PizzaEnTitle>{pizzaEnName}</PizzaEnTitle>
             <PizzaKoTitle>{pizzaKoName}</PizzaKoTitle>
@@ -221,7 +260,7 @@ function Time() {
               </TableHeadRow>
             </TableHead>
             <TableBody>
-              {data.map((item: any, index: number) => {
+              {data.map((item: CrewInfo | any, index: number) => {
                 const numberUI = (index: number) => {
                   if (index === 1) {
                     return <RankingGold>G</RankingGold>;
@@ -504,33 +543,27 @@ const CurrentRangeTitle = styled.button`
 
 const PizzaContainer = styled.div`
   margin-top: 20px;
+  height: 250px;
   display: flex;
   flex-direction: row;
   justify-content: start;
   overflow: hidden;
   overflow-x: scroll;
   margin-bottom: 20px;
-  /* ::-webkit-scrollbar {
-    width: 10px;
-    height: 4px;
-  } */
-  /* width */
+
   ::-webkit-scrollbar {
     width: 6px;
     height: 10px;
   }
 
-  /* Track */
   ::-webkit-scrollbar-track {
     background: #f1f1f1;
   }
 
-  /* Handle */
   ::-webkit-scrollbar-thumb {
     background: #ff6d00;
   }
 
-  /* Handle on hover */
   ::-webkit-scrollbar-thumb:hover {
     background: #00a6cb;
   }
@@ -768,4 +801,41 @@ const StoreName = styled.div`
   margin: 0 auto;
   text-align: start;
   color: black;
+`;
+
+const TimeContainer = styled.div`
+  width: 100%;
+  font: 1.2rem 'Bebas Neue', cursive;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+
+const RefreshButton = styled.div`
+  font: 1.2rem 'Bebas Neue', cursive;
+  text-align: center;
+  line-height: 2rem;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const RefreshButtonBox = styled.div`
+  border-radius: 4px;
+  height: 30px;
+  border: 1px solid #d4d4d4;
+  width: 70px;
+  display: flex;
+  color: #d4d4d4;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const TimeBox = styled.div`
+  display: flex;
+  width: 100px;
+  color: #d4d4d4;
+  flex-direction: row;
+  justify-content: center;
+  line-height: 2rem;
 `;

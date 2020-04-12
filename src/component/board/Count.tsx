@@ -25,9 +25,12 @@ const Count: React.FC = () => {
   const [topCount, setTopCount] = useState();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState();
+  const [currentTime, setCurrentTime] = useState();
+  Modal.setAppElement('#root');
 
   useEffect(() => {
     fetchData();
+    handleRefresh();
   }, []);
 
   useEffect(() => {
@@ -97,6 +100,19 @@ const Count: React.FC = () => {
     setCurrentUser(userId);
   };
 
+  const handleRefresh = (): void => {
+    const Time = new Date();
+    const now =
+      Time.getHours() +
+      ' : ' +
+      Time.getMinutes() +
+      ' : ' +
+      Time.getMilliseconds();
+
+    setCurrentTime(now);
+    fetchData();
+  };
+
   return (
     <Container>
       <MainHolder>
@@ -110,6 +126,20 @@ const Count: React.FC = () => {
               랭킹 넘버원과 나의 차이! 지금 확인해 보아요~
             </Description>
           </HeaderTitleBox>
+          <TimeContainer>
+            <TimeBox>
+              <div>{currentTime}</div>
+            </TimeBox>
+            <RefreshButtonBox>
+              <RefreshButton
+                onClick={() => {
+                  handleRefresh();
+                }}
+              >
+                Refresh
+              </RefreshButton>
+            </RefreshButtonBox>
+          </TimeContainer>
           <SelectContainer>
             <RangeContainer>
               <TitleContainer>
@@ -180,7 +210,7 @@ const Count: React.FC = () => {
                 const WinnerUI = (rank: number) => {
                   if (rank === 0) {
                     return (
-                      <GoalScore style={{ color: '#00c8cb' }}>Winner</GoalScore>
+                      <GoalScore style={{ color: '#9198e5' }}>Winner</GoalScore>
                     );
                   } else {
                     return <GoalScore>{getGoal(item.count)}판</GoalScore>;
@@ -197,6 +227,7 @@ const Count: React.FC = () => {
 
                 return (
                   <TableBodyTableRow
+                    title={`랭킹 1등의 피자 개수 대비 ${item.name} 크루의 피자 개수를 백분율로 표시한 결과입니다.`}
                     key={index}
                     onClick={() => {
                       handleModal(true, item.id);
@@ -221,8 +252,13 @@ const Count: React.FC = () => {
                       <PercentBar
                         style={{ width: `${getPercent(item.count)}%` }}
                       >
-                        {getPercent(item.count)}%
+                        &nbsp;
                       </PercentBar>
+                      <PercentNumber
+                        style={{ width: `${getPercent(item.count)}%` }}
+                      >
+                        {getPercent(item.count)}%
+                      </PercentNumber>
                     </PercentContainer>
 
                     {WinnerUI(index)}
@@ -558,7 +594,8 @@ const GoalScore = styled.td`
 `;
 
 const PercentContainer = styled.td`
-  vertical-align: middle;
+  vertical-align: start;
+  padding-top: 20px;
   text-align: end;
   font: 1.2rem 'Bebas Neue', cursive;
   width: 100%;
@@ -577,6 +614,11 @@ const PercentBar = styled.div`
   animation: ${Load} 1.5s forwards;
 `;
 
+const PercentNumber = styled.div`
+  color: #00c8cb;
+  animation: ${Load} 1.5s forwards;
+`;
+
 const PersonInfo = styled.td`
   vertical-align: middle;
 `;
@@ -586,6 +628,8 @@ const PersonBox = styled.div`
   justify-content: start;
   text-align: start;
 `;
+
+const Tooltip = styled.a``;
 const PhotoBox = styled.div`
   width: 20%;
   height: 100%;
@@ -634,4 +678,41 @@ const StoreName = styled.div`
   margin: 0 auto;
   text-align: start;
   color: black;
+`;
+
+const TimeContainer = styled.div`
+  width: 100%;
+  font: 1.2rem 'Bebas Neue', cursive;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+
+const RefreshButton = styled.div`
+  font: 1.2rem 'Bebas Neue', cursive;
+  text-align: center;
+  line-height: 2rem;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const RefreshButtonBox = styled.div`
+  border-radius: 4px;
+  height: 30px;
+  border: 1px solid #d4d4d4;
+  width: 70px;
+  display: flex;
+  color: #d4d4d4;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const TimeBox = styled.div`
+  display: flex;
+  width: 100px;
+  color: #d4d4d4;
+  flex-direction: row;
+  justify-content: center;
+  line-height: 2rem;
 `;
