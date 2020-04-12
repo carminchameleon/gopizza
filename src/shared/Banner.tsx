@@ -74,7 +74,6 @@ const NavConatiner = styled.nav`
 `;
 
 const NavHolder = styled.div`
-  /* padding: 10px 15px 9px 5px; */
   max-width: 1070px;
   margin: 0 auto;
 `;

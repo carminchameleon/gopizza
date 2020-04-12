@@ -1,30 +1,38 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios, { AxiosResponse } from 'axios';
-import { BOARDCREWURL, BOARDSTOREURL , PROFILEURL } from 'config';
-import Winner from './Winner'
-
-
+import { BOARDCREWURL, BOARDSTOREURL, PROFILEURL } from 'config';
+import Winner from './Winner';
+import Summary from './Summary';
+import StoreSummary from './StoreSummary';
+import Modal from 'react-modal';
 
 interface CrewInfo {
-  rank: number,
-  name: string,
-  store_name: string,
-  total_score: number,
-  average_time: number,
-  count: number,
-  completion_score:number,
-  image: string
+  rank: number;
+  name: string;
+  store_name: string;
+  total_score: number;
+  average_time: number;
+  count: number;
+  completion_score: number;
+  image: string;
+  id: number;
 }
 
-
 function Total() {
-  
-  const [data, setData] = useState<any>([]);
-  const [duration, setDuration] = useState(1);
+  const [data, setData] = useState<CrewInfo[]>([]);
+  const [duration, setDuration] = useState(0);
   const [crew, setCrew] = useState(true);
-  const [loading, isLoading] = useState(true);
-  const [topCrew, setTopCrew] = useState<any>([]);
+  const [topCrew, setTopCrew] = useState<CrewInfo[]>([]);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState();
+  const [currentTime, setCurrentTime] = useState();
+
+  Modal.setAppElement('#root');
+
+  useEffect(() => {
+    handleRefresh();
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -49,14 +57,14 @@ function Total() {
         `${crew ? BOARDCREWURL : BOARDSTOREURL}?limit=20&order_by=total_score`,
       )
       .then((response: AxiosResponse): void => {
-     setData(response.data.ranking.splice(3, 20));
-     setTopCrew(response.data.ranking.splice(0, 3));
-              });
+        setData(response.data.ranking.splice(3, 20));
+        setTopCrew(response.data.ranking.splice(0, 3));
+      });
   };
 
   const selectDuration = (event: any) => {
     if (event.target.value === '0') {
-      setDuration(1);
+      setDuration(0);
     } else if (event.target.value === '1') {
       setDuration(7);
     } else if (event.target.value === '2') {
@@ -68,10 +76,26 @@ function Total() {
     }
   };
 
- 
   const handleRange = (boolean: boolean): void => {
-    setData([]);
     setCrew(boolean);
+  };
+
+  const handleModal = (boolean: boolean, userId: number) => {
+    setModalIsOpen(true);
+    setCurrentUser(userId);
+  };
+
+  const handleRefresh = (): void => {
+    const Time = new Date();
+    const now =
+      Time.getHours() +
+      ' : ' +
+      Time.getMinutes() +
+      ' : ' +
+      Time.getMilliseconds();
+
+    setCurrentTime(now);
+    fetchData();
   };
 
   return (
@@ -85,6 +109,20 @@ function Total() {
               두구두구두구 완성도, 시간, 판수를 종합한 피자 점수를 공개합니다!!
             </Description>
           </HeaderTitleBox>
+          <TimeContainer>
+            <TimeBox>
+              <div>{currentTime}</div>
+            </TimeBox>
+            <RefreshButtonBox>
+              <RefreshButton
+                onClick={() => {
+                  handleRefresh();
+                }}
+              >
+                Refresh
+              </RefreshButton>
+            </RefreshButtonBox>
+          </TimeContainer>
           <SelectContainer>
             <RangeContainer>
               <TitleContainer>
@@ -120,8 +158,7 @@ function Total() {
               </Dropdown>
             </DropdownContainer>
           </SelectContainer>
-          <Winner topCrew={topCrew} crew={crew}/>
-
+          <Winner topCrew={topCrew} crew={crew} />
         </HeaderContainer>
         <TableSection>
           <TableContainer>
@@ -142,7 +179,7 @@ function Total() {
               </TableHeadRow>
             </TableHead>
             <TableBody>
-              {data.map((item : CrewInfo, index: number) => {
+              {data.map((item: CrewInfo, index: number) => {
                 const numberUI = (index: number) => {
                   if (index === 1) {
                     return <RankingGold>G</RankingGold>;
@@ -158,33 +195,39 @@ function Total() {
                   }
                 };
 
-               const profilePic = ( url : string|null) => {
-                 if( url !== null){
-                   return <ProfileImg src={item.image}></ProfileImg>
-                 } else {
-                   return <ProfileImg src={PROFILEURL}></ProfileImg>
+                const profilePic = (url: string | null) => {
+                  if (url !== null) {
+                    return <ProfileImg src={item.image}></ProfileImg>;
+                  } else {
+                    return <ProfileImg src={PROFILEURL}></ProfileImg>;
+                  }
+                };
 
-                 }
-               }
                 return (
-                  <TableBodyTableRow key={index}>
+                  <TableBodyTableRow
+                    key={index}
+                    onClick={() => {
+                      handleModal(true, item.id);
+                    }}
+                  >
                     <Ranking>{numberUI(item.rank)}</Ranking>
                     <PersonInfo>
                       {crew ? (
                         <PersonBox>
-                          <PhotoBox>
-                          {profilePic(item.image)}
-                          </PhotoBox>
+                          <PhotoBox>{profilePic(item.image)}</PhotoBox>
                           <InfoBox>
                             <Name>{item.name}</Name>
                             <Store>{item.store_name}</Store>
                           </InfoBox>
                         </PersonBox>
                       ) : (
-                        <StoreName>{item.name}</StoreName>
+                        <StoreBox>
+                          <StoreImg></StoreImg>
+                          <StoreName>{item.name}</StoreName>
+                        </StoreBox>
                       )}
                     </PersonInfo>
-                    <TotalScore>{Math.floor(item.total_score * 100)}</TotalScore>
+                    <TotalScore>{item.total_score}</TotalScore>
                     <DetailScore>{item.completion_score}</DetailScore>
                     <DetailScore>{item.average_time}</DetailScore>
                     <DetailScore>{item.count}</DetailScore>
@@ -195,13 +238,41 @@ function Total() {
           </TableContainer>
         </TableSection>
       </MainHolder>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => {
+          setModalIsOpen(false);
+        }}
+        style={{
+          overlay: {
+            backgroundColor: 'rgba(0,0,0,0.75)',
+          },
+          content: {
+            width: '660px',
+            height: '460px',
+            boxSizing: 'border-box',
+            padding: 0,
+            borderRadius: '10px',
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+          },
+        }}
+      >
+        {crew ? (
+          <Summary currentUser={currentUser} />
+        ) : (
+          <StoreSummary currentUser={currentUser} />
+        )}
+      </Modal>
     </Container>
   );
 }
 
 export default Total;
-
-const TotalContainer = styled.div``;
 
 const Container = styled.div`
   width: 100%;
@@ -219,9 +290,7 @@ const HeaderContainer = styled.div`
   flex-direction: column;
 `;
 
-const HeaderTitleBox = styled.div`
-  margin-bottom: 40px;
-`;
+const HeaderTitleBox = styled.div``;
 
 const HeaderTitle = styled.div`
   text-align: center;
@@ -245,7 +314,6 @@ const TitleContainer = styled.div`
   flex-direction: row;
   justify-content: start;
   position: relative;
-  /* margin-bottom: 20px; */
 `;
 const DropdownContainer = styled.div`
   position: absolute;
@@ -358,6 +426,10 @@ const TableBodyTableRow = styled.tr`
   height: 80px;
   text-align: center;
   border-bottom: 1px solid #ddd;
+  :hover {
+    cursor: pointer;
+    background-color: #e5e5e5;
+  }
 `;
 
 const Ranking = styled.td`
@@ -384,9 +456,11 @@ const RankingGold = styled.span`
   width: 30px;
   height: 30px;
   padding: 3px 0 0;
-  border: 2px solid #dab509;
+  background-color: #dab509;
+  color: white;
+  /* border: 2px solid #dab509; */
   text-align: center;
-  color: #dab509;
+  /* color: #dab509; */
   font: 1.1rem 'Bebas Neue', cursive;
 `;
 
@@ -457,6 +531,7 @@ const Name = styled.strong`
   font-weight: 500;
   color: #333;
   line-height: 20px;
+  font-weight: bold;
 `;
 const Store = styled.div`
   height: 50%;
@@ -489,6 +564,9 @@ const RangeTitle = styled.button`
   margin-right: 2px;
   margin-bottom: 3px;
   opacity: 0.8;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const CurrentRangeTitle = styled.button`
@@ -506,20 +584,9 @@ const CurrentRangeTitle = styled.button`
   margin-right: 2px;
   margin-bottom: 3px;
   opacity: 0.8;
-`;
-
-const RangeBar = styled.nav`
-  max-width: 1090px;
-  width: 100%;
-  height: 4px;
-  background-color: #aaa;
-`;
-
-const TitleBar = styled.div`
-  width: 900px;
-  height: 3px;
-  background-color: black;
-  display: block;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const StoreName = styled.div`
@@ -527,4 +594,45 @@ const StoreName = styled.div`
   margin: 0 auto;
   text-align: start;
   color: black;
+`;
+
+const StoreImg = styled.img``;
+
+const StoreBox = styled.div``;
+
+const TimeContainer = styled.div`
+  width: 100%;
+  font: 1.2rem 'Bebas Neue', cursive;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+
+const RefreshButton = styled.div`
+  font: 1.2rem 'Bebas Neue', cursive;
+  text-align: center;
+  line-height: 2rem;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const RefreshButtonBox = styled.div`
+  border-radius: 4px;
+  height: 30px;
+  border: 1px solid #d4d4d4;
+  width: 70px;
+  display: flex;
+  color: #d4d4d4;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const TimeBox = styled.div`
+  display: flex;
+  width: 100px;
+  color: #d4d4d4;
+  flex-direction: row;
+  justify-content: center;
+  line-height: 2rem;
 `;
