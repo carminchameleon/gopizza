@@ -13,6 +13,7 @@ interface Props {
 const LoginBox: React.FC<Props> = (props: Props) => {
   const [email, setEmail] = useState<string>('');
   const [pwd, setPwd] = useState<string>('');
+  const [checkEmail, setCheckEmail] = useState<string>('');
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
   const handleEmail = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,20 +63,40 @@ const LoginBox: React.FC<Props> = (props: Props) => {
         console.error('Error:', error);
       });
   };
+  //비밀번호 찾기
+  const CheckEmailForPw = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setCheckEmail(event.target.value);
+  };
 
   const isModalBtnClicked = () => {
-    //fetch보내기
-    //fetch 조건: @,. 들어가야 fetch 보낼 수 있도록 함
-    //response200 오면 alert("새로운 비밀번호가 이메일로 전송되었습니다"
-    alert('이메일로 새로운 비밀번호가 전송되었습니다. 이메일을 확인해주세요');
-    // props.history.push('/login');
-    window.location.reload(true);
+    if (checkEmail.length === 0) {
+      alert('이메일을 입력해주세요');
+    } else if (!(checkEmail.includes('@') && checkEmail.includes('.'))) {
+      alert('이메일 형식을 올바르게 입력해주세요');
+    } else {
+      fetch(`${URL}/user/new-password`, {
+        method: 'POST',
+        body: JSON.stringify({
+          email: checkEmail,
+        }),
+      }).then(res => {
+        console.log(res);
+        if (res.status === 200) {
+          alert(
+            '이메일로 새로운 비밀번호가 전송되었습니다. 이메일을 확인해주세요',
+          );
+          window.location.reload();
+        } else {
+          alert('이메일을 다시 입력해주세요.');
+        }
+      });
+    }
   };
 
   return (
     <>
       <Wrapper>
-        <Title>LOGIN</Title>
+        <Title>GO LOGIN</Title>
         <Container>
           <InputBox>
             <EmailInput
@@ -124,7 +145,7 @@ const LoginBox: React.FC<Props> = (props: Props) => {
         >
           <ModalContent>
             <ModalTitle>가입하신 이메일을 입력하세요</ModalTitle>
-            <ModalInput></ModalInput>
+            <ModalInput onChange={CheckEmailForPw}></ModalInput>
             <ModalBtn onClick={isModalBtnClicked}>확인</ModalBtn>
           </ModalContent>
         </ReactModal>
@@ -139,8 +160,6 @@ const Wrapper = styled.div`
   padding: 80px 0;
   width: 555px;
   background-color: white;
-  /* border: solid 2px rgba(252, 109, 2); */
-  /* border-radius: 21px; */
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -148,9 +167,9 @@ const Wrapper = styled.div`
 `;
 const Title = styled.div`
   margin-bottom: 30px;
-  color: rgba(252, 109, 2);
-  font-size: 20px;
+  color: rgb(252, 109, 2);
   font-weight: bold;
+  font: 2.5rem/1.071rem 'Bebas Neue', cursive;
 `;
 const Container = styled.div``;
 const InputBox = styled.div``;
@@ -158,36 +177,49 @@ const EmailInput = styled.input`
   margin-bottom: 10px;
   width: 280px;
   height: 50px;
-  background-color: lightgray;
+  background-color: #ddd;
 `;
 const PwdInput = styled.input`
   margin-bottom: 10px;
   width: 280px;
   height: 50px;
-  background-color: lightgray;
+  background-color: #ddd;
 `;
 const LoginBtn = styled.button`
   margin-bottom: 10px;
   width: 280px;
   height: 45px;
+  color: white;
   background-color: rgba(252, 109, 2);
   cursor: pointer;
+  &:focus {
+    outline: none;
+  }
+  &:hover {
+    background-color: orange;
+  }
 `;
 const Div = styled.div`
   margin-top: 10px;
-  font-size: 12px;
+  font-size: 14px;
 `;
 const Register = styled.span`
   margin-left: 8px;
   color: rgba(252, 109, 2);
-  font-size: 11px;
+  font-size: 13px;
   cursor: pointer;
+  &:hover {
+    color: orange;
+  }
 `;
 const FindPwd = styled.span`
   margin-left: 8px;
   color: rgba(252, 109, 2);
-  font-size: 11px;
+  font-size: 13px;
   cursor: pointer;
+  &:hover {
+    color: orange;
+  }
 `;
 //modal
 const ModalContent = styled.div`
@@ -198,20 +230,28 @@ const ModalContent = styled.div`
   margin-top: 25px;
 `;
 const ModalTitle = styled.div`
-  font-size: 13px;
+  font-size: 15px;
   margin-bottom: 15px;
 `;
 const ModalInput = styled.input`
   width: 280px;
   height: 40px;
   background-color: lightgray;
+  font-size: 14px;
   margin-bottom: 10px;
 `;
 const ModalBtn = styled.button`
-  font-size: 13px;
+  font-size: 15px;
+  color: white;
   width: 70px;
   height: 35px;
   border-radius: 5px;
   background-color: rgba(252, 109, 2);
   cursor: pointer;
+  &:focus {
+    outline: none;
+  }
+  &:hover {
+    background-color: orange;
+  }
 `;

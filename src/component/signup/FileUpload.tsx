@@ -66,8 +66,8 @@ const Wrapper = styled.div`
 `;
 const ImgBox = styled.div`
   margin-bottom: 10px;
-  width: 100px;
-  height: 100px;
+  width: 130px;
+  height: 130px;
   border-radius: 50%;
   background-color: lightgray;
   /* background-image: url('https://www.nelson-chambers.co.uk/front/images/default-user.jpg'); */
@@ -80,16 +80,23 @@ const Img = styled.img`
 `;
 const InputBox = styled.div``;
 const ImgInput = styled.input`
-  width: 140px;
+  width: 200px;
   cursor: pointer;
 `;
 const ImgBtn = styled.button`
-  width: 50px;
+  width: 70px;
+  height: 25px;
   color: white;
-  border-radius: 5px;
-  background-color: rgba(252, 109, 2);
+  border-radius: 2px;
+  border: solid 1px rgb(252, 109, 2);
+  color: rgb(252, 109, 2);
+  font: 20px 'Bebas Neue', cursive;
   cursor: pointer;
   &:hover {
-    background-color: orangered;
+    color: orange;
+    border: solid 1px orange;
+  }
+  &:focus {
+    outline: none;
   }
 `;

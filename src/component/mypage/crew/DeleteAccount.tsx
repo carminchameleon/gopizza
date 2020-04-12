@@ -110,7 +110,16 @@ const DeleteAccount: React.FC<RouteComponentProps> = ({
             >
               <ModalContent>
                 <ModalTitle>정말 탈퇴하시겠습니까?</ModalTitle>
-                <ModalBtn onClick={isModalBtnClicked}>네</ModalBtn>
+                <ModalBtnBox>
+                  <ModalBtn
+                    onClick={() => {
+                      history.push('/board');
+                    }}
+                  >
+                    아니오
+                  </ModalBtn>
+                  <ModalBtn onClick={isModalBtnClicked}>네</ModalBtn>
+                </ModalBtnBox>
               </ModalContent>
             </ReactModal>
           </Box>
@@ -184,6 +193,9 @@ const Btn = styled.button`
   &:hover {
     background-color: orange;
   }
+  &:focus {
+    outline: none;
+  }
 `;
 //modal style
 const ModalContent = styled.div`
@@ -194,14 +206,26 @@ const ModalContent = styled.div`
   margin-top: 25px;
 `;
 const ModalTitle = styled.div`
-  font-size: 13px;
+  font-size: 15px;
   margin-bottom: 15px;
 `;
+const ModalBtnBox = styled.div`
+  display: flex;
+  justify-content: center;
+`;
 const ModalBtn = styled.button`
-  font-size: 13px;
+  margin-left: 20px;
+  font-size: 14px;
+  color: white;
   width: 70px;
   height: 35px;
   border-radius: 5px;
   background-color: rgb(252, 109, 2);
   cursor: pointer;
+  &:hover {
+    background-color: orange;
+  }
+  &:focus {
+    outline: none;
+  }
 `;

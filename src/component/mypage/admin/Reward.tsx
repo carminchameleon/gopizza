@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from 'shared/Header';
 import Banner from 'shared/Banner';
 import PagiNation from './PagiNation';
+import ReactModal from 'react-modal';
 import { Search } from '@styled-icons/boxicons-regular/Search';
 import { URL } from 'config';
 import styled from 'styled-components';
@@ -23,6 +24,7 @@ const Reward = () => {
   const [select, setSelect] = useState<string>('');
   const [currentPage, setCurrentPage] = useState(1); //pagination
   const [PostsPerPage] = useState(5); //한페이지에 보이는 포스트 갯수
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
   // Get current posts
   const indexOfLastPosts = currentPage * PostsPerPage;
@@ -93,6 +95,9 @@ const Reward = () => {
         // console.log(res);
         if (res.status === 200) {
           alert('리워드가 이메일로 지급되었습니다.');
+          window.location.reload();
+        } else {
+          alert('다시 클릭해주세요');
         }
       });
     }
@@ -141,9 +146,9 @@ const Reward = () => {
             <TableHeadTime>Update Time</TableHeadTime>
             <TableHeadReward>Reward</TableHeadReward>
           </TableHead>
-          {currentPosts.map((item: ApprovalList) => {
+          {currentPosts.map((item: ApprovalList, index: number) => {
             return (
-              <TableBody>
+              <TableBody key={index}>
                 <TableBodyName>{item.user__name}</TableBodyName>
                 <TableBodyStore>{item.user__store__name}</TableBodyStore>
                 <TableBodyQuest>{item.quest__name}</TableBodyQuest>
@@ -154,14 +159,51 @@ const Reward = () => {
                   {item.is_rewarded ? (
                     '발급완료'
                   ) : (
-                    <RewardBtn
-                      onClick={() =>
-                        isClickedBtn(item.user__id, item.quest__id)
-                      }
-                    >
-                      발급
+                    <RewardBtn onClick={() => setModalIsOpen(true)}>
+                      발급하기
                     </RewardBtn>
                   )}
+                  <ReactModal
+                    isOpen={modalIsOpen}
+                    onRequestClose={() => setModalIsOpen(false)}
+                    style={{
+                      overlay: {
+                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                      },
+                      content: {
+                        border: 'none',
+                        backgroundColor: 'white',
+                        overflow: 'hidden',
+                        fontSize: '100px',
+                        position: 'absolute',
+                        width: '400px',
+                        height: '150px',
+                        margin: '400px 0 0 -150px',
+                        left: '50%',
+                        // fontFamily: 'nationale-regular',
+                      },
+                    }}
+                  >
+                    <ModalContent>
+                      <ModalTitle>리워드를 발급하겠습니까?</ModalTitle>
+                      <ModalBtnBox>
+                        <ModalBtn
+                          onClick={() => {
+                            window.location.reload();
+                          }}
+                        >
+                          아니오
+                        </ModalBtn>
+                        <ModalBtn
+                          onClick={() =>
+                            isClickedBtn(item.user__id, item.quest__id)
+                          }
+                        >
+                          네
+                        </ModalBtn>
+                      </ModalBtnBox>
+                    </ModalContent>
+                  </ReactModal>
                 </TableBodyReward>
               </TableBody>
             );
@@ -292,12 +334,15 @@ const TableHeadReward = styled.div`
   width: 10%;
 `;
 const TableBody = styled.div`
-  margin-top: 15px;
+  padding: 15px 0 30px 0;
   height: 30px;
   display: flex;
   font-size: 15px;
   color: #aaa;
   border-bottom: 1px solid #ddd;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 `;
 const TableBodyName = styled.div`
   width: 19%;
@@ -314,15 +359,46 @@ const TableBodyTime = styled.div`
 const TableBodyReward = styled.div`
   width: 10%;
 `;
-const RewardBtn = styled.button`
-  margin-bottom: auto;
-  width: 50px;
-  height: 20px;
+const RewardBtn = styled.div`
   font: 'Bebas Neue', cursive;
-  font-size: 12px;
-  background-color: rgb(252, 109, 2);
+  color: blue;
+  cursor: pointer;
+  &:hover {
+    /* color: #948780; */
+    color: black;
+  }
+  &:focus {
+    outline: none;
+  }
+`;
+const ModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 25px;
+`;
+const ModalTitle = styled.div`
+  font-size: 15px;
+  margin-bottom: 15px;
+`;
+const ModalBtnBox = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+const ModalBtn = styled.button`
+  margin-left: 20px;
+  font-size: 14px;
   color: white;
+  width: 70px;
+  height: 35px;
+  border-radius: 5px;
+  background-color: rgb(252, 109, 2);
+  cursor: pointer;
   &:hover {
     background-color: orange;
+  }
+  &:focus {
+    outline: none;
   }
 `;
