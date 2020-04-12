@@ -37,7 +37,7 @@ const AdminPage = () => {
       })
         .then(res => res.json())
         .then(res => {
-          // console.log(res)
+          // console.log(res.user);
           setData(res.user);
         });
     }

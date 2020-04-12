@@ -151,13 +151,17 @@ const SignUpBox: React.FC<RouteComponentProps> = ({
         <Div>
           <Label>비밀번호</Label>
           <Input
+            type="password"
             onChange={e => handleInput(e, 'password')}
             placeholder="  영소문자,숫자 혼합, 8자리 이상"
           />
         </Div>
         <Div>
           <Label>비밀번호 확인</Label>
-          <Input onChange={e => handleInput(e, 'passwordCheck')} />
+          <Input
+            type="password"
+            onChange={e => handleInput(e, 'passwordCheck')}
+          />
         </Div>
         <Div>
           <Label>지점 선택</Label>

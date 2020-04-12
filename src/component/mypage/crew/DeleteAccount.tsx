@@ -85,7 +85,7 @@ const DeleteAccount: React.FC<RouteComponentProps> = ({
         <Container>
           <Box>
             <Title> 비밀번호를 입력하세요</Title>
-            <Input onChange={handleInput}></Input>
+            <Input type="password" onChange={handleInput}></Input>
             <Btn onClick={isBtnClicked}>탈퇴</Btn>
             <ReactModal
               isOpen={modalIsOpen}

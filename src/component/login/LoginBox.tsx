@@ -106,7 +106,7 @@ const LoginBox: React.FC<Props> = (props: Props) => {
             />
             <PwdInput
               onChange={handlePwd}
-              type="text"
+              type="password"
               placeholder="  비밀번호를 입력하세요"
             />
           </InputBox>
