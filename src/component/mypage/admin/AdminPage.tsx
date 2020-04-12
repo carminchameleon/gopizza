@@ -237,7 +237,6 @@ const SearchIcon = styled(Search)`
 `;
 const TableContainer = styled.div`
   padding-top: 30px;
-  /* table-layout: fixed; */
   margin: 0 0 60px;
   border-collapse: collapse;
   width: 100%;
@@ -264,12 +263,15 @@ const TableHeadDelete = styled.div`
   width: 10%;
 `;
 const TableBody = styled.div`
-  margin-top: 15px;
+  padding: 15px 0 30px 0;
   height: 30px;
   display: flex;
   font-size: 15px;
   color: #aaa;
   border-bottom: 1px solid #ddd;
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
 `;
 const TableBodyName = styled.div`
   width: 25%;
@@ -285,6 +287,7 @@ const TableBodyDelete = styled.div`
   color: red;
   cursor: pointer;
   &:hover {
-    color: gray;
+    /* color: #948780; */
+    color: black;
   }
 `;

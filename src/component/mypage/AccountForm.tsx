@@ -34,8 +34,8 @@ const AccountForm: React.FC<RouteComponentProps> = ({
 
   //input 태그 값 저장
   const handleInput = (e: { target: { value: string } }, option: string) => {
-    console.log(e.target.value);
-    console.log(pwError);
+    // console.log(e.target.value);
+    // console.log(pwError);
     if (option === 'password') setPassword(e.target.value);
     if (option === 'newPassword') {
       setNewPassword(e.target.value);
@@ -74,7 +74,7 @@ const AccountForm: React.FC<RouteComponentProps> = ({
           password: password,
         }),
       }).then(res => {
-        console.log(res);
+        // console.log(res);
         if (res.status === 200) {
           setModalIsOpen(true);
         } else {
@@ -162,7 +162,7 @@ const AccountForm: React.FC<RouteComponentProps> = ({
               fontSize: '100px',
               position: 'absolute',
               width: '500px',
-              height: '400px',
+              height: '300px',
               margin: '300px 0 0 -250px',
               left: '50%',
               // fontFamily: 'nationale-regular',
@@ -258,7 +258,6 @@ const Input = styled.div`
 const PwdInput = styled.input`
   width: 400px;
   height: 50px;
-  /* background-color: lightgray; */
   border: solid 2px rgb(252, 109, 2);
   padding-left: 10px;
   font-size: 12px;
@@ -278,6 +277,9 @@ const PwdBtn = styled.button`
   &:hover {
     background-color: orangered;
   }
+  &:focus {
+    outline: none;
+  }
 `;
 //modal
 const ModalContent = styled.div`
@@ -294,14 +296,23 @@ const ModalTitle = styled.div`
 const ModalInput = styled.input`
   width: 280px;
   height: 40px;
-  background-color: lightgray;
+  font-size: 14px;
+  background-color: #ddd;
   margin-bottom: 10px;
 `;
 const ModalBtn = styled.button`
+  margin-top: 15px;
   font-size: 13px;
   width: 70px;
   height: 35px;
+  font-size: 14px;
   border-radius: 5px;
   background-color: orange;
   cursor: pointer;
+  &:hover {
+    background-color: orangered;
+  }
+  &:focus {
+    outline: none;
+  }
 `;

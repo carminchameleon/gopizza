@@ -22,15 +22,15 @@ const Header: React.FC<RouteComponentProps> = ({
       })
         .then(res => res.json())
         .then(res => {
-          // console.log(res);
+          // console.log(res.user_info[0]);
+          if (res.user_info[0].grade__name === 'Admin') {
+            history.push('/admin_page');
+          }
           if (res.user_info[0].grade__name === 'Manager') {
             history.push('/manager_page');
           }
           if (res.user_info[0].grade__name === 'Crew') {
             history.push('/crew_account');
-          }
-          if (res.user_info[0].grade__name === 'Adim') {
-            history.push('/admin_page');
           }
         });
     }
