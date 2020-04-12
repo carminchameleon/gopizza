@@ -5,29 +5,41 @@ import {
     PolarAngleAxis, PolarRadiusAxis,
 } from 'recharts';
 import styled from 'styled-components'
-import { isArray } from 'util';
 
-interface props {
-    data: any,
+interface payloadParam {
+    coordinate: number,
+    value: string,
+    index: number,
+    offset: number
 }
 
-const MyGraph = (props: props) => {
+interface chartParam {
+    payload: payloadParam,
+    x: number,
+    y: number,
+    textAnchor: string,
+    stroke: string,
+    radius: number
+}
 
-    function customTick({ payload, x, y, textAnchor, stroke, radius }: any) {
+const MyGraph = (props: any) => {
+
+    function customTick(param: chartParam) {
+
         return (
             <g
                 className="recharts-layer recharts-polar-angle-axis-tick"
             >
                 <text
-                    radius={radius}
-                    stroke={stroke}
-                    x={x}
-                    y={textAnchor === "middle" ? y - 15 : y}
+                    radius={param.radius}
+                    stroke={param.stroke}
+                    x={param.x}
+                    y={param.textAnchor === "middle" ? param.y - 15 : param.y}
                     className="recharts-text recharts-polar-angle-axis-tick-value"
-                    textAnchor={textAnchor}
+                    textAnchor={param.textAnchor}
                 >
-                    <tspan x={x} dy="0em">
-                        {payload.value}
+                    <tspan x={param.x} dy="0em">
+                        {param.payload.value}
                     </tspan>
                 </text>
             </g>
@@ -35,21 +47,92 @@ const MyGraph = (props: props) => {
     }
 
     return (
-        <div>
-            <h2>능숙도</h2>
-            <p>내 수치를 그래프로 확인하세요!</p>
-            <RadarChart cx={300} cy={250} outerRadius={150} width={600} height={500} data={props.data}>
-                <PolarGrid />
-                <PolarAngleAxis dataKey="subject" tick={customTick} />
-                <PolarRadiusAxis angle={90} />
-                <Radar name="" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.4} />
-            </RadarChart>
-        </div>
+        <GraphBox>
+            <div>
+                <MyGraphTitle>백분위 점수</MyGraphTitle>
+                <MyGraphSubTitle>백분위 점수로 변환한 내 그래프를 확인하세요!</MyGraphSubTitle>
+                <RadarChart cx={195} cy={190} outerRadius={150} width={400} height={270} data={props.data}>
+                    <PolarGrid />
+                    <PolarAngleAxis dataKey="subject" tick={customTick} />
+                    <PolarRadiusAxis angle={90} domain={[0, 100]} />
+                    <Radar name="" dataKey="A" stroke="#efe944" fill="#efe144" fillOpacity={0.4} />
+                </RadarChart>
+            </div>
+            <MyGraphScoreBox>
+                <dl>
+                    <dt>Time</dt>
+                    <dd>{props.data[1].A}%</dd>
+                </dl>
+                <dl>
+                    <dt>Count</dt>
+                    <dd>{props.data[0].A}%</dd>
+                </dl>
+                <dl>
+                    <dt>Quality</dt>
+                    <dd>{props.data[2].A}%</dd>
+                </dl>
+            </MyGraphScoreBox>
+        </GraphBox>
     );
 };
 
-const Secton = styled.section`
+const GraphBox = styled.section`
+    overflow:hidden;
+    width: 460px;
+    height: auto;
 
+    >div {
+        padding: 30px;
+        background-color: #f8f8f8;
+        border-radius: 10px;
+    }
+
+    > div:last-child{
+        padding: 11px 0;
+    }
+`
+const MyGraphTitle = styled.h2`
+    margin-bottom: 20px;
+    font-size: 26px;
+    font-weight: 500;
+    font-family:'Bebas Neue',cursive;
+`
+const MyGraphSubTitle = styled.p`
+    margin-bottom: 20px;
+`
+
+const MyGraphScoreBox = styled.div`
+    display:flex;
+    justify-content: space-between;
+    margin-top: 21px;
+    padding: 15px 10px 8px;
+    background-color:#fff;
+    border-radius: 10px;
+
+    dl{
+        width: 33.3%;
+        margin-left: 10px;
+        text-align: center;
+        border-right: 1px solid #ccc;
+    }
+
+    dl:last-child{
+        margin-right: 0;
+        border-right: 0;
+    }
+
+    dt{
+        color: #666;
+        font-size: 13px;
+    }
+
+    dd{
+        padding: 10px 0 0;
+        font-size: 26px;
+        letter-spacing:0.3px;
+        color: #c3c065;
+        font-family: 'Bebas Neue',cursive;
+    }
 `
 
 export default MyGraph;

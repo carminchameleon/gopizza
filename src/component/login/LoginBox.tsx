@@ -4,6 +4,7 @@ import { withRouter } from 'react-router-dom';
 import { History, LocationState } from 'history';
 import { URL } from 'config';
 import styled from 'styled-components';
+ReactModal.setAppElement('#root');
 
 interface Props {
   history: History<LocationState>;
@@ -134,6 +135,61 @@ const LoginBox: React.FC<Props> = (props: Props) => {
 
 export default withRouter(LoginBox);
 
+const Wrapper = styled.div`
+  padding: 80px 0;
+  width: 555px;
+  background-color: white;
+  /* border: solid 2px rgba(252, 109, 2); */
+  /* border-radius: 21px; */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+const Title = styled.div`
+  margin-bottom: 30px;
+  color: rgba(252, 109, 2);
+  font-size: 20px;
+  font-weight: bold;
+`;
+const Container = styled.div``;
+const InputBox = styled.div``;
+const EmailInput = styled.input`
+  margin-bottom: 10px;
+  width: 280px;
+  height: 50px;
+  background-color: lightgray;
+`;
+const PwdInput = styled.input`
+  margin-bottom: 10px;
+  width: 280px;
+  height: 50px;
+  background-color: lightgray;
+`;
+const LoginBtn = styled.button`
+  margin-bottom: 10px;
+  width: 280px;
+  height: 45px;
+  background-color: rgba(252, 109, 2);
+  cursor: pointer;
+`;
+const Div = styled.div`
+  margin-top: 10px;
+  font-size: 12px;
+`;
+const Register = styled.span`
+  margin-left: 8px;
+  color: rgba(252, 109, 2);
+  font-size: 11px;
+  cursor: pointer;
+`;
+const FindPwd = styled.span`
+  margin-left: 8px;
+  color: rgba(252, 109, 2);
+  font-size: 11px;
+  cursor: pointer;
+`;
+//modal
 const ModalContent = styled.div`
   display: flex;
   flex-direction: column;
@@ -156,59 +212,6 @@ const ModalBtn = styled.button`
   width: 70px;
   height: 35px;
   border-radius: 5px;
-  background-color: orange;
-  cursor: pointer;
-`;
-//여기까지 modal
-const Wrapper = styled.div`
-  padding: 80px 0;
-  width: 380px;
-  background-color: white;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
-const Title = styled.div`
-  margin-bottom: 30px;
-  color: orange;
-  font-size: 20px;
-  font-weight: bold;
-`;
-const Container = styled.div``;
-const InputBox = styled.div``;
-const EmailInput = styled.input`
-  margin-bottom: 10px;
-  width: 280px;
-  height: 50px;
-  background-color: lightgray;
-`;
-const PwdInput = styled.input`
-  margin-bottom: 10px;
-  width: 280px;
-  height: 50px;
-  background-color: lightgray;
-`;
-const LoginBtn = styled.button`
-  margin-bottom: 10px;
-  width: 280px;
-  height: 45px;
-  background-color: orange;
-  cursor: pointer;
-`;
-const Div = styled.div`
-  margin-top: 10px;
-  font-size: 12px;
-`;
-const Register = styled.span`
-  margin-left: 8px;
-  color: orange;
-  font-size: 11px;
-  cursor: pointer;
-`;
-const FindPwd = styled.span`
-  margin-left: 8px;
-  color: orange;
-  font-size: 11px;
+  background-color: rgba(252, 109, 2);
   cursor: pointer;
 `;

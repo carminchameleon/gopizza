@@ -1,7 +1,40 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { URL } from 'config';
 import styled from 'styled-components';
 import logo from '../images/gopizza_logo.png';
-function Header() {
+
+const Header: React.FC<RouteComponentProps> = ({
+  history,
+}: RouteComponentProps) => {
+  const isLogoutClicked = () => {
+    window.sessionStorage.removeItem('token');
+    alert('로그아웃이 완료되었습니다.');
+    history.push('/login');
+  };
+
+  const isMypageClicked = () => {
+    const token = window.sessionStorage.getItem('token');
+    if (token) {
+      fetch(`${URL}/user/info`, {
+        method: 'GET',
+        headers: { Authorization: token },
+      })
+        .then(res => res.json())
+        .then(res => {
+          // console.log(res);
+          if (res.user_info[0].grade__name === 'Manager') {
+            history.push('/manager_page');
+          }
+          if (res.user_info[0].grade__name === 'Crew') {
+            history.push('/crew_account');
+          }
+          if (res.user_info[0].grade__name === 'Adim') {
+            history.push('/admin_page');
+          }
+        });
+    }
+  };
   return (
     <Container>
       <TitleContainer>
@@ -9,30 +42,38 @@ function Header() {
           <LogoBox>
             <Logo src="http://localhost:3000/images/gopizza.png" />
           </LogoBox>
-          <TitleBox>
-            <a href="">GOPIZZA</a>
+          <TitleBox
+            onClick={() => {
+              history.push('/board');
+            }}
+          >
+            GOPIZZA
           </TitleBox>
         </MainTitle>
         <MenuContainer>
-          <MenuTitle>
-            <a href="">Map</a>
+          <MenuTitle
+            onClick={() => {
+              history.push('/map');
+            }}
+          >
+            Store
           </MenuTitle>
-          <MenuTitle>
-            <a href="">reward</a>
+          <MenuTitle
+            onClick={() => {
+              history.push('/system');
+            }}
+          >
+            reward
           </MenuTitle>
-          <MenuTitle>
-            <a href="">My page</a>
-          </MenuTitle>
-          <LogoutTitle>
-            <a href="">log out</a>
-          </LogoutTitle>
+          <MyPage onClick={isMypageClicked}>My page</MyPage>
+          <LogoutTitle onClick={isLogoutClicked}>log out</LogoutTitle>
         </MenuContainer>
       </TitleContainer>
     </Container>
   );
-}
+};
 
-export default Header;
+export default withRouter(Header);
 
 const Container = styled.div`
   background-color: white;
@@ -70,8 +111,17 @@ const MainTitle = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-content: center;
+  cursor: pointer;
 `;
-
+const MyPage = styled.div`
+  font-size: 24px;
+  font-family: 'Bebas Neue', cursive;
+  line-height: 65px;
+  color: #ff6d00;
+  font-weight: 400;
+  margin-left: 30px;
+  cursor: pointer;
+`;
 const MenuTitle = styled.div`
   font-size: 24px;
   font-family: 'Bebas Neue', cursive;
@@ -79,6 +129,7 @@ const MenuTitle = styled.div`
   color: #ff6d00;
   font-weight: 400;
   margin-left: 30px;
+  cursor: pointer;
 `;
 const LogoutTitle = styled.div`
   font-size: 24px;
@@ -87,6 +138,7 @@ const LogoutTitle = styled.div`
   color: red;
   font-weight: 400;
   margin-left: 30px;
+  cursor: pointer;
 `;
 
 const LogoBox = styled.div`

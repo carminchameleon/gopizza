@@ -1,28 +1,55 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-const Banner = () => {
+interface Props {
+  title?: string;
+  menu1?: string;
+  menu2?: string;
+  menu3?: string;
+  menu4?: string;
+  routes1?: any;
+  routes2?: any;
+  routes3?: any;
+  routes4?: any;
+  background?: any;
+  navBackground?: any;
+}
+
+const Banner: React.FC<Props> = (props: Props) => {
   return (
     <BannerComponent>
-      <BannerContainer>
+      <BannerContainer style={{ backgroundColor: props.background }}>
         <BannerHolder>
-          <BannerTitle>Go Ranking</BannerTitle>
+          <BannerTitle>{props.title}</BannerTitle>
         </BannerHolder>
       </BannerContainer>
-      <NavConatiner>
+      <NavConatiner
+        style={{
+          backgroundColor: props.navBackground,
+        }}
+      >
         <NavHolder>
           <NavWrapper>
             <NavList>
-              <NavLink>Overall Ranking</NavLink>
+              <NavLink>
+                <Link to={props.routes1}>{props.menu1}</Link>
+              </NavLink>
             </NavList>
             <NavList>
-              <NavLink>Completion Ranking</NavLink>
+              <NavLink>
+                <Link to={props.routes2}>{props.menu2}</Link>
+              </NavLink>
             </NavList>
             <NavList>
-              <NavLink>Time Ranking</NavLink>
+              <NavLink>
+                <Link to={props.routes3}>{props.menu3}</Link>
+              </NavLink>
             </NavList>
             <NavList>
-              <NavLink>Count Ranking</NavLink>
+              <NavLink>
+                <Link to={props.routes4}>{props.menu4}</Link>
+              </NavLink>
             </NavList>
           </NavWrapper>
         </NavHolder>
@@ -65,8 +92,10 @@ const NavList = styled.li`
   float: left;
   height: 40px;
   padding-top: 10px;
+  cursor: pointer;
   :hover {
-    background-color: rgba(222, 26, 33, 0.6);
+    background-color: transparent;
+    opacity: 50%;
   }
   :acitve {
     opacity: 0.3;
