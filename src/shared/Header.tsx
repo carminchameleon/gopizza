@@ -7,7 +7,7 @@ function Header() {
       <TitleContainer>
         <MainTitle>
           <LogoBox>
-            <Logo src="http://localhost:3000/images/gopizza.png" />
+            <Logo src="http://localhost:3005/images/gopizza.png" />
           </LogoBox>
           <TitleBox>
             <a href="">GOPIZZA</a>
