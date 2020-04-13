@@ -44,52 +44,72 @@ const System: React.SFC = () => {
     const [graphData, setGraphData] = useState(
         [
             {
-                subject: 'Count', A: 60, fullMark: 100,
+                subject: 'Count', A: 0, fullMark: 100,
             },
             {
-                subject: 'Quality', A: 48, fullMark: 100,
+                subject: 'Quality', A: 0, fullMark: 100,
             },
             {
-                subject: 'Time', A: 86, fullMark: 100,
+                subject: 'Time', A: 0, fullMark: 100,
             },
         ]
     )
 
     const [pizzaCount, setpizzaCount] = useState({});
 
-    useEffect(() => {
-        fetchInfo();
-        requestList();
+    const [idNum, SetIdNum] = useState(0);
 
-    }, [])
+    useEffect(() => {
+
+        idGet();
+
+    }, []);
+
 
     const TabClick = (arg: string) => {
         setTabName(arg);
     }
 
-    const fetchInfo = async () => {
+    const token: any = window.sessionStorage.getItem('token');
 
-        const info = await fetch(`${URL}/record/user/137`, {
+    const idGet = async () => {
+
+        const id = await fetch(`${URL}/user/get-user-id`, {
             method: "GET",
             headers: {
-                Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxMzd9.vpQMWR9OlJiCXWe73hiGCHEXaKCVa35Loqm0_jNIkgU"
+                Authorization: token
             }
         })
 
+        if (id.status === 200) {
+            const idJson = await id.json();
+            SetIdNum(idJson.user_id);
+            fetchInfo(idJson.user_id);
+            requestList();
+        }
 
 
-        const score = await fetch(`${URL}/quest/reward/137`, {
+    }
+
+    const fetchInfo = async (num: number) => {
+
+        const info = await fetch(`${URL}/record/user/${String(num)}`, {
             method: "GET",
             headers: {
-                Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxMzd9.vpQMWR9OlJiCXWe73hiGCHEXaKCVa35Loqm0_jNIkgU"
+                Authorization: token
+            }
+        })
+
+        const score = await fetch(`${URL}/quest/reward/${String(num)}`, {
+            method: "GET",
+            headers: {
+                Authorization: token
             }
         })
 
         if (info.status === 200 && score.status === 200) {
             const infoJson = await info.json();
             const scoreJson = await score.json();
-
-            console.log(infoJson)
 
             setUserInfo({
                 image: infoJson.user_info.image,
@@ -133,14 +153,14 @@ const System: React.SFC = () => {
         const info = await fetch(`${URL}/quest`, {
             method: "GET",
             headers: {
-                Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxMzd9.vpQMWR9OlJiCXWe73hiGCHEXaKCVa35Loqm0_jNIkgU"
+                Authorization: token
             }
         })
 
         const myScore = await fetch(`${URL}/quest/get-my-score`, {
             method: "POST",
             headers: {
-                Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxMzd9.vpQMWR9OlJiCXWe73hiGCHEXaKCVa35Loqm0_jNIkgU"
+                Authorization: token
             }
         })
 
@@ -163,9 +183,7 @@ const System: React.SFC = () => {
 
         if (arg.status) {
 
-            console.log(arg);
-
-            fetchInfo();
+            fetchInfo(idNum);
             requestList();
 
         }
@@ -191,6 +209,11 @@ const System: React.SFC = () => {
         <>
             <Header />
             <Banner title="REWARD SYSTEM" background="rgb(222, 222, 80)" navBackground="rgb(206, 208, 29)" />
+            <SystemIntro>
+                <SystemIntroTitle>REWARD SYSTEM</SystemIntroTitle>
+                <SystemIntroSubTitle>나는 피자를 얼마나 잘 만들까요?</SystemIntroSubTitle>
+                <SystemIntroSubTitle>전체적인 내 역량을 숫자와 그래프로 알 수 있습니다!</SystemIntroSubTitle>
+            </SystemIntro>
             <SystemSection>
                 <UserSection>
                     <MyInfo image={userInfo.image} name={userInfo.name} store={userInfo.store} badge={userInfo.badge} coupon={userInfo.coupon} />
@@ -208,10 +231,38 @@ const System: React.SFC = () => {
     )
 }
 
+const SystemIntro = styled.section`
+    margin: 60px 0 40px;
+`
+
+const SystemIntroTitle = styled.div`
+    text-align: center;
+    -webkit-letter-spacing: 0.1rem;
+    -moz-letter-spacing: 0.1rem;
+    -ms-letter-spacing: 0.1rem;
+    letter-spacing: 0.1rem;
+    color: #333;
+    text-transform: uppercase;
+    margin: 0;
+    font: 2.5rem/1.071rem 'Bebas Neue',cursive;
+    margin-bottom: 20px;
+`
+
+const SystemIntroSubTitle = styled.div`
+    text-align: center;
+    -webkit-letter-spacing: 0.1rem;
+    -moz-letter-spacing: 0.1rem;
+    -ms-letter-spacing: 0.1rem;
+    letter-spacing: 0.1rem;
+    color: #948780;
+    font-weight: 300;
+    line-height: 20px;
+`
+
 const SystemSection = styled.section`
     max-width: 1090px;
-    margin: 20px auto;
-    padding: 74px 15px 0;
+    margin: 0 auto 80px;
+    padding: 0 15px 0;
 `
 
 const UserSection = styled.section`

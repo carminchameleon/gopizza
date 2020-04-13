@@ -36,7 +36,7 @@ const MyRewardTitle = styled.h2`
     font-weight: 500;
 `
 const MyRewardSubTitle = styled.p`
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 `
 const TabList = styled.ul`
 
@@ -48,7 +48,6 @@ const TabList = styled.ul`
         width: 20%;
         margin-right: 3px;
         margin-bottom: 0px;
-        padding: 10px;
         text-align: center;
         border-radius: 3px 3px 0 0;
         opacity: 0.8;
@@ -67,10 +66,19 @@ const TabLi = styled.li`
 `
 
 const TabButton = styled.button`
-    font-size: 20px;
+    display:block;
+    width: 100%;
+    height: auto;
+    padding: 10px;
+    font-size: 17px;
     letter-spacing: 0.8px;
     font-family:'Bebas Neue',cursive;
-    color:${props => props.color === "yellow" ? "#ff9800" : "#b8bfc2"}
+    color:${props => props.color === "yellow" ? "#ff9800" : "#b8bfc2"};
+    outline: none;
+
+    &:focus {
+        outline: none;
+    } 
 `
 
 export default MyRewardTap;

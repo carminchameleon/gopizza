@@ -11,8 +11,6 @@ interface props {
 
 const MyInfo = (props: props) => {
 
-    console.log(typeof props.image)
-
     return (
         <>
             <ProfileBox>
@@ -25,7 +23,7 @@ const MyInfo = (props: props) => {
                         </li>
                         <li>
                             <em>지점</em>
-                            <p>{props.store}점</p>
+                            <p>{props.store}</p>
                         </li>
                     </ProfileList>
                 </div>
@@ -54,6 +52,10 @@ const ProfileBox = styled.section`
         padding: 30px;
         background-color: #f8f8f8;
         border-radius: 10px;
+    }
+
+    >div:first-child{
+        padding:33px 30px;
     }
 
     >div:last-child{
@@ -98,7 +100,8 @@ const ProfileList = styled.ul<{ margin: boolean }>`
     }
 
     p{
-        font-family: 'Bebas Neue',cursive;
+        font-family: ${props => props.margin ? "Bevan,cursive" : ""};
+        color: #444
     }
 
 `

@@ -49,9 +49,9 @@ const MyGraph = (props: any) => {
     return (
         <GraphBox>
             <div>
-                <MyGraphTitle>백분위 점수</MyGraphTitle>
+                <MyGraphTitle>능숙도(백분위)</MyGraphTitle>
                 <MyGraphSubTitle>백분위 점수로 변환한 내 그래프를 확인하세요!</MyGraphSubTitle>
-                <RadarChart cx={195} cy={190} outerRadius={150} width={400} height={270} data={props.data}>
+                <RadarChart style={{ fontFamily: 'Bevan, cursive', letterSpacing: "-1px" }} cx={192} cy={190} outerRadius={150} width={400} height={272} data={props.data}>
                     <PolarGrid />
                     <PolarAngleAxis dataKey="subject" tick={customTick} />
                     <PolarRadiusAxis angle={90} domain={[0, 100]} />
@@ -124,6 +124,7 @@ const MyGraphScoreBox = styled.div`
     dt{
         color: #666;
         font-size: 13px;
+        font-family:'Bevan',cursive;
     }
 
     dd{
