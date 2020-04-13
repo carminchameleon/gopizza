@@ -68,7 +68,6 @@ const ProfilePic = styled.div`
     width: 170px;
     height: 170px;
     margin: 0 auto;
-    padding: 20px;
     text-align: center;
     font-size: 0;
     border-radius: 50%;
