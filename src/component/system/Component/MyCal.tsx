@@ -21,7 +21,7 @@ const MyCal = (props: props) => {
                 <MyCalSpecDetail>
                     <div>
                         <em>평균 시간</em>
-                        <p>{Math.floor(props.average_time / 60)}:{Math.floor(props.average_time) - 60 * (Math.floor(props.average_time / 60))}</p>
+                        <p>{Math.floor(props.average_time / 60)}:{Math.floor(props.average_time) - (60 * (Math.floor(props.average_time / 60))) === 0 ? "00" : Math.floor(props.average_time) - (60 * (Math.floor(props.average_time / 60)))}</p>
                     </div>
                     <div>
                         <em>최소시간</em>

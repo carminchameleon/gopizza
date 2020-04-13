@@ -74,6 +74,9 @@ const MyRewardContCount = (props: any) => {
         });
 
     }, [props.count, props.pizzaCounts]);
+
+    const token: any = window.sessionStorage.getItem('token');
+
     const RewardRequire = async (e: React.MouseEvent<HTMLButtonElement>) => {
 
         const element = e.currentTarget
@@ -83,8 +86,11 @@ const MyRewardContCount = (props: any) => {
 
             const requestPostSend = await fetch(`${URL}/quest/claim/${buttonId}`, {
                 method: "POST",
-                headers: { Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxMzd9.vpQMWR9OlJiCXWe73hiGCHEXaKCVa35Loqm0_jNIkgU" }
+                headers: { Authorization: token }
             });
+
+
+
             if (requestPostSend.ok) {
                 const reqJson = await requestPostSend.json();
                 reqJson.hasOwnProperty("badge") ? SetbadgeImg({ badge: reqJson.badge }) : SetcouponImg({ coupon: reqJson.coupon })
