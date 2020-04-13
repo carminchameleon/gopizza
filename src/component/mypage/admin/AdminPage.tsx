@@ -75,6 +75,7 @@ const AdminPage = () => {
 
   //직원삭제
   const isClickedDelet = (id: number) => {
+    // console.log('아이디', id);
     if (token) {
       fetch(`${URL}/user/delete/${id}`, {
         method: 'DELETE',
@@ -131,9 +132,9 @@ const AdminPage = () => {
             <TableHeadPosition>Position</TableHeadPosition>
             <TableHeadDelete>Delete</TableHeadDelete>
           </TableHead>
-          {currentPosts.map((item: UserList) => {
+          {currentPosts.map((item: UserList, index: number) => {
             return (
-              <TableBody>
+              <TableBody key={index}>
                 <TableBodyName>{item.name}</TableBodyName>
                 <TableBodyStore>{item.store__name}</TableBodyStore>
                 <TableBodyPosition>{item.grade__name}</TableBodyPosition>
@@ -157,22 +158,21 @@ const AdminPage = () => {
                       height: '150px',
                       margin: '400px 0 0 -150px',
                       left: '50%',
-                      // fontFamily: 'nationale-regular',
                     },
                   }}
                 >
                   <ModalContent>
                     <ModalTitle>정말 삭제하시겠습니까?</ModalTitle>
                     <ModalBtnBox>
+                      <ModalBtn onClick={() => isClickedDelet(item.id)}>
+                        네
+                      </ModalBtn>
                       <ModalBtn
                         onClick={() => {
                           window.location.reload();
                         }}
                       >
                         아니오
-                      </ModalBtn>
-                      <ModalBtn onClick={() => isClickedDelet(item.id)}>
-                        네
                       </ModalBtn>
                     </ModalBtnBox>
                   </ModalContent>
@@ -326,7 +326,6 @@ const TableBodyDelete = styled.div`
   color: red;
   cursor: pointer;
   &:hover {
-    /* color: #948780; */
     color: black;
   }
 `;
