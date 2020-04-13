@@ -72,6 +72,9 @@ const ProfilePic = styled.div`
     font-size: 0;
     border-radius: 50%;
     background-color:#fff;
+    background-image: url("https://images.velog.io/images/carminchameleon/post/cfa6749a-8cfb-462b-8982-46055e72d6d5/image.png");
+    background-position: center center;
+    background-size: 100% auto;
 `
 
 const ProfileTitle = styled.h2`
