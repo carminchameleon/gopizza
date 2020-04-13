@@ -25,6 +25,8 @@ const Reward = () => {
   const [currentPage, setCurrentPage] = useState(1); //pagination
   const [PostsPerPage] = useState(10); //한페이지에 보이는 포스트 갯수
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [currentUserId, setCurrentUserId] = useState<number>();
+  const [currentQuestId, setCurrentQuestId] = useState<number>();
 
   //Data 저장
   const token = window.sessionStorage.getItem('token');
@@ -79,25 +81,28 @@ const Reward = () => {
     }
   }, [search, data]);
 
-  const isClickedBtn = (user__id: number, quest__id: number) => {
-    console.log(user__id, quest__id);
-    // if (token) {
-    //   fetch(
-    //     `${URL}/quest/reward-approval/user/${user__id}/quest/${quest__id}`,
-    //     {
-    //       method: 'POST',
-    //       headers: { Authorization: token },
-    //     },
-    //   ).then(res => {
-    //     // console.log(res);
-    //     if (res.status === 200) {
-    //       alert('리워드가 이메일로 지급되었습니다.');
-    //       window.location.reload();
-    //     } else {
-    //       alert('다시 클릭해주세요');
-    //     }
-    //   });
-    // }
+  //리원드 발급
+  const modalOpen = (): void => {
+    setModalIsOpen(true);
+  };
+  const isClickedBtn = () => {
+    if (token) {
+      fetch(
+        `${URL}/quest/reward-approval/user/${currentUserId}/quest/${currentQuestId}`,
+        {
+          method: 'POST',
+          headers: { Authorization: token },
+        },
+      ).then(res => {
+        // console.log(res);
+        if (res.status === 200) {
+          alert('리워드가 이메일로 지급되었습니다.');
+          window.location.reload();
+        } else {
+          alert('다시 클릭해주세요');
+        }
+      });
+    }
   };
 
   return (
@@ -156,7 +161,13 @@ const Reward = () => {
                   {item.is_rewarded ? (
                     '발급완료'
                   ) : (
-                    <RewardBtn onClick={() => setModalIsOpen(true)}>
+                    <RewardBtn
+                      onClick={() => {
+                        setCurrentUserId(item.user__id);
+                        setCurrentQuestId(item.quest__id);
+                        modalOpen();
+                      }}
+                    >
                       발급하기
                     </RewardBtn>
                   )}
@@ -177,20 +188,13 @@ const Reward = () => {
                         height: '150px',
                         margin: '400px 0 0 -150px',
                         left: '50%',
-                        // fontFamily: 'nationale-regular',
                       },
                     }}
                   >
                     <ModalContent>
                       <ModalTitle>리워드를 발급하겠습니까?</ModalTitle>
                       <ModalBtnBox>
-                        <ModalBtn
-                          onClick={() =>
-                            isClickedBtn(item.user__id, item.quest__id)
-                          }
-                        >
-                          네
-                        </ModalBtn>
+                        <ModalBtn onClick={() => isClickedBtn()}>네</ModalBtn>
                         <ModalBtn
                           onClick={() => {
                             window.location.reload();
