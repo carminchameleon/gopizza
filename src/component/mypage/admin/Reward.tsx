@@ -42,11 +42,11 @@ const Reward = () => {
     }
   }, []);
 
-  //pagination
   // Get current posts
   const indexOfLastPosts = currentPage * PostsPerPage;
   const indexOfFirstPost = indexOfLastPosts - PostsPerPage;
   const currentPosts = filterSearch.slice(indexOfFirstPost, indexOfLastPosts);
+
   // Change page
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -80,24 +80,24 @@ const Reward = () => {
   }, [search, data]);
 
   const isClickedBtn = (user__id: number, quest__id: number) => {
-    // console.log(user, quest);
-    if (token) {
-      fetch(
-        `${URL}/quest/reward-approval/user/${user__id}/quest/${quest__id}`,
-        {
-          method: 'POST',
-          headers: { Authorization: token },
-        },
-      ).then(res => {
-        // console.log(res);
-        if (res.status === 200) {
-          alert('리워드가 이메일로 지급되었습니다.');
-          window.location.reload();
-        } else {
-          alert('다시 클릭해주세요');
-        }
-      });
-    }
+    console.log(user__id, quest__id);
+    // if (token) {
+    //   fetch(
+    //     `${URL}/quest/reward-approval/user/${user__id}/quest/${quest__id}`,
+    //     {
+    //       method: 'POST',
+    //       headers: { Authorization: token },
+    //     },
+    //   ).then(res => {
+    //     // console.log(res);
+    //     if (res.status === 200) {
+    //       alert('리워드가 이메일로 지급되었습니다.');
+    //       window.location.reload();
+    //     } else {
+    //       alert('다시 클릭해주세요');
+    //     }
+    //   });
+    // }
   };
 
   return (
@@ -185,18 +185,18 @@ const Reward = () => {
                       <ModalTitle>리워드를 발급하겠습니까?</ModalTitle>
                       <ModalBtnBox>
                         <ModalBtn
-                          onClick={() => {
-                            window.location.reload();
-                          }}
-                        >
-                          아니오
-                        </ModalBtn>
-                        <ModalBtn
                           onClick={() =>
                             isClickedBtn(item.user__id, item.quest__id)
                           }
                         >
                           네
+                        </ModalBtn>
+                        <ModalBtn
+                          onClick={() => {
+                            window.location.reload();
+                          }}
+                        >
+                          아니오
                         </ModalBtn>
                       </ModalBtnBox>
                     </ModalContent>

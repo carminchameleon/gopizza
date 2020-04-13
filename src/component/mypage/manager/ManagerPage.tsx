@@ -23,10 +23,10 @@ const ManagerPage = () => {
   const [approvalModalIsOpen, setApprovalModalIsOpen] = useState<boolean>(
     false,
   );
+  const [currentId, setCurrnetId] = useState<number>();
 
   //Data 저장
   const token = window.sessionStorage.getItem('token');
-  // console.log(token);
   useEffect(() => {
     if (token) {
       fetch(`${URL}/user/get`, {
@@ -35,7 +35,10 @@ const ManagerPage = () => {
       })
         .then(res => res.json())
         .then(res => {
-          // console.log(res.user[0].store__name);
+          // console.log(res.user)
+          // for (let i = 0; i < res.user.length; i++) {
+          //   console.log(res.user[i].id);
+          // }
           setData(res.user);
           setStoreName(res.user[0].store__name);
         });
@@ -43,13 +46,16 @@ const ManagerPage = () => {
   }, []);
 
   //승인
-  const isClickedApproval = (id: number) => {
+  const approvalModalOpen = (): void => {
+    setApprovalModalIsOpen(true);
+  };
+  const isClickedApproval = () => {
     if (token) {
-      fetch(`${URL}/user/approval/${id}`, {
+      fetch(`${URL}/user/approval/${currentId}`, {
         method: 'POST',
         headers: { Authorization: token },
       }).then(res => {
-        // console.log(res);
+        console.log(res);
         if (res.status === 200) {
           alert('승인이 완료되었습니다.');
           window.location.reload();
@@ -57,23 +63,24 @@ const ManagerPage = () => {
       });
     }
   };
-
   //삭제
-  const isClickedDelete = (id: number, grade: string) => {
+  const deleteModalOpen = (): void => {
+    setDeleteModalIsOpen(true);
+  };
+  const isClickedDelete = () => {
+    // console.log(currentId);
     if (token) {
-      if (grade === 'Manager') alert('매니저는 삭제가 불가능 합니다');
-      else {
-        fetch(`${URL}/user/delete/${id}`, {
-          method: 'DELETE',
-          headers: { Authorization: token },
-        }).then(res => {
+      fetch(`${URL}/user/delete/${currentId}`, {
+        method: 'DELETE',
+        headers: { Authorization: token },
+      }).then(res => {
+        // console.log(res);
+        if (res.status === 200) {
           console.log(res);
-          if (res.status === 200) {
-            alert('계정삭제가 완료되었습니다.');
-            window.location.reload();
-          }
-        });
-      }
+          alert('계정삭제가 완료되었습니다.');
+          window.location.reload();
+        }
+      });
     }
   };
 
@@ -103,14 +110,19 @@ const ManagerPage = () => {
             <TableHeadDelete>Delete</TableHeadDelete>
             <TableHeadApproval>Approval</TableHeadApproval>
           </TableHead>
-          {data.map((item: UserList) => {
+          {data.map((item: UserList, index: number) => {
             return (
-              <TableBody>
+              <TableBody key={index}>
                 <TableBodyName>{item.name}</TableBodyName>
                 <TableBodyStore>{item.store__name}</TableBodyStore>
                 <TableBodyPosition>{item.grade__name}</TableBodyPosition>
                 <TableBodyDelete>
-                  <DeleteBtn onClick={() => setDeleteModalIsOpen(true)}>
+                  <DeleteBtn
+                    onClick={() => {
+                      setCurrnetId(item.id);
+                      deleteModalOpen();
+                    }}
+                  >
                     {item.grade__name === 'Manager' ? '' : '삭제'}
                   </DeleteBtn>
                   <ReactModal
@@ -130,7 +142,6 @@ const ManagerPage = () => {
                         height: '150px',
                         margin: '400px 0 0 -150px',
                         left: '50%',
-                        // fontFamily: 'nationale-regular',
                       },
                     }}
                   >
@@ -139,17 +150,17 @@ const ManagerPage = () => {
                       <ModalBtnBox>
                         <ModalBtn
                           onClick={() => {
+                            isClickedDelete();
+                          }}
+                        >
+                          네
+                        </ModalBtn>
+                        <ModalBtn
+                          onClick={() => {
                             window.location.reload();
                           }}
                         >
                           아니오
-                        </ModalBtn>
-                        <ModalBtn
-                          onClick={() =>
-                            isClickedDelete(item.id, item.grade__name)
-                          }
-                        >
-                          네
                         </ModalBtn>
                       </ModalBtnBox>
                     </ModalContent>
@@ -159,10 +170,10 @@ const ManagerPage = () => {
                   {item.is_approved === null ? (
                     <ApprovalBtn
                       onClick={() => {
-                        setApprovalModalIsOpen(true);
+                        setCurrnetId(item.id);
+                        approvalModalOpen();
                       }}
                     >
-                      {' '}
                       승인
                     </ApprovalBtn>
                   ) : item.grade__name === 'Manager' ? (
@@ -194,15 +205,15 @@ const ManagerPage = () => {
                     <ModalContent>
                       <ModalTitle>정말 승인하시겠습니까?</ModalTitle>
                       <ModalBtnBox>
+                        <ModalBtn onClick={() => isClickedApproval()}>
+                          네
+                        </ModalBtn>
                         <ModalBtn
                           onClick={() => {
                             window.location.reload();
                           }}
                         >
                           아니오
-                        </ModalBtn>
-                        <ModalBtn onClick={() => isClickedApproval(item.id)}>
-                          네
                         </ModalBtn>
                       </ModalBtnBox>
                     </ModalContent>
