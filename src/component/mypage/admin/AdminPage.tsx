@@ -26,6 +26,7 @@ const AdminPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [PostsPerPage] = useState(10);
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+  const [deleteId, setDeleteId] = useState<number>();
 
   //Data 저장
   const token = window.sessionStorage.getItem('token');
@@ -74,10 +75,12 @@ const AdminPage = () => {
   }, [search, data]);
 
   //직원삭제
-  const isClickedDelet = (id: number) => {
-    // console.log('아이디', id);
+  const ModalOpen = (): void => {
+    setModalIsOpen(true);
+  };
+  const isClickedDelet = () => {
     if (token) {
-      fetch(`${URL}/user/delete/${id}`, {
+      fetch(`${URL}/user/delete/${deleteId}`, {
         method: 'DELETE',
         headers: { Authorization: token },
       }).then(res => {
@@ -138,7 +141,12 @@ const AdminPage = () => {
                 <TableBodyName>{item.name}</TableBodyName>
                 <TableBodyStore>{item.store__name}</TableBodyStore>
                 <TableBodyPosition>{item.grade__name}</TableBodyPosition>
-                <TableBodyDelete onClick={() => setModalIsOpen(true)}>
+                <TableBodyDelete
+                  onClick={() => {
+                    setDeleteId(item.id);
+                    ModalOpen();
+                  }}
+                >
                   Delete
                 </TableBodyDelete>
                 <ReactModal
@@ -164,9 +172,7 @@ const AdminPage = () => {
                   <ModalContent>
                     <ModalTitle>정말 삭제하시겠습니까?</ModalTitle>
                     <ModalBtnBox>
-                      <ModalBtn onClick={() => isClickedDelet(item.id)}>
-                        네
-                      </ModalBtn>
+                      <ModalBtn onClick={() => isClickedDelet()}>네</ModalBtn>
                       <ModalBtn
                         onClick={() => {
                           window.location.reload();
