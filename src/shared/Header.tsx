@@ -42,6 +42,7 @@ const Header: React.FC<RouteComponentProps> = ({
           <LogoBox>
             <Logo src="http://localhost:3000/images/gopizza.png" />
           </LogoBox>
+
           <TitleBox
             onClick={() => {
               history.push('/board');
@@ -57,6 +58,13 @@ const Header: React.FC<RouteComponentProps> = ({
             }}
           >
             Store
+          </MenuTitle>
+          <MenuTitle
+            onClick={() => {
+              history.push('/board');
+            }}
+          >
+            ranking
           </MenuTitle>
           <MenuTitle
             onClick={() => {
