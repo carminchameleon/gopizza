@@ -4,9 +4,7 @@ import { URL } from 'config';
 import styled from 'styled-components';
 import logo from '../images/gopizza_logo.png';
 
-const Header: React.FC<RouteComponentProps> = ({
-  history,
-}: RouteComponentProps) => {
+const Header = ({ history }: RouteComponentProps) => {
   const isLogoutClicked = () => {
     window.sessionStorage.removeItem('token');
     alert('로그아웃이 완료되었습니다.');

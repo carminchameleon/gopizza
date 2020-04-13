@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import Header from 'shared/Header';
 import Banner from 'shared/Banner';
 import ReactModal from 'react-modal';
@@ -18,8 +19,8 @@ interface UserList {
   store__name: string;
 }
 
-const AdminPage = () => {
-  const [data, setData] = useState<any>([]);
+const AdminPage = ({ history }: RouteComponentProps) => {
+  const [data, setData] = useState<UserList[]>([]);
   const [search, setSearch] = useState<string>('');
   const [filterSearch, setFilterSearch] = useState<any>([]);
   const [select, setSelect] = useState<string>('');
@@ -32,14 +33,26 @@ const AdminPage = () => {
   const token = window.sessionStorage.getItem('token');
   useEffect(() => {
     if (token) {
-      fetch(`${URL}/user/get`, {
+      fetch(`${URL}/user/info`, {
         method: 'GET',
         headers: { Authorization: token },
       })
         .then(res => res.json())
         .then(res => {
-          // console.log(res.user);
-          setData(res.user);
+          if (res.user_info[0].grade__name === 'Admin') {
+            fetch(`${URL}/user/get`, {
+              method: 'GET',
+              headers: { Authorization: token },
+            })
+              .then(res => res.json())
+              .then(res => {
+                // console.log(res.user);
+                setData(res.user);
+              });
+          } else {
+            alert('접근권한이 없습니다.');
+            history.push('/board');
+          }
         });
     }
   }, []);
@@ -100,8 +113,8 @@ const AdminPage = () => {
         title="My Page"
         menu1="직원 관리"
         menu2="리워드 관리"
-        background="#fcb131"
-        navBackground="#f69d04"
+        background="#a29bfe"
+        navBackground="#6c5ce7"
         routes1="/admin_page"
         routes2="/reward"
       />
@@ -149,43 +162,43 @@ const AdminPage = () => {
                 >
                   Delete
                 </TableBodyDelete>
-                <ReactModal
-                  isOpen={modalIsOpen}
-                  onRequestClose={() => setModalIsOpen(false)}
-                  style={{
-                    overlay: {
-                      backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                    },
-                    content: {
-                      border: 'none',
-                      backgroundColor: 'white',
-                      overflow: 'hidden',
-                      fontSize: '100px',
-                      position: 'absolute',
-                      width: '400px',
-                      height: '150px',
-                      margin: '400px 0 0 -150px',
-                      left: '50%',
-                    },
-                  }}
-                >
-                  <ModalContent>
-                    <ModalTitle>정말 삭제하시겠습니까?</ModalTitle>
-                    <ModalBtnBox>
-                      <ModalBtn onClick={() => isClickedDelet()}>네</ModalBtn>
-                      <ModalBtn
-                        onClick={() => {
-                          window.location.reload();
-                        }}
-                      >
-                        아니오
-                      </ModalBtn>
-                    </ModalBtnBox>
-                  </ModalContent>
-                </ReactModal>
               </TableBody>
             );
           })}
+          <ReactModal
+            isOpen={modalIsOpen}
+            onRequestClose={() => setModalIsOpen(false)}
+            style={{
+              overlay: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              },
+              content: {
+                border: 'none',
+                backgroundColor: 'white',
+                overflow: 'hidden',
+                fontSize: '100px',
+                position: 'absolute',
+                width: '400px',
+                height: '150px',
+                margin: '400px 0 0 -150px',
+                left: '50%',
+              },
+            }}
+          >
+            <ModalContent>
+              <ModalTitle>정말 삭제하시겠습니까?</ModalTitle>
+              <ModalBtnBox>
+                <ModalBtn onClick={() => isClickedDelet()}>네</ModalBtn>
+                <ModalBtn
+                  onClick={() => {
+                    window.location.reload();
+                  }}
+                >
+                  아니오
+                </ModalBtn>
+              </ModalBtnBox>
+            </ModalContent>
+          </ReactModal>
         </TableContainer>
         <PagiNation
           postsPerPage={PostsPerPage}
@@ -197,7 +210,7 @@ const AdminPage = () => {
   );
 };
 
-export default AdminPage;
+export default withRouter(AdminPage);
 
 const Wrapper = styled.div``;
 const InnerWarapper = styled.div`

@@ -12,9 +12,7 @@ interface storeList {
   longitude: number;
 }
 
-const SignUpBox: React.FC<RouteComponentProps> = ({
-  history,
-}: RouteComponentProps) => {
+const SignUpBox = ({ history }: RouteComponentProps) => {
   const [storeData, setStoreData] = useState<any>([]);
   const [name, setName] = useState<string>('');
   const [email, setEmail] = useState<string>('');
