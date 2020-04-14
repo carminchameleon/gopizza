@@ -1,105 +1,93 @@
 import React, { useState, useEffect } from 'react';
 import Header from 'shared/Header';
 import Banner from 'shared/Banner';
-import PagiNation from './PagiNation';
 import ReactModal from 'react-modal';
+import PagiNation from '../admin/PagiNation';
 import { Search } from '@styled-icons/boxicons-regular/Search';
 import { URL } from 'config';
 import styled from 'styled-components';
 
-interface ApprovalList {
-  user__id: number;
-  user__name: string;
-  user__store__name: string;
-  quest__id: number;
-  quest__name: string;
-  updated_at: number | any;
-  is_rewarded: boolean;
+interface UserList {
+  id: number;
+  name: string;
+  image: string;
+  grade_id: number;
+  grade__name: string;
+  is_approved: null | boolean;
+  store_id: number;
+  store__name: string;
 }
 
-const Reward = () => {
+const AdminPage = () => {
   const [data, setData] = useState<any>([]);
   const [search, setSearch] = useState<string>('');
   const [filterSearch, setFilterSearch] = useState<any>([]);
   const [select, setSelect] = useState<string>('');
-  const [currentPage, setCurrentPage] = useState(1); //pagination
-  const [PostsPerPage] = useState(10); //한페이지에 보이는 포스트 갯수
+  const [currentPage, setCurrentPage] = useState(1);
+  const [PostsPerPage] = useState(10);
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
-  const [currentUserId, setCurrentUserId] = useState<number>();
-  const [currentQuestId, setCurrentQuestId] = useState<number>();
+  const [deleteId, setDeleteId] = useState<number>();
 
   //Data 저장
   const token = window.sessionStorage.getItem('token');
   useEffect(() => {
     if (token) {
-      fetch(`${URL}/quest/reward-approval`, {
+      fetch(`${URL}/user/get`, {
         method: 'GET',
         headers: { Authorization: token },
       })
         .then(res => res.json())
         .then(res => {
-          // console.log(res.approval_list[0].is_rewarded);
-          setData(res.approval_list);
+          // console.log(res.user);
+          setData(res.user);
         });
     }
   }, []);
 
-  // Get current posts
+  //pagination
   const indexOfLastPosts = currentPage * PostsPerPage;
   const indexOfFirstPost = indexOfLastPosts - PostsPerPage;
   const currentPosts = filterSearch.slice(indexOfFirstPost, indexOfLastPosts);
-
-  // Change page
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
   const handleChange = (e: any) => {
     setSelect(e.target.value);
   };
 
-  //select box에 따른 결과 값
   useEffect(() => {
-    //default 값 user_name
     setFilterSearch(
-      data.filter((item: ApprovalList) => item.user__name.includes(search)),
+      data.filter((item: UserList) => item.name.includes(search)),
     );
-    if (select === 'user__name') {
+    if (select === 'name') {
       setFilterSearch(
-        data.filter((item: ApprovalList) => item.user__name.includes(search)),
+        data.filter((item: UserList) => item.name.includes(search)),
       );
     }
-    if (select === 'user__store__name') {
+    if (select === 'store__name') {
       setFilterSearch(
-        data.filter((item: ApprovalList) =>
-          item.user__store__name.includes(search),
-        ),
+        data.filter((item: UserList) => item.store__name.includes(search)),
       );
     }
-    if (select === 'quest__name') {
+    if (select === 'grade__name') {
       setFilterSearch(
-        data.filter((item: ApprovalList) => item.quest__name.includes(search)),
+        data.filter((item: UserList) => item.grade__name.includes(search)),
       );
     }
   }, [search, data]);
 
-  //리원드 발급
-  const modalOpen = (): void => {
+  //직원삭제
+  const ModalOpen = (): void => {
     setModalIsOpen(true);
   };
-  const isClickedBtn = () => {
+  const isClickedDelet = () => {
     if (token) {
-      fetch(
-        `${URL}/quest/reward-approval/user/${currentUserId}/quest/${currentQuestId}`,
-        {
-          method: 'POST',
-          headers: { Authorization: token },
-        },
-      ).then(res => {
-        // console.log(res);
+      fetch(`${URL}/user/delete/${deleteId}`, {
+        method: 'DELETE',
+        headers: { Authorization: token },
+      }).then(res => {
+        console.log(res);
         if (res.status === 200) {
-          alert('리워드가 이메일로 지급되었습니다.');
+          alert('계정삭제가 완료되었습니다.');
           window.location.reload();
-        } else {
-          alert('다시 클릭해주세요');
         }
       });
     }
@@ -119,16 +107,16 @@ const Reward = () => {
       />
       <InnerWarapper>
         <HeaderTitleContainer>
-          <HeaderTitle>Reward Page</HeaderTitle>
-          <Description>리워드를 발급 할 수 있는 페이지 입니다.</Description>
+          <HeaderTitle>Admin Page</HeaderTitle>
+          <Description>직원관리 페이지 입니다.</Description>
         </HeaderTitleContainer>
         <SelectContainer>
           <DropdownBox>
             <Dropdown>
               <DurationOptions onChange={handleChange}>
-                <Duration value="user__name">이름</Duration>
-                <Duration value="user__store__name">매장</Duration>
-                <Duration value="quest__name">퀘스트</Duration>
+                <Duration value="name">이름</Duration>
+                <Duration value="store__name">매장</Duration>
+                <Duration value="grade__name">직급</Duration>
               </DurationOptions>
             </Dropdown>
           </DropdownBox>
@@ -144,68 +132,57 @@ const Reward = () => {
           <TableHead>
             <TableHeadName>Name</TableHeadName>
             <TableHeadStore>Store</TableHeadStore>
-            <TableHeadQuest>Quest</TableHeadQuest>
-            <TableHeadTime>Update Time</TableHeadTime>
-            <TableHeadReward>Reward</TableHeadReward>
+            <TableHeadPosition>Position</TableHeadPosition>
+            <TableHeadDelete>Delete</TableHeadDelete>
           </TableHead>
-          {currentPosts.map((item: ApprovalList, index: number) => {
+          {currentPosts.map((item: UserList, index: number) => {
             return (
               <TableBody key={index}>
-                <TableBodyName>{item.user__name}</TableBodyName>
-                <TableBodyStore>{item.user__store__name}</TableBodyStore>
-                <TableBodyQuest>{item.quest__name}</TableBodyQuest>
-                <TableBodyTime>
-                  {[item.updated_at][0].slice(0, 16)}
-                </TableBodyTime>
-                <TableBodyReward>
-                  {item.is_rewarded ? (
-                    '발급완료'
-                  ) : (
-                    <RewardBtn
-                      onClick={() => {
-                        setCurrentUserId(item.user__id);
-                        setCurrentQuestId(item.quest__id);
-                        modalOpen();
-                      }}
-                    >
-                      발급하기
-                    </RewardBtn>
-                  )}
-                  <ReactModal
-                    isOpen={modalIsOpen}
-                    onRequestClose={() => setModalIsOpen(false)}
-                    style={{
-                      overlay: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                      },
-                      content: {
-                        border: 'none',
-                        backgroundColor: 'white',
-                        overflow: 'hidden',
-                        fontSize: '100px',
-                        position: 'absolute',
-                        width: '400px',
-                        height: '150px',
-                        margin: '400px 0 0 -150px',
-                        left: '50%',
-                      },
-                    }}
-                  >
-                    <ModalContent>
-                      <ModalTitle>리워드를 발급하겠습니까?</ModalTitle>
-                      <ModalBtnBox>
-                        <ModalBtn onClick={() => isClickedBtn()}>네</ModalBtn>
-                        <ModalBtn
-                          onClick={() => {
-                            window.location.reload();
-                          }}
-                        >
-                          아니오
-                        </ModalBtn>
-                      </ModalBtnBox>
-                    </ModalContent>
-                  </ReactModal>
-                </TableBodyReward>
+                <TableBodyName>{item.name}</TableBodyName>
+                <TableBodyStore>{item.store__name}</TableBodyStore>
+                <TableBodyPosition>{item.grade__name}</TableBodyPosition>
+                <TableBodyDelete
+                  onClick={() => {
+                    setDeleteId(item.id);
+                    ModalOpen();
+                  }}
+                >
+                  Delete
+                </TableBodyDelete>
+                <ReactModal
+                  isOpen={modalIsOpen}
+                  onRequestClose={() => setModalIsOpen(false)}
+                  style={{
+                    overlay: {
+                      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    },
+                    content: {
+                      border: 'none',
+                      backgroundColor: 'white',
+                      overflow: 'hidden',
+                      fontSize: '100px',
+                      position: 'absolute',
+                      width: '400px',
+                      height: '150px',
+                      margin: '400px 0 0 -150px',
+                      left: '50%',
+                    },
+                  }}
+                >
+                  <ModalContent>
+                    <ModalTitle>정말 삭제하시겠습니까?</ModalTitle>
+                    <ModalBtnBox>
+                      <ModalBtn onClick={() => isClickedDelet()}>네</ModalBtn>
+                      <ModalBtn
+                        onClick={() => {
+                          window.location.reload();
+                        }}
+                      >
+                        아니오
+                      </ModalBtn>
+                    </ModalBtnBox>
+                  </ModalContent>
+                </ReactModal>
               </TableBody>
             );
           })}
@@ -220,7 +197,7 @@ const Reward = () => {
   );
 };
 
-export default Reward;
+export default AdminPage;
 
 const Wrapper = styled.div``;
 const InnerWarapper = styled.div`
@@ -305,7 +282,6 @@ const SearchIcon = styled(Search)`
 `;
 const TableContainer = styled.div`
   padding-top: 30px;
-  /* table-layout: fixed; */
   margin: 0 0 60px;
   border-collapse: collapse;
   width: 100%;
@@ -320,18 +296,15 @@ const TableHead = styled.div`
   font: 1.2rem 'Bebas Neue', cursive;
 `;
 const TableHeadName = styled.div`
-  width: 19%;
-`;
-const TableHeadStore = styled.div`
-  width: 20%;
-`;
-const TableHeadQuest = styled.div`
   width: 25%;
 `;
-const TableHeadTime = styled.div`
+const TableHeadStore = styled.div`
   width: 30%;
 `;
-const TableHeadReward = styled.div`
+const TableHeadPosition = styled.div`
+  width: 30%;
+`;
+const TableHeadDelete = styled.div`
   width: 10%;
 `;
 const TableBody = styled.div`
@@ -346,32 +319,23 @@ const TableBody = styled.div`
   }
 `;
 const TableBodyName = styled.div`
-  width: 19%;
-`;
-const TableBodyStore = styled.div`
-  width: 20%;
-`;
-const TableBodyQuest = styled.div`
   width: 25%;
 `;
-const TableBodyTime = styled.div`
+const TableBodyStore = styled.div`
   width: 30%;
 `;
-const TableBodyReward = styled.div`
-  width: 10%;
+const TableBodyPosition = styled.div`
+  width: 30%;
 `;
-const RewardBtn = styled.div`
-  font: 'Bebas Neue', cursive;
-  color: blue;
+const TableBodyDelete = styled.div`
+  width: 10%;
+  color: red;
   cursor: pointer;
   &:hover {
-    /* color: #948780; */
     color: black;
   }
-  &:focus {
-    outline: none;
-  }
 `;
+//modal style
 const ModalContent = styled.div`
   display: flex;
   flex-direction: column;

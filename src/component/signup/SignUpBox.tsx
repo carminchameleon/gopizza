@@ -35,7 +35,7 @@ const SignUpBox: React.FC<RouteComponentProps> = ({
   //input 태그 값 저장
   const handleInput = (e: { target: { value: string } }, option: string) => {
     // console.log('e', typeof e);
-    console.log(e.target.value);
+    // console.log(e.target.value);
     if (option === 'name') setName(e.target.value);
     if (option === 'email') setEmail(e.target.value);
     if (option === 'password') {
@@ -108,7 +108,7 @@ const SignUpBox: React.FC<RouteComponentProps> = ({
       store: storeId,
       image_url: img,
     };
-    console.log(sendData);
+    // console.log(sendData);
 
     if (pwError === true) alert('비밀번호 형식을 다시 확인해주세요');
     if (pwError === false && passwordAgain !== password)
@@ -118,7 +118,7 @@ const SignUpBox: React.FC<RouteComponentProps> = ({
         method: 'POST',
         body: JSON.stringify(sendData),
       }).then(res => {
-        console.log(res);
+        // console.log(res);
         if (res.status === 403) alert('이메일인증을 진행해주세요');
         if (res.status === 400) alert('이메일 중복 및 빈칸을 확인해주세요');
         if (res.status === 200) {
@@ -151,13 +151,17 @@ const SignUpBox: React.FC<RouteComponentProps> = ({
         <Div>
           <Label>비밀번호</Label>
           <Input
+            type="password"
             onChange={e => handleInput(e, 'password')}
             placeholder="  영소문자,숫자 혼합, 8자리 이상"
           />
         </Div>
         <Div>
           <Label>비밀번호 확인</Label>
-          <Input onChange={e => handleInput(e, 'passwordCheck')} />
+          <Input
+            type="password"
+            onChange={e => handleInput(e, 'passwordCheck')}
+          />
         </Div>
         <Div>
           <Label>지점 선택</Label>
@@ -176,8 +180,8 @@ const SignUpBox: React.FC<RouteComponentProps> = ({
 export default withRouter(SignUpBox);
 
 const Wrapper = styled.div`
-  width: 380px;
-  height: 550px;
+  width: 650px;
+  height: 700px;
   background-color: #fff;
   text-align: center;
   display: flex;
@@ -187,9 +191,8 @@ const Wrapper = styled.div`
 
 const Title = styled.div`
   margin-bottom: 35px;
-  color: orange;
-  font-size: 20px;
-  font-weight: bold;
+  color: rgb(252, 109, 2);
+  font: 2.5rem/1.071rem 'Bebas Neue', cursive;
 `;
 
 const Container = styled.div`
@@ -205,36 +208,41 @@ const Div = styled.div`
 `;
 
 const Label = styled.label`
-  font-size: 12px;
-  margin-right: 5px;
+  color: gray;
+  font-weight: bold;
+  font-size: 16px;
+  margin-right: 10px;
 `;
 
 const Input = styled.input`
-  width: 200px;
-  height: 35px;
-  background-color: lightgray;
-  /* border: 1px solid red; */
+  width: 300px;
+  height: 40px;
+  background-color: #ddd;
 `;
 
 const EmailBtn = styled.button`
-  height: 35px;
+  width: 50px;
+  height: 40px;
   color: white;
   position: absolute;
   top: 0px;
   right: 0px;
-  font-size: 12px;
-  background-color: orange;
+  font-size: 14px;
+  background-color: rgb(252, 109, 2);
   border-radius: 3px;
   cursor: pointer;
+  &:focus {
+    outline: none;
+  }
   &:hover {
-    background-color: orangered;
+    background-color: orange;
   }
 `;
 
 const Select = styled.select`
-  width: 200px;
-  height: 35px;
-  background-color: lightgray;
+  width: 300px;
+  height: 39px;
+  background-color: #ddd;
   &:focus {
     outline: none;
   }
@@ -243,16 +251,18 @@ const Select = styled.select`
 const Option = styled.option``;
 
 const AccountBtn = styled.div`
-  margin-top: 30px;
+  height: 40px;
+  margin-top: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
-  height: 30px;
-  background-color: orange;
+  font: 25px 'Bebas Neue', cursive;
+  color: rgb(252, 109, 2);
+  border: solid 3px rgb(252, 109, 2);
   border-radius: 3px;
   cursor: pointer;
   &:hover {
-    background-color: orangered;
+    color: orange;
+    border: solid 3px orange;
   }
 `;

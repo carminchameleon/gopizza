@@ -12,8 +12,7 @@ import MyRewardContQuality from "./Component/MyRewardContQuality"
 import MyRewardTap from "./Component/MyRewardTap"
 
 interface _props {
-    is_achieved: boolean,
-    buttonId: number
+    status: boolean,
 }
 
 const System: React.SFC = () => {
@@ -24,6 +23,8 @@ const System: React.SFC = () => {
         image: null,
         name: "",
         store: "",
+        badge: 0,
+        coupon: 0,
     })
 
     const [userScore, setUserSocre] = useState({
@@ -43,70 +44,101 @@ const System: React.SFC = () => {
     const [graphData, setGraphData] = useState(
         [
             {
-                subject: 'Count', A: 60, fullMark: 100,
+                subject: 'Count', A: 0, fullMark: 100,
             },
             {
-                subject: 'Quality', A: 48, fullMark: 100,
+                subject: 'Quality', A: 0, fullMark: 100,
             },
             {
-                subject: 'Time', A: 86, fullMark: 100,
+                subject: 'Time', A: 0, fullMark: 100,
             },
         ]
     )
 
     const [pizzaCount, setpizzaCount] = useState({});
 
-    useEffect(() => {
-        fetchInfo();
-        requestList();
+    const [idNum, SetIdNum] = useState(0);
 
-    }, [])
+    useEffect(() => {
+
+        idGet();
+
+    }, []);
+
 
     const TabClick = (arg: string) => {
         setTabName(arg);
-        console.log("a");
     }
 
-    const fetchInfo = async () => {
+    const token: any = window.sessionStorage.getItem('token');
 
-        const info = await fetch(`${URL}/user/info`, {
+    const idGet = async () => {
+
+        const id = await fetch(`${URL}/user/get-user-id`, {
             method: "GET",
             headers: {
-                Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxMzd9.vpQMWR9OlJiCXWe73hiGCHEXaKCVa35Loqm0_jNIkgU"
+                Authorization: token
             }
         })
 
-        if (info.status === 200) {
-            const infoJson = await info.json();
+        if (id.status === 200) {
+            const idJson = await id.json();
+            SetIdNum(idJson.user_id);
+            fetchInfo(idJson.user_id);
+            requestList();
+        }
 
-            console.log(infoJson)
+
+    }
+
+    const fetchInfo = async (num: number) => {
+
+        const info = await fetch(`${URL}/record/user/${String(num)}`, {
+            method: "GET",
+            headers: {
+                Authorization: token
+            }
+        })
+
+        const score = await fetch(`${URL}/quest/reward/${String(num)}`, {
+            method: "GET",
+            headers: {
+                Authorization: token
+            }
+        })
+
+        if (info.status === 200 && score.status === 200) {
+            const infoJson = await info.json();
+            const scoreJson = await score.json();
 
             setUserInfo({
-                image: infoJson.user_info[0].name,
-                name: infoJson.user_info[0].name,
-                store: infoJson.user_info[0].store__name
+                image: infoJson.user_info.image,
+                name: infoJson.user_info.name,
+                store: infoJson.user_info.store_name,
+                badge: scoreJson.reward.badge_count,
+                coupon: scoreJson.reward.coupon_count
             })
 
             setUserSocre({
-                average_time: infoJson.average_time,
-                shortest_time: infoJson.shortest_time,
-                count: infoJson.count,
-                quality: infoJson.quality,
-                sauce: infoJson.sauce,
-                cheese: infoJson.cheese,
-                topping: infoJson.topping
+                average_time: infoJson.user_info.average_time,
+                shortest_time: infoJson.user_info.shortest_time,
+                count: infoJson.user_info.total_count,
+                quality: infoJson.user_info.average_quality,
+                sauce: infoJson.user_info.average_sauce,
+                cheese: infoJson.user_info.average_cheese,
+                topping: infoJson.user_info.average_topping
             })
 
             setGraphData(
                 [
                     {
-                        subject: 'Count', A: infoJson.quality, fullMark: 100,
+                        subject: 'Count', A: Math.floor(infoJson.user_info.count_standard), fullMark: 100,
                     },
                     {
-                        subject: 'Quality', A: 48, fullMark: 100,
+                        subject: 'Quality', A: Math.floor(infoJson.user_info.completion_standard), fullMark: 100,
                     },
                     {
-                        subject: 'Time', A: 86, fullMark: 100,
+                        subject: 'Time', A: Math.floor(infoJson.user_info.time_standard), fullMark: 100,
                     },
                 ]
             )
@@ -121,22 +153,20 @@ const System: React.SFC = () => {
         const info = await fetch(`${URL}/quest`, {
             method: "GET",
             headers: {
-                Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxMzd9.vpQMWR9OlJiCXWe73hiGCHEXaKCVa35Loqm0_jNIkgU"
+                Authorization: token
             }
         })
 
         const myScore = await fetch(`${URL}/quest/get-my-score`, {
             method: "POST",
             headers: {
-                Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxMzd9.vpQMWR9OlJiCXWe73hiGCHEXaKCVa35Loqm0_jNIkgU"
+                Authorization: token
             }
         })
 
         if (info.status === 200 && myScore.status === 200) {
             const infoJson = await info.json();
             const myScoreJson = await myScore.json();
-
-            console.log(infoJson, myScoreJson)
 
             setquestList({
                 questList: infoJson
@@ -150,9 +180,13 @@ const System: React.SFC = () => {
     }
 
     const requestPost = async (arg: _props) => {
-        console.log(arg);
 
-        console.log(arg, "내용이 있으면~~~~~~~ fetch 다시 불러오고~~~ 내용 다시 불러오기~~~")
+        if (arg.status) {
+
+            fetchInfo(idNum);
+            requestList();
+
+        }
     }
 
     const renderSwitch = () => {
@@ -174,10 +208,15 @@ const System: React.SFC = () => {
     return (
         <>
             <Header />
-            <Banner title="REWARD SYSTEM" />
+            <Banner title="REWARD SYSTEM" background="rgb(222, 222, 80)" navBackground="rgb(206, 208, 29)" />
+            <SystemIntro>
+                <SystemIntroTitle>REWARD SYSTEM</SystemIntroTitle>
+                <SystemIntroSubTitle>나는 피자를 얼마나 잘 만들까요?</SystemIntroSubTitle>
+                <SystemIntroSubTitle>전체적인 내 역량을 숫자와 그래프로 알 수 있습니다!</SystemIntroSubTitle>
+            </SystemIntro>
             <SystemSection>
                 <UserSection>
-                    <MyInfo name={userInfo.name} store={userInfo.store} />
+                    <MyInfo image={userInfo.image} name={userInfo.name} store={userInfo.store} badge={userInfo.badge} coupon={userInfo.coupon} />
                     <MyCal shortest_time={userScore.shortest_time} count={userScore.count} topping={userScore.topping} cheese={userScore.cheese} sauce={userScore.sauce} average_time={userScore.average_time} quality={userScore.quality} />
                     <MyGraph data={graphData} />
                 </UserSection>
@@ -192,10 +231,38 @@ const System: React.SFC = () => {
     )
 }
 
+const SystemIntro = styled.section`
+    margin: 60px 0 40px;
+`
+
+const SystemIntroTitle = styled.div`
+    text-align: center;
+    -webkit-letter-spacing: 0.1rem;
+    -moz-letter-spacing: 0.1rem;
+    -ms-letter-spacing: 0.1rem;
+    letter-spacing: 0.1rem;
+    color: #333;
+    text-transform: uppercase;
+    margin: 0;
+    font: 2.5rem/1.071rem 'Bebas Neue',cursive;
+    margin-bottom: 20px;
+`
+
+const SystemIntroSubTitle = styled.div`
+    text-align: center;
+    -webkit-letter-spacing: 0.1rem;
+    -moz-letter-spacing: 0.1rem;
+    -ms-letter-spacing: 0.1rem;
+    letter-spacing: 0.1rem;
+    color: #948780;
+    font-weight: 300;
+    line-height: 20px;
+`
+
 const SystemSection = styled.section`
     max-width: 1090px;
-    margin: 20px auto;
-    padding: 74px 15px 0;
+    margin: 0 auto 80px;
+    padding: 0 15px 0;
 `
 
 const UserSection = styled.section`

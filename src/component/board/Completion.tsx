@@ -1,16 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios, { AxiosResponse } from 'axios';
-import { BOARDCREWURL } from 'config';
-import { BOARDSTOREURL } from 'config';
+import { BOARDCREWURL, BOARDSTOREURL, PROFILEURL } from 'config';
+import Summary from './Summary';
+import StoreSummary from './StoreSummary';
+import Modal from 'react-modal';
+
+interface CrewInfo {
+  rank: number;
+  name: string;
+  store_name: string;
+  total_score: number;
+  average_time: number;
+  count: number;
+  completion_score: number;
+  image: string;
+  id: number;
+}
 
 function Completion() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<CrewInfo[]>([]);
   const [duration, setDuration] = useState(1);
   const [crew, setCrew] = useState(true);
-  const [loading, isLoading] = useState(true);
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState();
+  const [currentTime, setCurrentTime] = useState();
+
   useEffect(() => {
     fetchData();
+    handleRefresh();
   }, []);
 
   useEffect(() => {
@@ -27,8 +45,6 @@ function Completion() {
       .then((response: AxiosResponse): void => {
         setData(response.data.ranking);
       });
-
-    console.log('firstData');
   };
 
   const fetchHistory = (): void => {
@@ -44,7 +60,6 @@ function Completion() {
   };
 
   const selectDuration = (event: any) => {
-    console.log(typeof event.target.value);
     if (event.target.value === '0') {
       setDuration(1);
     } else if (event.target.value === '1') {
@@ -59,8 +74,25 @@ function Completion() {
   };
 
   const handleRange = (boolean: boolean): void => {
-    setData([]);
     setCrew(boolean);
+  };
+
+  const handleModal = (boolean: boolean, userId: number) => {
+    setModalIsOpen(true);
+    setCurrentUser(userId);
+  };
+
+  const handleRefresh = (): void => {
+    const Time = new Date();
+    const now =
+      Time.getHours() +
+      ' : ' +
+      Time.getMinutes() +
+      ' : ' +
+      Time.getMilliseconds();
+
+    setCurrentTime(now);
+    fetchData();
   };
 
   return (
@@ -74,6 +106,20 @@ function Completion() {
               토핑, 소스, 치즈, 퀄리티 하나도 놓치지 않을거에요!
             </Description>
           </HeaderTitleBox>
+          <TimeContainer>
+            <TimeBox>
+              <div>{currentTime}</div>
+            </TimeBox>
+            <RefreshButtonBox>
+              <RefreshButton
+                onClick={() => {
+                  handleRefresh();
+                }}
+              >
+                Refresh
+              </RefreshButton>
+            </RefreshButtonBox>
+          </TimeContainer>
           <SelectContainer>
             <RangeContainer>
               <TitleContainer>
@@ -146,16 +192,26 @@ function Completion() {
                     return <RankingNumber>{index}</RankingNumber>;
                   }
                 };
-
+                const profilePic = (url: string | null) => {
+                  if (url !== null) {
+                    return <ProfileImg src={item.image}></ProfileImg>;
+                  } else {
+                    return <ProfileImg src={PROFILEURL}></ProfileImg>;
+                  }
+                };
                 return (
-                  <TableBodyTableRow key={index}>
+                  <TableBodyTableRow
+                    key={index}
+                    onClick={() => {
+                      handleModal(true, item.id);
+                    }}
+                  >
                     <Ranking>{numberUI(item.rank)}</Ranking>
                     <PersonInfo>
                       {crew ? (
                         <PersonBox>
-                          <PhotoBox>
-                            <ProfileImg src="http://localhost:3000/images/defaultProfile.png"></ProfileImg>
-                          </PhotoBox>
+                          <PhotoBox>{profilePic(item.image)}</PhotoBox>
+
                           <InfoBox>
                             <Name>{item.name}</Name>
                             <Store>{item.store_name}</Store>
@@ -177,6 +233,36 @@ function Completion() {
           </TableContainer>
         </TableSection>
       </MainHolder>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => {
+          setModalIsOpen(false);
+        }}
+        style={{
+          overlay: {
+            backgroundColor: 'rgba(0,0,0,0.75)',
+          },
+          content: {
+            width: '660px',
+            height: '460px',
+            boxSizing: 'border-box',
+            padding: 0,
+            borderRadius: '10px',
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+          },
+        }}
+      >
+        {crew ? (
+          <Summary currentUser={currentUser} />
+        ) : (
+          <StoreSummary currentUser={currentUser} />
+        )}
+      </Modal>
     </Container>
   );
 }
@@ -337,6 +423,10 @@ const TableBodyTableRow = styled.tr`
   height: 80px;
   text-align: center;
   border-bottom: 1px solid #ddd;
+  :hover {
+    cursor: pointer;
+    background-color: #e5e5e5;
+  }
 `;
 
 const Ranking = styled.td`
@@ -365,7 +455,9 @@ const RankingGold = styled.span`
   padding: 3px 0 0;
   border: 2px solid #dab509;
   text-align: center;
-  color: #dab509;
+  background-color: #dab509;
+  color: white;
+  font: 1.1rem 'Bebas Neue', cursive;
 `;
 
 const RankingSilver = styled.span`
@@ -377,7 +469,9 @@ const RankingSilver = styled.span`
   padding: 3px 0 0;
   border: 2px solid #a1a1a1;
   text-align: center;
-  color: #a1a1a1;
+  color: white;
+  background-color: #a1a1a1;
+  font: 1.1rem 'Bebas Neue', cursive;
 `;
 
 const RankingBronze = styled.span`
@@ -389,7 +483,9 @@ const RankingBronze = styled.span`
   padding: 3px 0 0;
   border: 2px solid #ae7058;
   text-align: center;
-  color: #ae7058;
+  color: white;
+  background-color: #ae7058;
+  font: 1.1rem 'Bebas Neue', cursive;
 `;
 
 const TotalScore = styled.td`
@@ -465,6 +561,9 @@ const RangeTitle = styled.button`
   margin-right: 2px;
   margin-bottom: 3px;
   opacity: 0.8;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const CurrentRangeTitle = styled.button`
@@ -482,6 +581,9 @@ const CurrentRangeTitle = styled.button`
   margin-right: 2px;
   margin-bottom: 3px;
   opacity: 0.8;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const StoreName = styled.div`
@@ -489,4 +591,41 @@ const StoreName = styled.div`
   margin: 0 auto;
   text-align: start;
   color: black;
+`;
+
+const TimeContainer = styled.div`
+  width: 100%;
+  font: 1.2rem 'Bebas Neue', cursive;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+
+const RefreshButton = styled.div`
+  font: 1.2rem 'Bebas Neue', cursive;
+  text-align: center;
+  line-height: 2rem;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const RefreshButtonBox = styled.div`
+  border-radius: 4px;
+  height: 30px;
+  border: 1px solid #d4d4d4;
+  width: 70px;
+  display: flex;
+  color: #d4d4d4;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const TimeBox = styled.div`
+  display: flex;
+  width: 100px;
+  color: #d4d4d4;
+  flex-direction: row;
+  justify-content: center;
+  line-height: 2rem;
 `;

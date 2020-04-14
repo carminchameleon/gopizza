@@ -4,6 +4,7 @@ import { RouteComponentProps, withRouter } from 'react-router-dom';
 import ReactModal from 'react-modal';
 import FileUpload from './FileUpload';
 import styled from 'styled-components';
+ReactModal.setAppElement('#root');
 
 const AccountForm: React.FC<RouteComponentProps> = ({
   history,
@@ -25,7 +26,7 @@ const AccountForm: React.FC<RouteComponentProps> = ({
       })
         .then(res => res.json())
         .then(res => {
-          console.log(res.user_info[0]);
+          // console.log(res.user_info[0]);
           setData(res.user_info[0]);
         });
     }
@@ -33,8 +34,8 @@ const AccountForm: React.FC<RouteComponentProps> = ({
 
   //input 태그 값 저장
   const handleInput = (e: { target: { value: string } }, option: string) => {
-    console.log(e.target.value);
-    console.log(pwError);
+    // console.log(e.target.value);
+    // console.log(pwError);
     if (option === 'password') setPassword(e.target.value);
     if (option === 'newPassword') {
       setNewPassword(e.target.value);
@@ -73,7 +74,7 @@ const AccountForm: React.FC<RouteComponentProps> = ({
           password: password,
         }),
       }).then(res => {
-        console.log(res);
+        // console.log(res);
         if (res.status === 200) {
           setModalIsOpen(true);
         } else {
@@ -118,6 +119,11 @@ const AccountForm: React.FC<RouteComponentProps> = ({
 
   return (
     <Wrapper>
+      <HeaderTitleBox>
+        <HeaderTitle>Modify Account</HeaderTitle>
+        <Description>이미지 수정, 비밀번호 변경이 가능합니다</Description>
+      </HeaderTitleBox>
+
       <Container>
         <FileUpload image={data.image} />
         <Box>
@@ -128,6 +134,7 @@ const AccountForm: React.FC<RouteComponentProps> = ({
           <InputBox>
             <Title>비밀번호</Title>
             <PwdInput
+              type="password"
               onChange={e => handleInput(e, 'password')}
               placeholder="비밀번호를 입력해주세요"
             ></PwdInput>
@@ -156,7 +163,7 @@ const AccountForm: React.FC<RouteComponentProps> = ({
               fontSize: '100px',
               position: 'absolute',
               width: '500px',
-              height: '400px',
+              height: '300px',
               margin: '300px 0 0 -250px',
               left: '50%',
               // fontFamily: 'nationale-regular',
@@ -166,11 +173,13 @@ const AccountForm: React.FC<RouteComponentProps> = ({
           <ModalContent>
             <ModalTitle>새 비밀번호</ModalTitle>
             <ModalInput
+              type="password"
               onChange={e => handleInput(e, 'newPassword')}
               placeholder="  영소문자,숫자 혼합, 8자리 이상"
             ></ModalInput>
             <ModalTitle>새 비밀번호 확인</ModalTitle>
             <ModalInput
+              type="password"
               onChange={e => handleInput(e, 'checkNewPassword')}
             ></ModalInput>
             <ModalBtn onClick={isModalBtnClicked}>확인</ModalBtn>
@@ -183,12 +192,41 @@ const AccountForm: React.FC<RouteComponentProps> = ({
 
 export default withRouter(AccountForm);
 
-const Wrapper = styled.div``;
-const Container = styled.div`
-  padding-top: 50px;
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: auto;
+  max-width: 1090px;
+`;
+const HeaderTitleBox = styled.div`
+  margin-bottom: 50px;
+`;
+const HeaderTitle = styled.div`
+  margin-bottom: 20px;
+  text-align: center;
+  letter-spacing: 0.1rem;
+  color: #333;
+  text-transform: uppercase;
+  font: 2.5rem/1.071rem 'Bebas Neue', cursive;
+`;
+const Description = styled.div`
+  text-align: center;
+  letter-spacing: 0.1rem;
+  color: #948780;
+  font-weight: 300;
+  line-height: 20px;
+`;
+const Container = styled.div`
+  width: 80%;
+  border-top: solid 3px rgb(252, 109, 2);
+  padding-top: 50px;
+  padding-bottom: 50px;
+  display: flex;
+  justify-content: space-around;
+  /* flex-direction: column;
+  align-items: center; */
+  background-color: white;
 `;
 const Box = styled.div`
   margin-top: 20px;
@@ -200,35 +238,37 @@ const Box = styled.div`
 `;
 const InputBox = styled.div`
   display: flex;
-  margin-bottom: 10px;
+  margin-bottom: 40px;
   position: relative;
 `;
 const Title = styled.div`
   margin-right: 10px;
-  width: 60px;
+  width: 80px;
   display: flex;
   align-items: center;
-  font-size: 12px;
+  font-size: 17px;
 `;
 const Input = styled.div`
-  width: 200px;
-  height: 30px;
-  background-color: lightgray;
+  width: 400px;
+  height: 50px;
+  /* background-color: lightgray; */
+  border: solid 2px rgb(252, 109, 2);
   display: flex;
   align-items: center;
   padding-left: 10px;
   font-size: 12px;
 `;
 const PwdInput = styled.input`
-  width: 200px;
-  height: 30px;
-  background-color: lightgray;
+  width: 400px;
+  height: 50px;
+  border: solid 2px rgb(252, 109, 2);
   padding-left: 10px;
   font-size: 12px;
 `;
 
 const PwdBtn = styled.button`
-  height: 30px;
+  width: 70px;
+  height: 50px;
   color: white;
   position: absolute;
   top: 0px;
@@ -239,6 +279,9 @@ const PwdBtn = styled.button`
   cursor: pointer;
   &:hover {
     background-color: orangered;
+  }
+  &:focus {
+    outline: none;
   }
 `;
 //modal
@@ -256,14 +299,23 @@ const ModalTitle = styled.div`
 const ModalInput = styled.input`
   width: 280px;
   height: 40px;
-  background-color: lightgray;
+  font-size: 14px;
+  background-color: #ddd;
   margin-bottom: 10px;
 `;
 const ModalBtn = styled.button`
+  margin-top: 15px;
   font-size: 13px;
   width: 70px;
   height: 35px;
+  font-size: 14px;
   border-radius: 5px;
   background-color: orange;
   cursor: pointer;
+  &:hover {
+    background-color: orangered;
+  }
+  &:focus {
+    outline: none;
+  }
 `;

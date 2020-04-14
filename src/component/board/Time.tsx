@@ -1,12 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import axios, { AxiosResponse } from 'axios';
-import { BOARDCREWURL } from 'config';
-import { BOARDSTOREURL } from 'config';
-import { PIZZALISTURL } from 'config';
+import { BOARDCREWURL, BOARDSTOREURL, PROFILEURL, PIZZALISTURL } from 'config';
+import Summary from './Summary';
+import StoreSummary from './StoreSummary';
+import Modal from 'react-modal';
 
+interface CrewInfo {
+  name: string;
+  store_name: string;
+  total_score: number;
+  average_time: number;
+  count: number;
+  completion_score: number;
+  image: string;
+  id: number;
+  rank: number;
+  record: string;
+}
+interface PizzaList {
+  id: number;
+  image: string;
+  name_en: string;
+  name_kr: string;
+}
 function Time() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<CrewInfo[]>([]);
   const [crew, setCrew] = useState(true);
   const [duration, setDuration] = useState(1);
   const [record, setRecord] = useState('shortest_time');
@@ -15,10 +34,14 @@ function Time() {
   const [pizzaList, setPizzaList] = useState([]);
   const [pizzaEnName, setPizzaEnName] = useState('Classic Cheese Pizza');
   const [pizzaKoName, setPizzaKoName] = useState('클래식 치즈 피자');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState();
+  const [currentTime, setCurrentTime] = useState();
 
   useEffect(() => {
     fetchPizzaList();
     fetchData();
+    handleRefresh();
   }, []);
 
   useEffect(() => {
@@ -42,6 +65,25 @@ function Time() {
     const currentPizza = pizzaList[num - 1];
     setPizzaKoName(currentPizza['name_kr']);
     setPizzaEnName(currentPizza['name_en']);
+  };
+
+  const handleModal = (boolean: boolean, userId: number) => {
+    setModalIsOpen(true);
+    setCurrentUser(userId);
+    console.log(userId);
+  };
+
+  const handleRefresh = (): void => {
+    const Time = new Date();
+    const now =
+      Time.getHours() +
+      ' : ' +
+      Time.getMinutes() +
+      ' : ' +
+      Time.getMilliseconds();
+
+    setCurrentTime(now);
+    fetchData();
   };
 
   const fetchData = (): void => {
@@ -84,7 +126,6 @@ function Time() {
   };
 
   const handleRange = (boolean: boolean): void => {
-    setData([]);
     setCrew(boolean);
   };
 
@@ -104,9 +145,43 @@ function Time() {
         <HeaderContainer>
           <HeaderTitleBox>
             <HeaderTitle>Time Ranking</HeaderTitle>
-            <Description>피자를 만드는데 걸리는 시간은 얼마일까요?</Description>
-            <Description>상위 Top 20의 피자 타임 랭킹 공개합니다!</Description>
+            <Description>
+              하나의 피자를 완성하는데 걸리는 시간은 얼마일까요?
+            </Description>
+            <Description>각각 피자별 시간을 확인해 보아요!</Description>
           </HeaderTitleBox>
+          <TimeContainer>
+            <TimeBox>
+              <div>{currentTime}</div>
+            </TimeBox>
+            <RefreshButtonBox>
+              <RefreshButton
+                onClick={() => {
+                  handleRefresh();
+                }}
+              >
+                Refresh
+              </RefreshButton>
+            </RefreshButtonBox>
+          </TimeContainer>
+          <PizzaContainer>
+            {pizzaList.map((item: PizzaList, index: number) => {
+              return (
+                <PizzaBox
+                  key={item.id}
+                  onClick={() => {
+                    handlePizza(item.id);
+                  }}
+                >
+                  <PizzaImageBox>
+                    <PizzaImage src={item.image}></PizzaImage>
+                  </PizzaImageBox>
+                  <PizzaEnName>{item.name_en}</PizzaEnName>
+                  <PizzaKoName>{item.name_kr}</PizzaKoName>
+                </PizzaBox>
+              );
+            })}
+          </PizzaContainer>
           <RecordContainer>
             {shortest ? (
               <CurrentRecordBox onClick={() => handleRecord(true)}>
@@ -127,24 +202,7 @@ function Time() {
               </CurrentRecordBox>
             )}
           </RecordContainer>
-          <PizzaContainer>
-            {pizzaList.map((item: any, index: number) => {
-              return (
-                <PizzaBox
-                  key={item.id}
-                  onClick={() => {
-                    handlePizza(item.id);
-                  }}
-                >
-                  <PizzaImageBox>
-                    <PizzaImage src={item.image}></PizzaImage>
-                  </PizzaImageBox>
-                  <PizzaEnName>{item.name_en}</PizzaEnName>
-                  <PizzaKoName>{item.name_kr}</PizzaKoName>
-                </PizzaBox>
-              );
-            })}
-          </PizzaContainer>
+
           <PizzaTitleContainer>
             <PizzaEnTitle>{pizzaEnName}</PizzaEnTitle>
             <PizzaKoTitle>{pizzaKoName}</PizzaKoTitle>
@@ -202,7 +260,7 @@ function Time() {
               </TableHeadRow>
             </TableHead>
             <TableBody>
-              {data.map((item: any, index: number) => {
+              {data.map((item: CrewInfo | any, index: number) => {
                 const numberUI = (index: number) => {
                   if (index === 1) {
                     return <RankingGold>G</RankingGold>;
@@ -217,16 +275,26 @@ function Time() {
                     return <RankingNumber>{index}</RankingNumber>;
                   }
                 };
-
+                const profilePic = (url: string | null) => {
+                  if (url !== null) {
+                    return <ProfileImg src={item.image}></ProfileImg>;
+                  } else {
+                    return <ProfileImg src={PROFILEURL}></ProfileImg>;
+                  }
+                };
                 return (
-                  <TableBodyTableRow key={index}>
+                  <TableBodyTableRow
+                    key={index}
+                    onClick={() => {
+                      handleModal(true, item.id);
+                    }}
+                  >
                     <Ranking>{numberUI(item.rank)}</Ranking>
                     <PersonInfo>
                       {crew ? (
                         <PersonBox>
-                          <PhotoBox>
-                            <ProfileImg src="http://localhost:3000/images/defaultProfile.png"></ProfileImg>
-                          </PhotoBox>
+                          <PhotoBox>{profilePic(item.image)}</PhotoBox>
+
                           <InfoBox>
                             <Name>{item.name}</Name>
                             <Store>{item.store_name}</Store>
@@ -245,6 +313,36 @@ function Time() {
           </TableContainer>
         </TableSection>
       </MainHolder>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => {
+          setModalIsOpen(false);
+        }}
+        style={{
+          overlay: {
+            backgroundColor: 'rgba(0,0,0,0.75)',
+          },
+          content: {
+            width: '660px',
+            height: '460px',
+            boxSizing: 'border-box',
+            padding: 0,
+            borderRadius: '10px',
+            top: '50%',
+            left: '50%',
+            right: 'auto',
+            bottom: 'auto',
+            marginRight: '-50%',
+            transform: 'translate(-50%, -50%)',
+          },
+        }}
+      >
+        {crew ? (
+          <Summary currentUser={currentUser} />
+        ) : (
+          <StoreSummary currentUser={currentUser} />
+        )}
+      </Modal>
     </Container>
   );
 }
@@ -292,18 +390,18 @@ const RecordContainer = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: center;
+  justify-content: flex-end;
 `;
 
 const RecordBox = styled.div`
   width: 10%;
   height: 35px;
   border: 2px solid #ff6d00;
-  background-color: #ff6d00;
+  background-color: white;
   border-radius: 3px;
   line-height: 30px;
   text-align: center;
-  color: white;
+  color: #ff6d00;
   opacity: 0.9;
   margin-right: 4px;
   font-weight: 500;
@@ -327,7 +425,6 @@ const CurrentRecordBox = styled.div`
   margin-right: 4px;
   font-weight: 500;
   margin-bottom: 15px;
-  color: yellow;
   :hover {
     cursor: pointer;
     opacity: 0.7;
@@ -347,7 +444,6 @@ const TitleContainer = styled.div`
   flex-direction: row;
   justify-content: start;
   position: relative;
-  /* margin-bottom: 20px; */
 `;
 const DropdownContainer = styled.div`
   position: absolute;
@@ -361,7 +457,6 @@ const Dropdown = styled.div`
   border-bottom: 0;
   border: 1px solid #aaa;
   position: relative;
-
   opacity: 0.3;
   select {
     width: 100%;
@@ -416,12 +511,14 @@ const RangeTitle = styled.button`
   border-top-right-radius: 3px;
   border-left: 2px solid #b8bfc2;
   border-right: 2px solid #b8bfc2;
-  /* border: 1px solid #aaa; */
   border-bottom: 0px;
   position: relative;
   margin-right: 2px;
   margin-bottom: 3px;
   opacity: 0.8;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const CurrentRangeTitle = styled.button`
@@ -439,18 +536,39 @@ const CurrentRangeTitle = styled.button`
   margin-right: 2px;
   margin-bottom: 3px;
   opacity: 0.8;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const PizzaContainer = styled.div`
   margin-top: 20px;
+  height: 250px;
   display: flex;
   flex-direction: row;
   justify-content: start;
   overflow: hidden;
   overflow-x: scroll;
   margin-bottom: 20px;
+
   ::-webkit-scrollbar {
-    width: 0px;
+    width: 6px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #ff6d00;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00a6cb;
+  }
+  :hover {
+    cursor: pointer;
   }
 `;
 
@@ -472,7 +590,7 @@ const PizzaImageBox = styled.div`
 `;
 
 const PizzaImage = styled.img`
-  margin-top: 20%;
+  margin-top: 23%;
   width: 140px;
   height: 90px;
 `;
@@ -493,24 +611,17 @@ const PizzaKoName = styled.div`
 `;
 
 const PizzaTitleContainer = styled.div`
-  padding-top: 15px;
   width: 100%;
-
-  /* background-color: #00a6cb; */
-  /* opacity: 0.7; */
   padding-bottom: 15px;
   margin-bottom: 10px;
   color: #00a6cb;
-  /* background-color: rgb(255, 109, 0); */
   border-radius: 10px;
 `;
 const PizzaEnTitle = styled.div`
-  /* text-align: center; */
   font: 1.8rem 'Bebas Neue', cursive;
 `;
 
 const PizzaKoTitle = styled.div`
-  /* text-align: center; */
   font: 1rem 'Bebas Neue', cursive;
   letter-spacing: 3px;
 `;
@@ -572,6 +683,10 @@ const TableBodyTableRow = styled.tr`
   height: 80px;
   text-align: center;
   border-bottom: 1px solid #ddd;
+  :hover {
+    cursor: pointer;
+    background-color: #e5e5e5;
+  }
 `;
 
 const Ranking = styled.td`
@@ -599,8 +714,9 @@ const RankingGold = styled.span`
   height: 30px;
   padding: 3px 0 0;
   border: 2px solid #dab509;
+  background-color: #dab509;
   text-align: center;
-  color: #dab509;
+  color: white;
   font: 1.1rem 'Bebas Neue', cursive;
 `;
 
@@ -613,7 +729,8 @@ const RankingSilver = styled.span`
   padding: 3px 0 0;
   border: 2px solid #a1a1a1;
   text-align: center;
-  color: #a1a1a1;
+  background-color: #a1a1a1;
+  color: white;
   font: 1.1rem 'Bebas Neue', cursive;
 `;
 
@@ -625,8 +742,9 @@ const RankingBronze = styled.span`
   height: 30px;
   padding: 3px 0 0;
   border: 2px solid #ae7058;
+  background-color: #ae7058;
   text-align: center;
-  color: #ae7058;
+  color: white;
   font: 1.1rem 'Bebas Neue', cursive;
 `;
 
@@ -678,24 +796,46 @@ const Store = styled.div`
   line-height: 20px;
   font-size: 15px;
 `;
-
-const RangeBar = styled.nav`
-  max-width: 1090px;
-  width: 100%;
-  height: 4px;
-  background-color: #aaa;
-`;
-
-const TitleBar = styled.div`
-  width: 900px;
-  height: 3px;
-  background-color: black;
-  display: block;
-`;
-
 const StoreName = styled.div`
   font: 1.2rem 'Bebas Neue', cursive;
   margin: 0 auto;
   text-align: start;
   color: black;
+`;
+
+const TimeContainer = styled.div`
+  width: 100%;
+  font: 1.2rem 'Bebas Neue', cursive;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+`;
+
+const RefreshButton = styled.div`
+  font: 1.2rem 'Bebas Neue', cursive;
+  text-align: center;
+  line-height: 2rem;
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+const RefreshButtonBox = styled.div`
+  border-radius: 4px;
+  height: 30px;
+  border: 1px solid #d4d4d4;
+  width: 70px;
+  display: flex;
+  color: #d4d4d4;
+  flex-direction: row;
+  justify-content: center;
+`;
+
+const TimeBox = styled.div`
+  display: flex;
+  width: 100px;
+  color: #d4d4d4;
+  flex-direction: row;
+  justify-content: center;
+  line-height: 2rem;
 `;

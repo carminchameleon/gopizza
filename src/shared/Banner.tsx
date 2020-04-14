@@ -74,7 +74,6 @@ const NavConatiner = styled.nav`
 `;
 
 const NavHolder = styled.div`
-  /* padding: 10px 15px 9px 5px; */
   max-width: 1070px;
   margin: 0 auto;
 `;
@@ -114,6 +113,7 @@ const NavLink = styled.li`
 const BannerContainer = styled.div`
   background: #333;
   text-align: center;
+
   position: relative;
   background-color: #ed1941;
 `;
