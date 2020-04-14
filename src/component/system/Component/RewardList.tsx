@@ -95,6 +95,7 @@ const StatusImg = styled.img<{ rewardStatus: boolean }>`
 `
 
 const StatusText = styled.p`
+    color: #666;
 `
 
 export default RewardList
