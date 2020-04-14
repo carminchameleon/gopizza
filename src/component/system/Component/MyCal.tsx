@@ -12,6 +12,12 @@ interface props {
 }
 
 const MyCal = (props: props) => {
+
+    const averageTime = Math.floor(props.average_time / 60);
+    const averageTimeSecond = Math.floor(props.average_time - (60 * averageTime));
+    const shortestTime = Math.floor(props.shortest_time / 60);
+    const shorestTimeSecond = Math.floor(props.shortest_time - (60 * shortestTime))
+
     return (
         <MyCalBox>
             <MyCalTitle>나의 수치</MyCalTitle>
@@ -21,11 +27,11 @@ const MyCal = (props: props) => {
                 <MyCalSpecDetail>
                     <div>
                         <em>평균 시간</em>
-                        <p>{Math.floor(props.average_time / 60)}:{Math.floor(props.average_time) - (60 * (Math.floor(props.average_time / 60))) === 0 ? "00" : Math.floor(props.average_time) - (60 * (Math.floor(props.average_time / 60)))}</p>
+                        <p>{averageTime}:{averageTime - (60 * averageTime) === 0 ? "00" : averageTimeSecond < 10 ? "0" + averageTimeSecond : averageTimeSecond}</p>
                     </div>
                     <div>
                         <em>최소시간</em>
-                        <p>{Math.floor(props.shortest_time / 60)}:{Math.floor(props.shortest_time) - (60 * (Math.floor(props.shortest_time / 60))) === 0 ? "00" : Math.floor(props.shortest_time) - (60 * (Math.floor(props.shortest_time / 60)))}
+                        <p>{shortestTime}:{shortestTime - (60 * shortestTime) === 0 ? "00" : shorestTimeSecond < 10 ? "0" + shorestTimeSecond : shorestTimeSecond}
                         </p>
                     </div>
                 </MyCalSpecDetail>
