@@ -23,6 +23,11 @@ const Map = () => {
   return (
     <Mapdiv>
       <Header />
+      <BannerContainer>
+        <BannerHolder>
+          <BannerTitle>Go map</BannerTitle>
+        </BannerHolder>
+      </BannerContainer>
       {datas.length > 0 ? <Kakaomap datas={datas} /> : ''}
     </Mapdiv>
   );
@@ -33,3 +38,27 @@ const Mapdiv = styled.div`
 `;
 
 export default Map;
+
+const BannerContainer = styled.div`
+  background: #333;
+  text-align: center;
+  position: relative;
+  background-color: #34883d;
+  z-index: 5;
+`;
+
+const BannerHolder = styled.div`
+  max-width: 1090px;
+  padding: 61px 15px 22px;
+  margin: 0 auto;
+  min-height: 180px;
+  position: relative;
+`;
+
+const BannerTitle = styled.h1`
+  font: 5em/1.036em 'Bebas Neue', cursive;
+  color: #fff;
+  font-weight: 400;
+  text-transform: uppercase;
+  margin: 0 0 33px;
+`;

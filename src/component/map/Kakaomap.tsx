@@ -35,14 +35,16 @@ const Kakaomap = (props: KaKaoMapProps) => {
   const [currentStoreId, setCurrentStoreId] = useState<number>(0); // marker클릭시 클릭한 마커의 id값.
   const [modalinfo, setModalInfo] = useState<any>([]); //검색 리스트에서 클릭시 맵에서 받아온 정보를 모달에 쏴주기위해서 modalinfo에 저장해주는 useState
   //원본 빨간 이미지(마커)
-  const [srcImage, setSrcImage] = useState('http://localhost:3001/markers.png');
+  const [srcImage, setSrcImage] = useState(
+    'http://localhost:3000/basicmarker.png',
+  );
   //마커 이미지
   var imageSrc = srcImage, // 마커이미지의 주소입니다
-    imageSize = new window.kakao.maps.Size(45, 45), // 마커이미지의 크기입니다
+    imageSize = new window.kakao.maps.Size(24, 24), // 마커이미지의 크기입니다
     imageOption = { offset: new window.kakao.maps.Point(0, 0) };
   //호버됬을때, 리스트 클릭시 검정 이미지(마커)
-  var overImage = 'http://localhost:3001/marker.png';
-  var markerSize = new window.kakao.maps.Size(45, 45),
+  var overImage = 'http://localhost:3000/changemarker.png';
+  var markerSize = new window.kakao.maps.Size(24, 24),
     markerOffset = new window.kakao.maps.Point(0, 0);
 
   //마커 함수
@@ -92,7 +94,7 @@ const Kakaomap = (props: KaKaoMapProps) => {
         //마커에 마우스 올라갔을때 [마우스오버]
         window.kakao.maps.event.addListener(marker, 'mouseover', () => {
           setCurrentStoreId(datas[i].id);
-          setMarker(marker, overImage);
+          // setMarker(marker, overImage);
           //마우스 오버시 스크롤창이 그 마커에 맞는 곳으로 이동
           if (datas[i].id < 10) {
             return (myRef.current.scrollTop = 10);
@@ -101,7 +103,7 @@ const Kakaomap = (props: KaKaoMapProps) => {
           } else if (datas[i].id < 30) {
             return (myRef.current.scrollTop = 900);
           } else if (datas[i].id < 40) {
-            return (myRef.current.scrollTop = 1000);
+            return (myRef.current.scrollTop = 1300);
           } else if (datas[i].id < 50) {
             return (myRef.current.scrollTop = 1500);
           }
@@ -114,6 +116,8 @@ const Kakaomap = (props: KaKaoMapProps) => {
             mapData[i].longitude,
           );
           map.panTo(moveLocation);
+          setMarker(marker, overImage);
+
           setCurrentStoreId(datas[i].id);
           console.log('datas:', datas[i]);
           //마우스 오버시 스크롤창이 그 마커에 맞는 곳으로 이동
@@ -134,16 +138,16 @@ const Kakaomap = (props: KaKaoMapProps) => {
         });
 
         //마우스 [아웃]됬을때 실행 함수
-        window.kakao.maps.event.addListener(marker, 'mouseout', () =>
-          setMarker(marker, imageSrc),
-        );
+        // window.kakao.maps.event.addListener(marker, 'mouseout', () =>
+        //   setMarker(marker, overImage),
+        // );
       }
     } else {
       console.log(mapData);
       mapContainer = document.getElementById('map');
       mapOption = {
         center: new window.kakao.maps.LatLng(37.54894, 126.92448), // 지도의 중심좌표
-        level: 10,
+        level: 8,
       };
 
       setMap(new window.kakao.maps.Map(mapContainer, mapOption)); // 지도를 생성
@@ -253,7 +257,7 @@ const Kakaomap = (props: KaKaoMapProps) => {
         <Inputform>
           <InputSearch
             type="text"
-            placeholder="Find a store"
+            placeholder=""
             onChange={e => setSearch(e.target.value)}
           />
           <Searchimg src="http://localhost:3000/searchicon.png"></Searchimg>
@@ -277,17 +281,19 @@ const Kakaomap = (props: KaKaoMapProps) => {
           onRequestClose={() => setModalIsOpen(false)}
           style={{
             overlay: {
-              backgroundColor: 'rgba(0, 0, 0, 0)',
+              zIndex: 3000,
+              backgroundColor: 'rgba(0, 0, 0, 0.7)',
+              borderRadius: '15px',
             },
             content: {
               border: 'none',
               backgroundColor: 'white',
               borderRadius: '8px',
               position: 'relative',
-              marginLeft: '-40px',
+              marginLeft: '30%',
               marginTop: '25px',
               width: '35%',
-              height: '100vh',
+              height: '85vh',
               fontSize: '18px',
               overflowX: 'scroll',
             },
@@ -408,7 +414,7 @@ const DivisionModal3 = styled.div``;
 const StoreScore = styled.div`
   display: flex;
   justify-content: space-between;
-  border-bottom: 4px solid orange;
+  border-bottom: 4px solid green;
   margin-top: 30px;
 `;
 
@@ -455,7 +461,7 @@ const Total2 = styled.div`
 const CrewList = styled.div`
   display: flex;
   justify-content: space-between;
-  border-bottom: 4px solid orange;
+  border-bottom: 4px solid green;
   margin-top: 30px;
 `;
 const CrewList1 = styled.div`
@@ -476,24 +482,46 @@ const Rootdiv = styled.div`
 `;
 const Mapdiv = styled.div`
   border-top: 1px solid grey;
-  margin-top: 3px;
+  margin-top: -100px;
   margin-left: 20%;
   z-index: 0;
 `;
 const DivonMap = styled.div`
+  margin-top: 195px;
+  border: 3px solid #e8e8e8;
   z-index: 0;
-  top: 65px;
+  top: 68px;
   background-color: white;
   position: absolute;
   width: 35%;
   height: 100vh;
   overflow: scroll;
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #34883d;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #00a6cb;
+  }
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const Inputform = styled.form`
   margin-left: 30px;
-  width: 350px;
-  border-bottom: 2px solid rgba(0, 0, 0, 0.12);
+  width: 70%;
+  border-bottom: 2px solid green;
   display: flex;
   justify-content: space-around;
   margin-bottom: 30px;
@@ -524,15 +552,17 @@ const PropertiesDiv = styled.div`
   background-color: ${(props: Props) => (props.isClicked ? '#e8e8e8' : null)};
 `;
 const Prodiv = styled.div`
+  color: green;
   font-size: 20px;
   font-weight: bold;
   margin-left: 30px;
-  margin-bottom: 5px;
+  margin-bottom: 10px;
 `;
 const Prodiv1 = styled.div`
+  color: grey;
   font-size: 15px;
   margin-left: 30px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 `;
 
 //모달
