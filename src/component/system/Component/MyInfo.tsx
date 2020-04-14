@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components'
 
 interface props {
-    image: any,
+    image: string,
     name: string,
     store: string,
     badge: number,
