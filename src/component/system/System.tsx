@@ -172,7 +172,7 @@ const System: React.SFC = () => {
             const infoJson = await info.json();
             const myScoreJson = await myScore.json();
 
-            console.log(infoJson)
+            console.log(info, infoJson);
 
             setquestList({
                 questList: infoJson
