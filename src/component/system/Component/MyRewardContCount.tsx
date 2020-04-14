@@ -125,7 +125,7 @@ const MyRewardContCount = (props: any) => {
                                 </div>
                                 <QuestButtonBox>
                                     <QuestButton disabled={item.is_achieved && item.is_claimed === false ? false : true} changeColor={item.is_rewarded ? "red" : item.is_claimed ? "orange" : item.is_achieved ? "blue" : "gray"} data-id={item.quest_id} onClick={RewardRequire}>{item.is_rewarded ? "clear!" : item.is_claimed ? "waiting" : "reward"}</QuestButton>
-                                    <QuestButtonExplain>{item.is_rewarded ? "퀘스트가 달성완료되어 리워드가 발급되었습니다." : item.is_claimed ? "리워드 신청완료됐으나, 승인 대기로 리워드 발급 전입니다." : item.is_achieved ? "퀘스트가 완료되었으니 리워드를 신청해주세요!" : "퀘스트를 달성해주세요!"}</QuestButtonExplain>
+                                    <QuestButtonExplain>{item.is_rewarded ? "퀘스트가 완료되어 리워드가 발급되었습니다." : item.is_claimed ? "리워드 신청완료됐으나, 승인 대기로 리워드 발급 전입니다." : item.is_achieved ? "퀘스트가 완료되었으니 리워드를 신청해주세요!" : "퀘스트를 달성해주세요!"}</QuestButtonExplain>
                                 </QuestButtonBox>
                             </Quest>
                         )
