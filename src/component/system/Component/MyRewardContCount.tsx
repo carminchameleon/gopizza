@@ -124,6 +124,7 @@ const MyRewardContCount = (props: any) => {
                                 </div>
                                 <QuestButtonBox>
                                     <QuestButton disabled={item.is_achieved && item.is_claimed === false ? false : true} changeColor={item.is_rewarded ? "red" : item.is_claimed ? "orange" : item.is_achieved ? "blue" : "gray"} data-id={item.quest_id} onClick={RewardRequire}>{item.is_rewarded ? "clear!" : item.is_claimed ? "waiting" : "reward"}</QuestButton>
+                                    <QuestButtonExplain>{item.is_rewarded ? "퀘스트가 달성완료되어 리워드가 발급되었습니다." : item.is_claimed ? "퀘스트가 달성했으나, 승인 대기로 리워드 발급 전입니다." : item.is_achieved ? "퀘스트가 완료되었으니 리워드를 신청해주세요!" : "퀘스트를 달성해주세요!"}</QuestButtonExplain>
                                 </QuestButtonBox>
                             </Quest>
                         )
@@ -213,7 +214,17 @@ const ProgressNum = styled.span`
     line-height: 16px;
 `
 
+const QuestButtonBox = styled.div`
+    position: relative;
+    margin-left: auto;
+
+    &:hover p{
+        visibility: visible;
+    }
+`
+
 const QuestButton = styled.button<{ changeColor: string }>`
+    position: relative;
     width: 140px;
     padding: 17px 0;
     font-family: 'Bebas Neue',cursive;
@@ -229,14 +240,27 @@ const QuestButton = styled.button<{ changeColor: string }>`
     cursor: ${props => props.changeColor === "blue" ? "pointer" : "auto"};
     box-sizing: border-box;
     outline: none;
+    z-index:1;
 
     &:focus {
         outline: none;
     }
 `
 
-const QuestButtonBox = styled.div`
-    margin-left: auto;
+const QuestButtonExplain = styled.p`
+    display: inline-block;
+    position: absolute;
+    top: 64px;
+    right: -2px;
+    width: 148px;
+    padding: 5px 10px;
+    line-height: 1.5;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+    visibility: hidden;
+    background-color: rgba(0,0,0,0.3);
+    z-index: 100;
 `
 
 const QuestCompleteTitle = styled.h2`
@@ -259,7 +283,7 @@ const QuestCompleteImgBox = styled.div`
 const QuestCompleteCoupon = styled.p`
     white-space: pre-line;
     text-align: center;
-    line-height: 1.5
+    line-height: 1.5;
 `
 
 const QuestCompleteClse = styled.button`
