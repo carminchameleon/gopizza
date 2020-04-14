@@ -42,7 +42,7 @@ const ManagerPage = ({ history }: RouteComponentProps) => {
           // }
           if (res.message === 'Forbidden') {
             alert('접근권한이 없습니다.');
-            history.push('/');
+            history.push('/board');
           } else {
             setData(res.user);
             setStoreName(res.user[0].store__name);

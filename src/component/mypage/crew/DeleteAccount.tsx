@@ -56,7 +56,7 @@ const DeleteAccount = ({ history }: RouteComponentProps) => {
         if (res.status === 200) {
           alert('탈퇴가 신청되었습니다');
           window.sessionStorage.removeItem('token');
-          history.push('/login');
+          history.push('/');
         }
       });
     }
