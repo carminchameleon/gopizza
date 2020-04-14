@@ -183,24 +183,26 @@ function Time() {
             })}
           </PizzaContainer>
           <RecordContainer>
-            {shortest ? (
-              <CurrentRecordBox onClick={() => handleRecord(true)}>
-                최단 시간
-              </CurrentRecordBox>
-            ) : (
-              <RecordBox onClick={() => handleRecord(true)}>
-                최단 시간
+            {
+              <RecordBox
+                onClick={() => {
+                  handleRecord(true);
+                }}
+                currentRecord={shortest}
+              >
+                최단시간
               </RecordBox>
-            )}
-            {shortest ? (
-              <RecordBox onClick={() => handleRecord(false)}>
-                평균 시간
+            }
+            {
+              <RecordBox
+                currentRecord={!shortest}
+                onClick={() => {
+                  handleRecord(false);
+                }}
+              >
+                평균시간
               </RecordBox>
-            ) : (
-              <CurrentRecordBox onClick={() => handleRecord(false)}>
-                평균 시간
-              </CurrentRecordBox>
-            )}
+            }
           </RecordContainer>
 
           <PizzaTitleContainer>
@@ -210,24 +212,22 @@ function Time() {
           <SelectContainer>
             <RangeContainer>
               <TitleContainer>
-                {crew ? (
-                  <CurrentRangeTitle onClick={() => handleRange(true)}>
-                    Crew
-                  </CurrentRangeTitle>
-                ) : (
-                  <RangeTitle onClick={() => handleRange(true)}>
-                    Crew
-                  </RangeTitle>
-                )}
-                {crew ? (
-                  <RangeTitle onClick={() => handleRange(false)}>
-                    Store
-                  </RangeTitle>
-                ) : (
-                  <CurrentRangeTitle onClick={() => handleRange(false)}>
-                    Store
-                  </CurrentRangeTitle>
-                )}
+                <RangeTitle
+                  onClick={() => {
+                    handleRange(true);
+                  }}
+                  currentStatus={crew}
+                >
+                  Crew
+                </RangeTitle>
+                <RangeTitle
+                  onClick={() => {
+                    handleRange(false);
+                  }}
+                  currentStatus={!crew}
+                >
+                  Store
+                </RangeTitle>
               </TitleContainer>
             </RangeContainer>
             <DropdownContainer>
@@ -393,34 +393,15 @@ const RecordContainer = styled.div`
   justify-content: flex-end;
 `;
 
-const RecordBox = styled.div`
+const RecordBox = styled.div<{ currentRecord: boolean }>`
   width: 10%;
   height: 35px;
   border: 2px solid #ff6d00;
-  background-color: white;
+  background-color: ${props => (props.currentRecord ? 'white' : '#ff6d00')};
+  color: ${props => (props.currentRecord ? '#ff6d00' : 'white')};
   border-radius: 3px;
   line-height: 30px;
   text-align: center;
-  color: #ff6d00;
-  opacity: 0.9;
-  margin-right: 4px;
-  font-weight: 500;
-  margin-bottom: 15px;
-  :hover {
-    cursor: pointer;
-    opacity: 0.7;
-  }
-`;
-
-const CurrentRecordBox = styled.div`
-  width: 10%;
-  height: 35px;
-  border: 2px solid #ff6d00;
-  background-color: #ff6d00;
-  border-radius: 3px;
-  line-height: 30px;
-  text-align: center;
-  color: white;
   opacity: 0.9;
   margin-right: 4px;
   font-weight: 500;
@@ -501,23 +482,30 @@ const RangeContainer = styled.div`
   z-index: 10;
 `;
 
-const RangeTitle = styled.button`
+const RangeTitle = styled.button<{ currentStatus: boolean }>`
   width: 10%;
   padding: 10px;
-  color: #b8bfc2;
   font: 1rem 'Bebas Neue', cursive;
-  border-top: 2px solid #b8bfc2;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
-  border-left: 2px solid #b8bfc2;
-  border-right: 2px solid #b8bfc2;
   border-bottom: 0px;
   position: relative;
   margin-right: 2px;
   margin-bottom: 3px;
   opacity: 0.8;
+  border-left: 2px solid
+    ${props => (props.currentStatus ? '#00c8cb' : '#b8bfc2')};
+  border-right: 2px solid
+    ${props => (props.currentStatus ? '#00c8cb' : '#b8bfc2')};
+  border-top: 2px solid
+    ${props => (props.currentStatus ? '#00c8cb' : '#b8bfc2')};
+  color: ${props => (props.currentStatus ? '#00c8cb' : '#b8bfc2')};
+  outline: none;
   :hover {
     cursor: pointer;
+  }
+  :focus {
+    outline: none;
   }
 `;
 
@@ -817,6 +805,7 @@ const RefreshButton = styled.div`
   line-height: 2rem;
   :hover {
     cursor: pointer;
+    color: #ff6d00;
   }
 `;
 
@@ -829,6 +818,11 @@ const RefreshButtonBox = styled.div`
   color: #d4d4d4;
   flex-direction: row;
   justify-content: center;
+  :active {
+    border: #ff6d00;
+    border: 1px solid #ff6d00;
+    border-radius: 4px;
+  }
 `;
 
 const TimeBox = styled.div`

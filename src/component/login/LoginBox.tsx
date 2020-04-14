@@ -10,7 +10,7 @@ interface Props {
   history: History<LocationState>;
 }
 
-const LoginBox: React.FC<Props> = (props: Props) => {
+const LoginBox = (props: Props) => {
   const [email, setEmail] = useState<string>('');
   const [pwd, setPwd] = useState<string>('');
   const [checkEmail, setCheckEmail] = useState<string>('');
@@ -44,19 +44,16 @@ const LoginBox: React.FC<Props> = (props: Props) => {
       }),
     })
       .then(res => res.json())
-      //   .then(res => console.log(res)) 이거 진행하면 뒤에서 작업 못함. 들어온 값이 없어지니까
+      // .then(res => console.log(res));이거 진행하면 뒤에서 작업 못함. 들어온 값이 없어지니까
       .then(res => {
+        if (res.message === 'Need Manager Approval') {
+          alert('승인처리 중 입니다.');
+        }
         if (res.token) {
           sessionStorage.setItem('token', res.token);
           alert('로그인이 완료되었습니다');
           props.history.push('/board');
         }
-        // else {
-        //   alert('로그인을 다시 진행주세요');
-        // }
-      })
-      .then(res => {
-        console.log(res);
       })
       .catch(error => {
         alert('로그인을 다시 진행해주세요');

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Header from 'shared/Header';
 import Banner from 'shared/Banner';
 import ReactModal from 'react-modal';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { URL } from 'config';
 import styled from 'styled-components';
 
@@ -16,8 +17,8 @@ interface UserList {
   store__name: string;
 }
 
-const ManagerPage = () => {
-  const [data, setData] = useState<any>([]);
+const ManagerPage = ({ history }: RouteComponentProps) => {
+  const [data, setData] = useState<UserList[]>([]);
   const [storeName, setStoreName] = useState<string>('');
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState<boolean>(false);
   const [approvalModalIsOpen, setApprovalModalIsOpen] = useState<boolean>(
@@ -39,8 +40,13 @@ const ManagerPage = () => {
           // for (let i = 0; i < res.user.length; i++) {
           //   console.log(res.user[i].id);
           // }
-          setData(res.user);
-          setStoreName(res.user[0].store__name);
+          if (res.message === 'Forbidden') {
+            alert('접근권한이 없습니다.');
+            history.push('/');
+          } else {
+            setData(res.user);
+            setStoreName(res.user[0].store__name);
+          }
         });
     }
   }, []);
@@ -91,8 +97,8 @@ const ManagerPage = () => {
         title="My Page"
         menu1="크루 관리"
         menu2="내 계정"
-        background="#fcb131"
-        navBackground="#f69d04"
+        background="#74b9ff"
+        navBackground="#0984e3"
         routes1="/manager_page"
         routes2="/manager_account"
       />
@@ -123,48 +129,12 @@ const ManagerPage = () => {
                       deleteModalOpen();
                     }}
                   >
-                    {item.grade__name === 'Manager' ? '' : '삭제'}
+                    {item.grade__name === 'Manager'
+                      ? ''
+                      : item.is_approved === false
+                      ? '삭제요청'
+                      : '삭제'}
                   </DeleteBtn>
-                  <ReactModal
-                    isOpen={deleteModalIsOpen}
-                    onRequestClose={() => setDeleteModalIsOpen(false)}
-                    style={{
-                      overlay: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                      },
-                      content: {
-                        border: 'none',
-                        backgroundColor: 'white',
-                        overflow: 'hidden',
-                        fontSize: '100px',
-                        position: 'absolute',
-                        width: '400px',
-                        height: '150px',
-                        margin: '400px 0 0 -150px',
-                        left: '50%',
-                      },
-                    }}
-                  >
-                    <ModalContent>
-                      <ModalTitle>정말 삭제하시겠습니까?</ModalTitle>
-                      <ModalBtnBox>
-                        <ModalBtn
-                          onClick={() => {
-                            isClickedDelete();
-                          }}
-                        >
-                          네
-                        </ModalBtn>
-                        <ModalBtn
-                          onClick={() => {
-                            window.location.reload();
-                          }}
-                        >
-                          아니오
-                        </ModalBtn>
-                      </ModalBtnBox>
-                    </ModalContent>
-                  </ReactModal>
                 </TableBodyDelete>
                 <TableBodyApproval>
                   {item.is_approved === null ? (
@@ -181,54 +151,92 @@ const ManagerPage = () => {
                   ) : (
                     '승인완료'
                   )}
-                  <ReactModal
-                    isOpen={approvalModalIsOpen}
-                    onRequestClose={() => setApprovalModalIsOpen(false)}
-                    style={{
-                      overlay: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                      },
-                      content: {
-                        border: 'none',
-                        backgroundColor: 'white',
-                        overflow: 'hidden',
-                        fontSize: '100px',
-                        position: 'absolute',
-                        width: '400px',
-                        height: '150px',
-                        margin: '400px 0 0 -150px',
-                        left: '50%',
-                        // fontFamily: 'nationale-regular',
-                      },
-                    }}
-                  >
-                    <ModalContent>
-                      <ModalTitle>정말 승인하시겠습니까?</ModalTitle>
-                      <ModalBtnBox>
-                        <ModalBtn onClick={() => isClickedApproval()}>
-                          네
-                        </ModalBtn>
-                        <ModalBtn
-                          onClick={() => {
-                            window.location.reload();
-                          }}
-                        >
-                          아니오
-                        </ModalBtn>
-                      </ModalBtnBox>
-                    </ModalContent>
-                  </ReactModal>
                 </TableBodyApproval>
               </TableBody>
             );
           })}
+          <ReactModal
+            isOpen={deleteModalIsOpen}
+            onRequestClose={() => setDeleteModalIsOpen(false)}
+            style={{
+              overlay: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              },
+              content: {
+                border: 'none',
+                backgroundColor: 'white',
+                overflow: 'hidden',
+                fontSize: '100px',
+                position: 'absolute',
+                width: '400px',
+                height: '150px',
+                margin: '400px 0 0 -150px',
+                left: '50%',
+              },
+            }}
+          >
+            <ModalContent>
+              <ModalTitle>정말 삭제하시겠습니까?</ModalTitle>
+              <ModalBtnBox>
+                <ModalBtn
+                  onClick={() => {
+                    isClickedDelete();
+                  }}
+                >
+                  네
+                </ModalBtn>
+                <ModalBtn
+                  onClick={() => {
+                    window.location.reload();
+                  }}
+                >
+                  아니오
+                </ModalBtn>
+              </ModalBtnBox>
+            </ModalContent>
+          </ReactModal>
+          <ReactModal
+            isOpen={approvalModalIsOpen}
+            onRequestClose={() => setApprovalModalIsOpen(false)}
+            style={{
+              overlay: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+              },
+              content: {
+                border: 'none',
+                backgroundColor: 'white',
+                overflow: 'hidden',
+                fontSize: '100px',
+                position: 'absolute',
+                width: '400px',
+                height: '150px',
+                margin: '400px 0 0 -150px',
+                left: '50%',
+                // fontFamily: 'nationale-regular',
+              },
+            }}
+          >
+            <ModalContent>
+              <ModalTitle>정말 승인하시겠습니까?</ModalTitle>
+              <ModalBtnBox>
+                <ModalBtn onClick={() => isClickedApproval()}>네</ModalBtn>
+                <ModalBtn
+                  onClick={() => {
+                    window.location.reload();
+                  }}
+                >
+                  아니오
+                </ModalBtn>
+              </ModalBtnBox>
+            </ModalContent>
+          </ReactModal>
         </TableContainer>
       </InnerWarapper>
     </Wrapper>
   );
 };
 
-export default ManagerPage;
+export default withRouter(ManagerPage);
 
 const Wrapper = styled.div``;
 const InnerWarapper = styled.div`

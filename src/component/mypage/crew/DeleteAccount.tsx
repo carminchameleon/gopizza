@@ -7,9 +7,7 @@ import Banner from 'shared/Banner';
 import styled from 'styled-components';
 ReactModal.setAppElement('#root');
 
-const DeleteAccount: React.FC<RouteComponentProps> = ({
-  history,
-}: RouteComponentProps) => {
+const DeleteAccount = ({ history }: RouteComponentProps) => {
   const [password, setPassword] = useState<String>('');
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
   const [idNumber, setIdNumber] = useState<any>([]);
@@ -46,7 +44,6 @@ const DeleteAccount: React.FC<RouteComponentProps> = ({
 
   //백엔드 fetch 보내기
   const isModalBtnClicked = () => {
-    console.log(token);
     if (token) {
       fetch(`${URL}/user/delete/${idNumber}`, {
         method: 'DELETE',
@@ -57,7 +54,7 @@ const DeleteAccount: React.FC<RouteComponentProps> = ({
       }).then(res => {
         // console.log(res);
         if (res.status === 200) {
-          alert('탈퇴가 완료되었습니다');
+          alert('탈퇴가 신청되었습니다');
           window.sessionStorage.removeItem('token');
           history.push('/login');
         }
