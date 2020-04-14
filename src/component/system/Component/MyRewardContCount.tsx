@@ -157,9 +157,9 @@ const Quest = styled.li`
     justify-content:flex-start;
     align-items: center;
     margin-top: 15px;
-    padding: 30px 35px;
+    padding: 24px 35px;
     background-color: #fff;
-    border-radius: 38px;
+    border-radius: 25px;
    
 `
 
