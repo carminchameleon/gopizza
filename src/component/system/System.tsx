@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import styled from 'styled-components'
 import { URL } from 'config';
 import Header from "../../shared/Header"
@@ -16,7 +17,7 @@ interface _props {
     status: boolean,
 }
 
-const System: React.SFC = () => {
+const System = ({ history }: RouteComponentProps) => {
 
     const [TabName, setTabName] = useState("");
 
@@ -77,18 +78,25 @@ const System: React.SFC = () => {
 
     const idGet = async () => {
 
-        const id = await fetch(`${URL}/user/get-user-id`, {
-            method: "GET",
-            headers: {
-                Authorization: token
-            }
-        })
+        if (token) {
+            const id = await fetch(`${URL}/user/get-user-id`, {
+                method: "GET",
+                headers: {
+                    Authorization: token
+                }
+            })
 
-        if (id.status === 200) {
-            const idJson = await id.json();
-            SetIdNum(idJson.user_id);
-            fetchInfo(idJson.user_id);
-            requestList();
+            if (id.status === 200) {
+                const idJson = await id.json();
+                SetIdNum(idJson.user_id);
+                fetchInfo(idJson.user_id);
+                requestList();
+            } else {
+                alert("Error");
+                history.push("/");
+            }
+        } else {
+            history.push("/");
         }
 
     }
@@ -146,6 +154,9 @@ const System: React.SFC = () => {
                     },
                 ]
             )
+        } else {
+            alert("Error");
+            history.push("/");
         }
 
 
@@ -172,8 +183,6 @@ const System: React.SFC = () => {
             const infoJson = await info.json();
             const myScoreJson = await myScore.json();
 
-            console.log(info, infoJson);
-
             setquestList({
                 questList: infoJson
             })
@@ -181,6 +190,9 @@ const System: React.SFC = () => {
             setpizzaCount({
                 myScoreJson
             })
+        } else {
+            alert("Error");
+            history.push("/");
         }
 
     }
