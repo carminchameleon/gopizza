@@ -164,8 +164,8 @@ const SignUpBox = ({ history }: RouteComponentProps) => {
         <Div>
           <Label>지점 선택</Label>
           <Select onChange={e => handleInput(e, 'store')}>
-            {storeData.map((item: storeList) => {
-              return <Option>{item.name}</Option>;
+            {storeData.map((item: storeList, index: number) => {
+              return <Option key={index}>{item.name}</Option>;
             })}
           </Select>
         </Div>

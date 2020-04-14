@@ -59,7 +59,7 @@ const Header = ({ history }: RouteComponentProps) => {
           </MenuTitle>
           <MenuTitle
             onClick={() => {
-              history.push('/board');
+              history.push('/');
             }}
           >
             ranking

@@ -52,7 +52,7 @@ const LoginBox = (props: Props) => {
         if (res.token) {
           sessionStorage.setItem('token', res.token);
           alert('로그인이 완료되었습니다');
-          props.history.push('/board');
+          props.history.push('/');
         }
       })
       .catch(error => {
