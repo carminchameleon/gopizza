@@ -7,7 +7,7 @@ interface Props {
   image: string;
 }
 
-const FileUpload: React.FC<Props> = (props: Props) => {
+const FileUpload = (props: Props) => {
   const [img, setImg] = useState<any>();
   const [imgUpload, setImgUpload] = useState<any>();
   // console.log(props.image);
@@ -55,8 +55,11 @@ const FileUpload: React.FC<Props> = (props: Props) => {
   };
   return (
     <Wrapper>
-      <ImgBox style={{ backgroundImage: `url(${props.image})` }}>
+      {/* 부모컴포넌트에서 받아오는 이미지: 기존 이미지 */}
+      <ImgBox image={props.image}>
+        {/* style={{ backgroundImage: `url(${props.image})` }} */}
         <Img src={imgUpload} alt="" />
+        {/* 새로운 이미지업로드후 부모에게 보내는 함수  */}
       </ImgBox>
       <InputBox>
         <ImgInput
@@ -81,13 +84,17 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
 `;
-const ImgBox = styled.div`
+const ImgBox = styled.div<{ image: string }>`
   margin-bottom: 30px;
   width: 200px;
   height: 200px;
   border-radius: 50%;
+  background-image: url(${props =>
+    props.image
+      ? props.image
+      : 'https://www.nelson-chambers.co.uk/front/images/default-user.jpg'});
   /* background-image: url('https://www.nelson-chambers.co.uk/front/images/default-user.jpg'); */
-  background-color: lightgray;
+  /* background-color: lightgray; */
   background-size: 100%;
 `;
 const Img = styled.img`

@@ -6,9 +6,7 @@ import FileUpload from './FileUpload';
 import styled from 'styled-components';
 ReactModal.setAppElement('#root');
 
-const AccountForm: React.FC<RouteComponentProps> = ({
-  history,
-}: RouteComponentProps) => {
+const AccountForm = ({ history }: RouteComponentProps) => {
   const [data, setData] = useState<any>([]);
   const [password, setPassword] = useState<string>('');
   const [newPassword, setNewPassword] = useState<string>('');
@@ -108,9 +106,8 @@ const AccountForm: React.FC<RouteComponentProps> = ({
         }).then(res => {
           console.log(res);
           if (res.status === 200) {
-            window.sessionStorage.removeItem('token');
-            alert('비밀번호가 변경되었습니다. 다시 로그인을 진행해주세요');
-            history.push('/login');
+            alert('비밀번호 변경이 완료되었습니다.');
+            window.location.reload();
           }
         });
       }

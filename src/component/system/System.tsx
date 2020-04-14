@@ -6,6 +6,7 @@ import Banner from "../../shared/Banner"
 import MyCal from "./Component/MyCal"
 import MyGraph from "./Component/MyGraph"
 import MyInfo from "./Component/MyInfo"
+import RewardList from "./Component/RewardList"
 import MyRewardContTime from "./Component/MyRewardContTime"
 import MyRewardContCount from "./Component/MyRewardContCount"
 import MyRewardContQuality from "./Component/MyRewardContQuality"
@@ -20,11 +21,13 @@ const System: React.SFC = () => {
     const [TabName, setTabName] = useState("");
 
     const [userInfo, setUserInfo] = useState({
-        image: null,
+        image: "",
         name: "",
         store: "",
         badge: 0,
         coupon: 0,
+        badgeList: [],
+        couponList: [],
     })
 
     const [userScore, setUserSocre] = useState({
@@ -88,7 +91,6 @@ const System: React.SFC = () => {
             requestList();
         }
 
-
     }
 
     const fetchInfo = async (num: number) => {
@@ -116,7 +118,9 @@ const System: React.SFC = () => {
                 name: infoJson.user_info.name,
                 store: infoJson.user_info.store_name,
                 badge: scoreJson.reward.badge_count,
-                coupon: scoreJson.reward.coupon_count
+                coupon: scoreJson.reward.coupon_count,
+                badgeList: scoreJson.badge,
+                couponList: scoreJson.coupon,
             })
 
             setUserSocre({
@@ -208,7 +212,7 @@ const System: React.SFC = () => {
     return (
         <>
             <Header />
-            <Banner title="REWARD SYSTEM" background="rgb(222, 222, 80)" navBackground="rgb(206, 208, 29)" />
+            <Banner title="REWARD SYSTEM" background="rgb(222, 222, 80)" navBackground="rgb(206, 208, 29)" routes1="" routes2="" routes3="" routes4="" menu1="" menu2="" menu3="" menu4="" />
             <SystemIntro>
                 <SystemIntroTitle>REWARD SYSTEM</SystemIntroTitle>
                 <SystemIntroSubTitle>나는 피자를 얼마나 잘 만들까요?</SystemIntroSubTitle>
@@ -220,6 +224,7 @@ const System: React.SFC = () => {
                     <MyCal shortest_time={userScore.shortest_time} count={userScore.count} topping={userScore.topping} cheese={userScore.cheese} sauce={userScore.sauce} average_time={userScore.average_time} quality={userScore.quality} />
                     <MyGraph data={graphData} />
                 </UserSection>
+                <RewardList badgeList={userInfo.badgeList} couponList={userInfo.couponList} />
                 <AwardSection>
                     <MyRewardTap TabClick={TabClick} />
                     <AwardBox>

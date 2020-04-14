@@ -18,6 +18,7 @@ const customStyles = {
 };
 
 let ref: any = null;
+
 Modal.setAppElement('#root')
 
 const MyRewardContCount = (props: any) => {
@@ -37,7 +38,7 @@ const MyRewardContCount = (props: any) => {
         coupon: ""
     })
 
-    const [boolean, setBoolean] = useState(false);
+    //const [boolean, setBoolean] = useState(false);
 
     const [modalIsOpen, setIsOpen] = React.useState(false);
     function openModal() {
@@ -74,17 +75,21 @@ const MyRewardContCount = (props: any) => {
         });
 
     }, [props.count, props.pizzaCounts]);
+
+    const token: any = window.sessionStorage.getItem('token');
+
     const RewardRequire = async (e: React.MouseEvent<HTMLButtonElement>) => {
 
         const element = e.currentTarget
-        const elementParent = element.parentElement as HTMLElement;
-        const buttonId = Number(e.currentTarget.getAttribute("data-id"));
+        // const elementParent = element.parentElement as HTMLElement;
+        const buttonId = Number(element.getAttribute("data-id"));
         if (count.quests[buttonId - 1].is_achieved) {
 
             const requestPostSend = await fetch(`${URL}/quest/claim/${buttonId}`, {
                 method: "POST",
-                headers: { Authorization: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoxMzd9.vpQMWR9OlJiCXWe73hiGCHEXaKCVa35Loqm0_jNIkgU" }
+                headers: { Authorization: token }
             });
+
             if (requestPostSend.ok) {
                 const reqJson = await requestPostSend.json();
                 reqJson.hasOwnProperty("badge") ? SetbadgeImg({ badge: reqJson.badge }) : SetcouponImg({ coupon: reqJson.coupon })
@@ -118,7 +123,7 @@ const MyRewardContCount = (props: any) => {
                                     </ProgressAll>
                                 </div>
                                 <QuestButtonBox>
-                                    <QuestButton disabled={item.is_achieved && item.is_claimed === false ? false : true} changeColor={item.is_achieved === false ? "gray" : item.is_achieved && item.is_claimed ? "red" : "blue"} data-id={item.quest_id} onClick={RewardRequire}>{item.is_claimed ? "CLEAR!" : "Reward"}</QuestButton>
+                                    <QuestButton disabled={item.is_achieved && item.is_claimed === false ? false : true} changeColor={item.is_rewarded ? "red" : item.is_claimed ? "orange" : item.is_achieved ? "blue" : "gray"} data-id={item.quest_id} onClick={RewardRequire}>{item.is_rewarded ? "clear!" : item.is_claimed ? "waiting" : "reward"}</QuestButton>
                                 </QuestButtonBox>
                             </Quest>
                         )
@@ -152,9 +157,9 @@ const Quest = styled.li`
     justify-content:flex-start;
     align-items: center;
     margin-top: 15px;
-    padding: 30px 35px;
+    padding: 24px 35px;
     background-color: #fff;
-    border-radius: 38px;
+    border-radius: 25px;
    
 `
 
@@ -209,13 +214,16 @@ const ProgressNum = styled.span`
 `
 
 const QuestButton = styled.button<{ changeColor: string }>`
-    padding: 20px 30px;
-    font-family: 'Bevan',cursive;
-    font-size: 17px;
+    width: 140px;
+    padding: 17px 0;
+    font-family: 'Bebas Neue',cursive;
+    text-align: center;
+    font-size: 24px;
     font-weight: 300;
     letter-spacing: 0.5px;
+    font-weight:${props => props.changeColor === "yellow" ? 600 : 300};
     color:${props => props.changeColor === "red" ? "#fd5a5a" : "#fff"};
-    background: ${props => props.changeColor === "gray" ? "#c8cfd5" : props.changeColor === "blue" ? "#45b6fb" : ""};
+    background: ${props => props.changeColor === "gray" ? "#c8cfd5" : props.changeColor === "blue" ? "#45b6fb" : props.changeColor === "orange" ? "orange" : ""};
     border: 2px solid ${props => props.changeColor === "red" ? "#fd5a5a" : ""};
     border-radius: 15px;
     cursor: ${props => props.changeColor === "blue" ? "pointer" : "auto"};
