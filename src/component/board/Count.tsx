@@ -629,7 +629,6 @@ const PersonBox = styled.div`
   text-align: start;
 `;
 
-const Tooltip = styled.a``;
 const PhotoBox = styled.div`
   width: 20%;
   height: 100%;

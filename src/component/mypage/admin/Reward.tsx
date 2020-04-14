@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import Header from 'shared/Header';
 import Banner from 'shared/Banner';
 import PagiNation from './PagiNation';
@@ -17,8 +18,8 @@ interface ApprovalList {
   is_rewarded: boolean;
 }
 
-const Reward = () => {
-  const [data, setData] = useState<any>([]);
+const Reward = ({ history }: RouteComponentProps) => {
+  const [data, setData] = useState<ApprovalList[]>([]);
   const [search, setSearch] = useState<string>('');
   const [filterSearch, setFilterSearch] = useState<any>([]);
   const [select, setSelect] = useState<string>('');
@@ -38,12 +39,18 @@ const Reward = () => {
       })
         .then(res => res.json())
         .then(res => {
+          if (res.message === 'Access Denied') {
+            alert('접근권한이 없습니다.');
+            history.push('/board');
+          } else {
+            setData(res.approval_list);
+          }
           // console.log(res.approval_list[0].is_rewarded);
-          setData(res.approval_list);
         });
     }
   }, []);
 
+  //pagination
   // Get current posts
   const indexOfLastPosts = currentPage * PostsPerPage;
   const indexOfFirstPost = indexOfLastPosts - PostsPerPage;
@@ -81,7 +88,7 @@ const Reward = () => {
     }
   }, [search, data]);
 
-  //리원드 발급
+  //리워드 발급
   const modalOpen = (): void => {
     setModalIsOpen(true);
   };
@@ -112,8 +119,8 @@ const Reward = () => {
         title="My Page"
         menu1="직원 관리"
         menu2="리워드 관리"
-        background="#fcb131"
-        navBackground="#f69d04"
+        background="#a29bfe"
+        navBackground="#6c5ce7"
         routes1="/admin_page"
         routes2="/reward"
       />
@@ -155,7 +162,9 @@ const Reward = () => {
                 <TableBodyStore>{item.user__store__name}</TableBodyStore>
                 <TableBodyQuest>{item.quest__name}</TableBodyQuest>
                 <TableBodyTime>
-                  {[item.updated_at][0].slice(0, 16)}
+                  {[item.updated_at][0].slice(0, 10) +
+                    '  ' +
+                    [item.updated_at][0].slice(12, 16)}
                 </TableBodyTime>
                 <TableBodyReward>
                   {item.is_rewarded ? (
@@ -220,7 +229,7 @@ const Reward = () => {
   );
 };
 
-export default Reward;
+export default withRouter(Reward);
 
 const Wrapper = styled.div``;
 const InnerWarapper = styled.div`

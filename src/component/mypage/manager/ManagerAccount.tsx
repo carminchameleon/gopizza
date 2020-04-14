@@ -12,8 +12,8 @@ const ManagerAccount = () => {
         title="My Page"
         menu1="크루 관리"
         menu2="내 계정"
-        background="#fcb131"
-        navBackground="#f69d04"
+        background="#74b9ff"
+        navBackground="#0984e3"
         routes1="/manager_page"
         routes2="/manager_account"
       />

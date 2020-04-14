@@ -7,7 +7,7 @@ interface Props {
   imgStore: (img: String) => void;
 }
 
-const FileUpload: React.FC<Props> = (props: Props) => {
+const FileUpload = (props: Props) => {
   const [img, setImg] = useState<any>();
   const [imgUpload, setImgUpload] = useState<any>();
 
