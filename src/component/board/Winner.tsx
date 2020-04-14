@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { PROFILEURL } from 'config';
 import Summary from './Summary';
 import StoreSummary from './StoreSummary';
-
 import Modal from 'react-modal';
 
 const goldMedal: string =
@@ -30,7 +29,7 @@ interface Props {
   crew: boolean;
 }
 
-const Winner: React.FC<Props> = (props: Props) => {
+const Winner = (props: Props) => {
   const [data, setData] = useState(props.topCrew);
   const [currentUser, setCurrentUser] = useState();
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -231,7 +230,7 @@ const StoreName = styled.div`
   margin-top: 10px;
   color: #333;
   font-weight: bold;
-  font-size: 1.2rem;
+  font-size: 1rem;
 `;
 
 const StoreNameBox = styled.div`

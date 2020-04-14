@@ -8,28 +8,21 @@ import Count from './Count';
 
 const Board = () => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [totalOpen, setTotalOpen] = useState(true);
   const [currentTime, setCurrentTime] = useState();
-  useEffect(() => {
-    getTime();
-  }, []);
+  const pageList = [
+    'Total ranking',
+    'Completion ranking',
+    'Time ranking',
+    'Count ranking',
+  ];
 
   const setPage = (pageId: number): void => {
     setCurrentPage(pageId);
     PageUI(pageId);
   };
 
-  const getTime = (): void => {
-    var currentDate = new Date();
-    var msg = '현재 시간:' + currentDate.getHours() + '시';
-    msg += currentDate.getMinutes() + '분';
-    msg += currentDate.getSeconds() + '초';
-    setCurrentTime(msg);
-  };
-
   const PageUI = (currentPage: number) => {
     if (currentPage === 0) {
-      console.log(currentPage);
       return <Total />;
     }
     if (currentPage === 1) {
@@ -54,96 +47,35 @@ const Board = () => {
       <NavConatiner>
         <NavHolder>
           <NavWrapper>
-            {currentPage === 0 ? (
-              <ColorList>
-                <NavLink
-                  onClick={() => {
-                    setPage(0);
-                  }}
-                >
-                  Total Ranking
-                </NavLink>
-              </ColorList>
-            ) : (
-              <NavList>
-                <NavLink
-                  onClick={() => {
-                    setPage(0);
-                  }}
-                >
-                  Total Ranking
-                </NavLink>
-              </NavList>
-            )}
-            {currentPage === 1 ? (
-              <ColorList>
-                <NavLink
-                  onClick={() => {
-                    setPage(1);
-                    setTotalOpen(true);
-                  }}
-                >
-                  Completion Ranking
-                </NavLink>
-              </ColorList>
-            ) : (
-              <NavList>
-                <NavLink
-                  onClick={() => {
-                    setPage(1);
-                  }}
-                >
-                  Completion Ranking
-                </NavLink>
-              </NavList>
-            )}
-            {currentPage === 2 ? (
-              <ColorList>
-                <NavLink
-                  onClick={() => {
-                    setPage(2);
-                  }}
-                >
-                  Time Ranking
-                </NavLink>
-              </ColorList>
-            ) : (
-              <NavList>
-                <NavLink
-                  onClick={() => {
-                    setPage(2);
-                  }}
-                >
-                  Time Ranking
-                </NavLink>
-              </NavList>
-            )}
-            {currentPage === 3 ? (
-              <ColorList>
-                <NavLink
-                  onClick={() => {
-                    setPage(3);
-                  }}
-                >
-                  Count Ranking
-                </NavLink>
-              </ColorList>
-            ) : (
-              <NavList>
-                <NavLink
-                  onClick={() => {
-                    setPage(3);
-                  }}
-                >
-                  Count Ranking
-                </NavLink>
-              </NavList>
-            )}
+            {pageList.map((item: string, index: number) => {
+              if (index === currentPage) {
+                return (
+                  <ColorList>
+                    <NavLink
+                      onClick={() => {
+                        setPage(index);
+                      }}
+                    >
+                      {item}
+                    </NavLink>
+                  </ColorList>
+                );
+              } else {
+                return (
+                  <NavList>
+                    <NavLink
+                      onClick={() => {
+                        setPage(index);
+                      }}
+                    >
+                      {item}
+                    </NavLink>
+                  </NavList>
+                );
+              }
+            })}
           </NavWrapper>
         </NavHolder>
-        {/* <NavMoveBar>
-          <Bar></Bar>
-        </NavMoveBar> */}
       </NavConatiner>
       <>{PageUI(currentPage)}</>
     </Container>
@@ -186,7 +118,6 @@ const NavList = styled.li`
   float: left;
   height: 40px;
   padding-top: 10px;
-
   :hover {
     background-color: rgba(222, 26, 33, 0.6);
     cursor: pointer;
@@ -232,33 +163,9 @@ const BannerHolder = styled.div`
 `;
 
 const BannerTitle = styled.h1`
-  font: 4em/1.036em 'Bebas Neue', cursive;
+  font: 5em/1.036em 'Bebas Neue', cursive;
   color: #fff;
   font-weight: 400;
   text-transform: uppercase;
   margin: 0 0 33px;
-`;
-
-const NavMoveBar = styled.div`
-  width: 100%;
-  height: 7px;
-  background-color: yellow;
-`;
-
-const Bar = styled.div`
-  width: 100%;
-  height: 7px;
-  background-color: yellow;
-`;
-
-const RefreshContainer = styled.div`
-  border: 2px solid red;
-  width: 100%;
-  height: 50px;
-`;
-
-const RefreshButton = styled.div`
-  width: 50px;
-  height: 50px;
-  border: 1px solid black;
 `;

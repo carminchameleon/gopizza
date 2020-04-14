@@ -127,7 +127,7 @@ const BannerHolder = styled.div`
 `;
 
 const BannerTitle = styled.h1`
-  font: 4em/1.036em 'Bebas Neue', cursive;
+  font: 5em/1.036em 'Bebas Neue', cursive;
   color: #fff;
   font-weight: 400;
   text-transform: uppercase;
