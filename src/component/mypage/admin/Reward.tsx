@@ -41,7 +41,7 @@ const Reward = ({ history }: RouteComponentProps) => {
         .then(res => {
           if (res.message === 'Access Denied') {
             alert('접근권한이 없습니다.');
-            history.push('/');
+            history.push('/board');
           } else {
             setData(res.approval_list);
           }

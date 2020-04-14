@@ -121,7 +121,7 @@ const SignUpBox = ({ history }: RouteComponentProps) => {
         if (res.status === 400) alert('이메일 중복 및 빈칸을 확인해주세요');
         if (res.status === 200) {
           alert('회원가입에 성공하셨습니다');
-          history.push('/login');
+          history.push('/');
         }
         // if (res.status === 500) alert('회원가입을 다시 진행해주세요');
       });

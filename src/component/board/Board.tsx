@@ -9,6 +9,7 @@ import Count from './Count';
 const Board = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const [currentTime, setCurrentTime] = useState();
+  const [userToken, setUserToken] = useState(false);
   const pageList = [
     'Total ranking',
     'Completion ranking',
@@ -16,9 +17,23 @@ const Board = () => {
     'Count ranking',
   ];
 
+  useEffect(() => {
+    checkToken();
+  }, []);
+
   const setPage = (pageId: number): void => {
     setCurrentPage(pageId);
     PageUI(pageId);
+  };
+
+  const checkToken = (): void => {
+    const token = window.sessionStorage.getItem('token');
+    if (token) {
+      setUserToken(true);
+    } else {
+      alert('접근 권한이 없습니다. 로그인을 해주세요! :) ');
+      setUserToken(false);
+    }
   };
 
   const PageUI = (currentPage: number) => {
@@ -77,7 +92,7 @@ const Board = () => {
           </NavWrapper>
         </NavHolder>
       </NavConatiner>
-      <>{PageUI(currentPage)}</>
+      {userToken ? <>{PageUI(currentPage)}</> : ''}
     </Container>
   );
 };

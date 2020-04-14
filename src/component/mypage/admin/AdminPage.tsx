@@ -51,7 +51,7 @@ const AdminPage = ({ history }: RouteComponentProps) => {
               });
           } else {
             alert('접근권한이 없습니다.');
-            history.push('/');
+            history.push('/board');
           }
         });
     }

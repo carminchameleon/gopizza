@@ -8,7 +8,7 @@ const Header = ({ history }: RouteComponentProps) => {
   const isLogoutClicked = () => {
     window.sessionStorage.removeItem('token');
     alert('로그아웃이 완료되었습니다.');
-    history.push('/login');
+    history.push('/');
   };
 
   const isMypageClicked = () => {
