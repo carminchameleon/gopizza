@@ -43,7 +43,7 @@ const Header = ({ history }: RouteComponentProps) => {
 
           <TitleBox
             onClick={() => {
-              history.push('/');
+              history.push('/board');
             }}
           >
             GOPIZZA
@@ -59,7 +59,7 @@ const Header = ({ history }: RouteComponentProps) => {
           </MenuTitle>
           <MenuTitle
             onClick={() => {
-              history.push('/');
+              history.push('/board');
             }}
           >
             ranking
