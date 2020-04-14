@@ -24,7 +24,7 @@ const FileUpload = (props: Props) => {
   ) => {
     const fd = new FormData();
     fd.append('filename', img);
-    // console.log('formdata', fd);
+    console.log('formdata', fd);
 
     const token = window.sessionStorage.getItem('token');
     // console.log(token);
