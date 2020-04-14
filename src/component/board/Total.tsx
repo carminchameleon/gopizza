@@ -126,24 +126,22 @@ function Total() {
           <SelectContainer>
             <RangeContainer>
               <TitleContainer>
-                {crew ? (
-                  <CurrentRangeTitle onClick={() => handleRange(true)}>
-                    Crew
-                  </CurrentRangeTitle>
-                ) : (
-                  <RangeTitle onClick={() => handleRange(true)}>
-                    Crew
-                  </RangeTitle>
-                )}
-                {crew ? (
-                  <RangeTitle onClick={() => handleRange(false)}>
-                    Store
-                  </RangeTitle>
-                ) : (
-                  <CurrentRangeTitle onClick={() => handleRange(false)}>
-                    Store
-                  </CurrentRangeTitle>
-                )}
+                <RangeTitle
+                  onClick={() => {
+                    handleRange(true);
+                  }}
+                  currentStatus={crew}
+                >
+                  Crew
+                </RangeTitle>
+                <RangeTitle
+                  onClick={() => {
+                    handleRange(false);
+                  }}
+                  currentStatus={!crew}
+                >
+                  Store
+                </RangeTitle>
               </TitleContainer>
             </RangeContainer>
             <DropdownContainer>
@@ -547,45 +545,33 @@ const RangeContainer = styled.div`
   border-bottom: 3px solid #00c8cb;
   opacity: 0.7;
   z-index: 10;
+  outline: none !important;
 `;
 
-const RangeTitle = styled.button`
+const RangeTitle = styled.button<{ currentStatus: boolean }>`
   width: 10%;
   padding: 10px;
-  color: #b8bfc2;
   font: 1rem 'Bebas Neue', cursive;
-  border-top: 2px solid #b8bfc2;
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
-  border-left: 2px solid #b8bfc2;
-  border-right: 2px solid #b8bfc2;
   border-bottom: 0px;
   position: relative;
   margin-right: 2px;
   margin-bottom: 3px;
   opacity: 0.8;
+  border-left: 2px solid
+    ${props => (props.currentStatus ? '#00c8cb' : '#b8bfc2')};
+  border-right: 2px solid
+    ${props => (props.currentStatus ? '#00c8cb' : '#b8bfc2')};
+  border-top: 2px solid
+    ${props => (props.currentStatus ? '#00c8cb' : '#b8bfc2')};
+  color: ${props => (props.currentStatus ? '#00c8cb' : '#b8bfc2')};
+  outline: none;
   :hover {
     cursor: pointer;
   }
-`;
-
-const CurrentRangeTitle = styled.button`
-  width: 10%;
-  color: #00c8cb;
-  padding: 10px;
-  font: 1rem 'Bebas Neue', cursive;
-  border-top: 2px solid #00c8cb;
-  border-top-left-radius: 3px;
-  border-top-right-radius: 3px;
-  border-left: 2px solid #00c8cb;
-  border-right: 2px solid #00c8cb;
-  border-bottom: 0px;
-  position: relative;
-  margin-right: 2px;
-  margin-bottom: 3px;
-  opacity: 0.8;
-  :hover {
-    cursor: pointer;
+  :focus {
+    outline: none;
   }
 `;
 
@@ -614,6 +600,7 @@ const RefreshButton = styled.div`
   line-height: 2rem;
   :hover {
     cursor: pointer;
+    color: #ff6d00;
   }
 `;
 
