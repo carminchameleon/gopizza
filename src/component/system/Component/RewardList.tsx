@@ -14,12 +14,12 @@ const RewardList = (props: props) => {
                 <StatusList>
                     {props.badgeList.map((item: any, idx: number) => {
                         return (
-                            <li key={idx}>
+                            <BadgeList key={idx}>
                                 <StatusImgBox kind={"badge"}>
                                     <StatusImg rewardStatus={item.is_rewarded} src={item.image} alt="뱃지 이미지" />
                                 </StatusImgBox>
                                 <StatusText>{props.badgeList[idx].name}</StatusText>
-                            </li>)
+                            </BadgeList>)
                     })}
                 </StatusList>
             </div>
@@ -27,12 +27,12 @@ const RewardList = (props: props) => {
                 <MyStatusTitle>쿠폰 상세</MyStatusTitle>
                 <StatusList>
                     {props.couponList.map((item: any, idx: number) => {
-                        return (< li key={idx}>
+                        return (< CouponList key={idx}>
                             <StatusImgBox kind={"coupon"}>
                                 <StatusImg rewardStatus={item.is_rewarded} src={item.image} alt="쿠폰 이미지" />
                             </StatusImgBox>
                             <StatusText>{props.couponList[idx].name}</StatusText>
-                        </li>)
+                        </CouponList>)
                     })}
                 </StatusList>
             </div>
@@ -75,6 +75,23 @@ const StatusList = styled.ul`
     li:last-child{
         margin-right: 0;
     }
+`
+
+const BadgeList = styled.li`
+
+    margin-bottom: 30px;
+
+    &:nth-child(-n+3){
+        margin-bottom: 0px;       
+    }
+`
+
+const CouponList = styled.li`
+    margin-bottom: 30px;
+
+    &:nth-child(-n+2){
+    margin-bottom: 0px;       
+}
 `
 
 const StatusImgBox = styled.div<{ kind: string }>`
