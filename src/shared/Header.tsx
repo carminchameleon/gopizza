@@ -43,7 +43,7 @@ const Header = ({ history }: RouteComponentProps) => {
 
           <TitleBox
             onClick={() => {
-              history.push('/board');
+              history.push('/');
             }}
           >
             GOPIZZA
