@@ -288,7 +288,7 @@ const Kakaomap = (props: KaKaoMapProps) => {
             content: {
               border: 'none',
               backgroundColor: 'white',
-              borderRadius: '8px',
+              borderRadius: '15px',
               position: 'relative',
               marginLeft: '30%',
               marginTop: '25px',
