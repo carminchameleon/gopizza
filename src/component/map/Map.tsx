@@ -33,9 +33,7 @@ const Map = () => {
   );
 };
 
-const Mapdiv = styled.div`
-  overflow: hidden;
-`;
+const Mapdiv = styled.div``;
 
 export default Map;
 
