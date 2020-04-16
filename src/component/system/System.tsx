@@ -66,6 +66,7 @@ const System = ({ history }: RouteComponentProps) => {
     useEffect(() => {
 
         idGet();
+        requestList();
 
     }, []);
 
