@@ -34,20 +34,11 @@ const Count: React.FC = () => {
 
   useEffect(() => {
     fetchData();
-    handleRefresh();
   }, [crew, duration]);
 
   const handleRange = (boolean: boolean): void => {
     setCrew(boolean);
   };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    fetchData();
-  }, [crew, duration]);
 
   const fetchData = (): void => {
     axios
