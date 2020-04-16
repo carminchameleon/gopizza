@@ -36,14 +36,15 @@ const Kakaomap = (props: KaKaoMapProps) => {
   const [modalinfo, setModalInfo] = useState<any>([]); //검색 리스트에서 클릭시 맵에서 받아온 정보를 모달에 쏴주기위해서 modalinfo에 저장해주는 useState
   //원본 빨간 이미지(마커)
   const [srcImage, setSrcImage] = useState(
-    'http://localhost:3000/basicmarker.png',
+    'https://images.velog.io/images/carminchameleon/post/be07a934-1f81-44a5-b366-103db2ef3135/image.png',
   );
   //마커 이미지
   var imageSrc = srcImage, // 마커이미지의 주소입니다
     imageSize = new window.kakao.maps.Size(24, 24), // 마커이미지의 크기입니다
     imageOption = { offset: new window.kakao.maps.Point(0, 0) };
   //호버됬을때, 리스트 클릭시 검정 이미지(마커)
-  var overImage = 'http://localhost:3000/changemarker.png';
+  var overImage =
+    'https://images.velog.io/images/carminchameleon/post/c2549045-7ae7-4437-960f-9546d8a2b6bb/image.png';
   var markerSize = new window.kakao.maps.Size(24, 24),
     markerOffset = new window.kakao.maps.Point(0, 0);
 
@@ -260,7 +261,7 @@ const Kakaomap = (props: KaKaoMapProps) => {
             placeholder=""
             onChange={e => setSearch(e.target.value)}
           />
-          <Searchimg src="http://localhost:3000/searchicon.png"></Searchimg>
+          <Searchimg src="https://images.velog.io/images/carminchameleon/post/8eba153d-436c-473f-9857-2291962cbbb8/image.png"></Searchimg>
         </Inputform>
 
         {filteredSearch.map((item: any, index: number) => {
