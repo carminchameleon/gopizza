@@ -253,7 +253,10 @@ const Kakaomap = (props: KaKaoMapProps) => {
   /*******************RETURN HERE!***********************************************************************/
   return (
     <Rootdiv>
-      <Mapdiv id="map" style={{ width: '85%', height: '100vh' }} />
+      <Mapdiv
+        id="map"
+        style={{ width: '65%', height: '100vh', marginLeft: '35%' }}
+      />
       <DivonMap ref={myRef}>
         <Inputform>
           <InputSearch
@@ -495,7 +498,7 @@ const DivonMap = styled.div`
   background-color: white;
   position: absolute;
   width: 35%;
-  height: 100vh;
+  height: 90vh;
   overflow: scroll;
 
   ::-webkit-scrollbar {
