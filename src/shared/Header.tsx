@@ -38,7 +38,7 @@ const Header = ({ history }: RouteComponentProps) => {
       <TitleContainer>
         <MainTitle>
           <LogoBox>
-            <Logo src="http://localhost:3000/images/gopizza.png" />
+            <Logo src="https://images.velog.io/images/carminchameleon/post/1d6d9a31-11b6-4ee6-9013-cbc4694d2433/image.png" />
           </LogoBox>
 
           <TitleBox
