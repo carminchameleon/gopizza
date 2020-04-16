@@ -8,7 +8,6 @@ import Count from './Count';
 
 const Board = () => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [currentTime, setCurrentTime] = useState();
   const [userToken, setUserToken] = useState(false);
   const pageList = [
     'Total ranking',
