@@ -486,7 +486,6 @@ const Rootdiv = styled.div`
 `;
 const Mapdiv = styled.div`
   border-top: 1px solid grey;
-  margin-top: -100px;
   margin-left: 20%;
   z-index: 0;
 `;
@@ -498,7 +497,7 @@ const DivonMap = styled.div`
   background-color: white;
   position: absolute;
   width: 35%;
-  height: 90vh;
+  height: 100vh;
   overflow: scroll;
 
   ::-webkit-scrollbar {
