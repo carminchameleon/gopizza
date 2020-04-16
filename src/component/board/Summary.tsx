@@ -120,7 +120,7 @@ const Summary: React.FC<Props> = (props: Props) => {
           <ScoreHolder>
             <ScoreBox>
               <ScoreInfo>
-                <ScoreTitle>Total Ranking</ScoreTitle>
+                <ScoreTitle>Total</ScoreTitle>
                 <ScoreNumber>
                   {Math.floor(record.total_score)} / 10000점
                 </ScoreNumber>
@@ -146,7 +146,7 @@ const Summary: React.FC<Props> = (props: Props) => {
             </ScoreBox>
             <ScoreBox>
               <ScoreInfo>
-                <ScoreTitle>Time Score</ScoreTitle>
+                <ScoreTitle>Time</ScoreTitle>
                 <ScoreNumber>{handleSeconds(record.average_time)}</ScoreNumber>
               </ScoreInfo>
               <RankBox>
@@ -157,7 +157,7 @@ const Summary: React.FC<Props> = (props: Props) => {
             </ScoreBox>
             <ScoreBox>
               <ScoreInfo>
-                <ScoreTitle>Count Ranking</ScoreTitle>
+                <ScoreTitle>Count</ScoreTitle>
                 <ScoreNumber>{record.total_count}판</ScoreNumber>
               </ScoreInfo>
               <RankBox>

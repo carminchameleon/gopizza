@@ -31,6 +31,7 @@ function Total() {
   Modal.setAppElement('#root');
 
   useEffect(() => {
+    fetchData();
     handleRefresh();
   }, []);
 
@@ -72,6 +73,7 @@ function Total() {
     } else if (event.target.value === '3') {
       setDuration(365);
     } else {
+      setDuration(1000);
       fetchHistory();
     }
   };
@@ -95,7 +97,17 @@ function Total() {
       Time.getMilliseconds();
 
     setCurrentTime(now);
-    fetchData();
+    if (
+      duration === 0 ||
+      duration === 7 ||
+      duration === 31 ||
+      duration === 365
+    ) {
+      fetchData();
+    } else {
+      console.log(duration);
+      fetchHistory();
+    }
   };
 
   return (
