@@ -121,6 +121,8 @@ const System = ({ history }: RouteComponentProps) => {
             const infoJson = await info.json();
             const scoreJson = await score.json();
 
+            console.log("내용", infoJson.average_time);
+
             setUserInfo({
                 image: infoJson.user_info.image,
                 name: infoJson.user_info.name,
@@ -132,31 +134,31 @@ const System = ({ history }: RouteComponentProps) => {
             })
 
             setUserSocre({
-                average_time: infoJson.user_info.average_time,
-                shortest_time: infoJson.user_info.shortest_time,
-                count: infoJson.user_info.total_count,
-                quality: infoJson.user_info.average_quality,
-                sauce: infoJson.user_info.average_sauce,
-                cheese: infoJson.user_info.average_cheese,
-                topping: infoJson.user_info.average_topping
+                average_time: infoJson.user_info.average_time === undefined ? 0 : infoJson.user_info.average_time,
+                shortest_time: infoJson.user_info.shortest_time === undefined ? 0 : infoJson.user_info.shortest_time,
+                count: infoJson.user_info.total_count === undefined ? 0 : infoJson.user_info.total_count,
+                quality: infoJson.user_info.average_quality === undefined ? 0 : infoJson.user_info.average_quality,
+                sauce: infoJson.user_info.average_sauce === undefined ? 0 : infoJson.user_info.average_sauce,
+                cheese: infoJson.user_info.average_cheese === undefined ? 0 : infoJson.user_info.average_cheese,
+                topping: infoJson.user_info.average_topping === undefined ? 0 : infoJson.user_info.average_topping
             })
 
             setGraphData(
                 [
                     {
-                        subject: 'Count', A: Math.floor(infoJson.user_info.count_standard), fullMark: 100,
+                        subject: 'Count', A: infoJson.user_info.count_standard === undefined ? 0 : Math.floor(infoJson.user_info.count_standard), fullMark: 100,
                     },
                     {
-                        subject: 'Quality', A: Math.floor(infoJson.user_info.completion_standard), fullMark: 100,
+                        subject: 'Quality', A: infoJson.user_info.completion_standard === undefined ? 0 : Math.floor(infoJson.user_info.completion_standard), fullMark: 100,
                     },
                     {
-                        subject: 'Time', A: Math.floor(infoJson.user_info.time_standard), fullMark: 100,
+                        subject: 'Time', A: infoJson.user_info.time_standard === undefined ? 0 : Math.floor(infoJson.user_info.time_standard), fullMark: 100,
                     },
                 ]
             )
         } else {
             alert("Error");
-            history.push("/");
+            ///history.push("/");
         }
 
 
