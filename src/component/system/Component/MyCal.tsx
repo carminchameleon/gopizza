@@ -13,10 +13,11 @@ interface props {
 
 const MyCal = (props: props) => {
 
-    const averageTime = Math.floor(props.average_time / 60);
-    const averageTimeSecond = Math.floor(props.average_time - (60 * averageTime));
-    const shortestTime = Math.floor(props.shortest_time / 60);
-    const shorestTimeSecond = Math.floor(props.shortest_time - (60 * shortestTime))
+    const averageTime = props.average_time === 0 ? 0 : Math.floor(props.average_time / 60);
+    const averageTimeSecond = props.average_time === 0 ? 0 : Math.floor(props.average_time - (60 * averageTime));
+    const shortestTime = props.average_time === 0 ? 0 : Math.floor(props.shortest_time / 60);
+    const shorestTimeSecond = props.average_time === 0 ? 0 : Math.floor(props.shortest_time - (60 * shortestTime))
+
 
     return (
         <MyCalBox>

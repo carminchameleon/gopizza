@@ -27,7 +27,7 @@ interface PizzaList {
 function Time() {
   const [data, setData] = useState<CrewInfo[]>([]);
   const [crew, setCrew] = useState(true);
-  const [duration, setDuration] = useState(1);
+  const [duration, setDuration] = useState(0);
   const [record, setRecord] = useState('shortest_time');
   const [shortest, setShortest] = useState(true);
   const [pizzaId, setPizzaId] = useState(1);
@@ -83,7 +83,17 @@ function Time() {
       Time.getMilliseconds();
 
     setCurrentTime(now);
-    fetchData();
+    if (
+      duration === 0 ||
+      duration === 7 ||
+      duration === 31 ||
+      duration === 365
+    ) {
+      fetchData();
+    } else {
+      console.log(duration);
+      fetchHistory();
+    }
   };
 
   const fetchData = (): void => {
@@ -103,7 +113,7 @@ function Time() {
       .get(
         `${
           crew ? BOARDCREWURL : BOARDSTOREURL
-        }/record/store?limit=10&time_delta=${duration}&order_by=${record}&pizza_id=${pizzaId}}`,
+        }?limit=20&order_by=${record}&pizza_id=${pizzaId}`,
       )
       .then((response: AxiosResponse): void => {
         setData(response.data.ranking);
@@ -113,7 +123,7 @@ function Time() {
   const selectDuration = (event: any) => {
     console.log(typeof event.target.value);
     if (event.target.value === '0') {
-      setDuration(1);
+      setDuration(0);
     } else if (event.target.value === '1') {
       setDuration(7);
     } else if (event.target.value === '2') {
@@ -121,6 +131,7 @@ function Time() {
     } else if (event.target.value === '3') {
       setDuration(365);
     } else {
+      setDuration(1000);
       fetchHistory();
     }
   };
@@ -397,8 +408,8 @@ const RecordBox = styled.div<{ currentRecord: boolean }>`
   width: 10%;
   height: 35px;
   border: 2px solid #ff6d00;
-  background-color: ${props => (props.currentRecord ? 'white' : '#ff6d00')};
-  color: ${props => (props.currentRecord ? '#ff6d00' : 'white')};
+  background-color: ${props => (props.currentRecord ? '#ff6d00' : 'white')};
+  color: ${props => (props.currentRecord ? 'white' : '#ff6d00')};
   border-radius: 3px;
   line-height: 30px;
   text-align: center;
@@ -818,11 +829,6 @@ const RefreshButtonBox = styled.div`
   color: #d4d4d4;
   flex-direction: row;
   justify-content: center;
-  :active {
-    border: #ff6d00;
-    border: 1px solid #ff6d00;
-    border-radius: 4px;
-  }
 `;
 
 const TimeBox = styled.div`
