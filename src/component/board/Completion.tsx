@@ -20,7 +20,7 @@ interface CrewInfo {
 
 function Completion() {
   const [data, setData] = useState<CrewInfo[]>([]);
-  const [duration, setDuration] = useState(1);
+  const [duration, setDuration] = useState(0);
   const [crew, setCrew] = useState(true);
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState();
@@ -61,7 +61,7 @@ function Completion() {
 
   const selectDuration = (event: any) => {
     if (event.target.value === '0') {
-      setDuration(1);
+      setDuration(0);
     } else if (event.target.value === '1') {
       setDuration(7);
     } else if (event.target.value === '2') {
@@ -69,6 +69,7 @@ function Completion() {
     } else if (event.target.value === '3') {
       setDuration(365);
     } else {
+      setDuration(1000);
       fetchHistory();
     }
   };
@@ -90,9 +91,19 @@ function Completion() {
       Time.getMinutes() +
       ' : ' +
       Time.getMilliseconds();
-
     setCurrentTime(now);
-    fetchData();
+
+    console.log('count', duration);
+    if (
+      duration === 0 ||
+      duration === 7 ||
+      duration === 31 ||
+      duration === 365
+    ) {
+      fetchData();
+    } else {
+      fetchHistory();
+    }
   };
 
   return (

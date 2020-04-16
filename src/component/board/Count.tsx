@@ -20,7 +20,7 @@ interface CrewInfo {
 const Count: React.FC = () => {
   const [data, setData] = useState([]);
   const [crew, setCrew] = useState(true);
-  const [duration, setDuration] = useState(1);
+  const [duration, setDuration] = useState(0);
   const [topCount, setTopCount] = useState();
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState();
@@ -34,6 +34,7 @@ const Count: React.FC = () => {
 
   useEffect(() => {
     fetchData();
+    handleRefresh();
   }, [crew, duration]);
 
   const handleRange = (boolean: boolean): void => {
@@ -74,7 +75,7 @@ const Count: React.FC = () => {
 
   const selectDuration = (event: any) => {
     if (event.target.value === '0') {
-      setDuration(1);
+      setDuration(0);
     } else if (event.target.value === '1') {
       setDuration(7);
     } else if (event.target.value === '2') {
@@ -82,6 +83,7 @@ const Count: React.FC = () => {
     } else if (event.target.value === '3') {
       setDuration(365);
     } else {
+      setDuration(1000);
       fetchHistory();
     }
   };
@@ -109,7 +111,17 @@ const Count: React.FC = () => {
       Time.getMilliseconds();
 
     setCurrentTime(now);
-    fetchData();
+    console.log('count', duration);
+    if (
+      duration === 0 ||
+      duration === 7 ||
+      duration === 31 ||
+      duration === 365
+    ) {
+      fetchData();
+    } else {
+      fetchHistory();
+    }
   };
 
   return (
