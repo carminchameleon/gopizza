@@ -158,7 +158,7 @@ const System = ({ history }: RouteComponentProps) => {
             )
         } else {
             alert("Error");
-            ///history.push("/");
+            history.push("/");
         }
 
 
