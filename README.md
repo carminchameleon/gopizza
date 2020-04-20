@@ -1,44 +1,92 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### 프로젝트 소개
 
-## Available Scripts
+GOPIZZA 직원들의 동기부여를 위한 랭킹 보드 시스템 개발 프로젝트입니다. 
 
-In the project directory, you can run:
+[프로젝트 소개 PPT URL](https://docs.google.com/presentation/d/e/2PACX-1vR2SUN0QFHDZaLjHfjfot8na5aEdYGLGFxElQwxYAnwExe4bNSMMzSyPRnIzwhtYC-tZO_6pB8TC1Z1/pub?start=false&loop=false&delayms=3000&slide=id.p](https://docs.google.com/presentation/d/e/2PACX-1vR2SUN0QFHDZaLjHfjfot8na5aEdYGLGFxElQwxYAnwExe4bNSMMzSyPRnIzwhtYC-tZO_6pB8TC1Z1/pub?start=false&loop=false&delayms=3000&slide=id.p))
 
-### `yarn start`
+### 개발 인원 및 기간
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- 기간 : 20.03.23 - 20.04.17
+- 구성 : 프론트엔드 4명, 백엔드 2명 (총 6명)
+- [백엔드 깃헙주소](https://github.com/hong-dev/wepizza-backend)
+- [프론트엔드 깃헙주소](https://github.com/akiakma/gopizza)
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+### 적용 기술 및 구현 기능
 
-### `yarn test`
+**적용 기술** 
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Front-end : React, Typescript, Hooks, Styled-Components
 
-### `yarn build`
+Back-end : Python, Django Web Framework, Docker, CORS headers, MySQL
+Deployment : AWS EC2, RDS, S3
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+**구현 기능**
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- 랭킹 보드
+각 유저의 점수 요약 모달 창 구현
+필터에 따라 유저별 지점별 결과 구현
 
-### `yarn eject`
+시간별 순위 구현
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+리프레시 버튼을 통해 랭킹 실시간 업데이트
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 프로젝트 데모 영상
+### 프로젝트 소개
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+GOPIZZA 직원들의 동기부여를 위한 랭킹 보드 시스템 개발 프로젝트입니다. 
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+[프로젝트 소개 PPT URL](https://docs.google.com/presentation/d/e/2PACX-1vR2SUN0QFHDZaLjHfjfot8na5aEdYGLGFxElQwxYAnwExe4bNSMMzSyPRnIzwhtYC-tZO_6pB8TC1Z1/pub?start=false&loop=false&delayms=3000&slide=id.p](https://docs.google.com/presentation/d/e/2PACX-1vR2SUN0QFHDZaLjHfjfot8na5aEdYGLGFxElQwxYAnwExe4bNSMMzSyPRnIzwhtYC-tZO_6pB8TC1Z1/pub?start=false&loop=false&delayms=3000&slide=id.p))
 
-## Learn More
+### 개발 인원 및 기간
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- 기간 : 20.03.23 - 20.04.17
+- 구성 : 프론트엔드 4명, 백엔드 2명 (총 6명)
+- [백엔드 깃헙주소](https://github.com/hong-dev/wepizza-backend)
+- [프론트엔드 깃헙주소](https://github.com/akiakma/gopizza)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 적용 기술 및 구현 기능
+
+**적용 기술** 
+
+Front-end : React, Typescript, Hooks, Styled-Components
+
+Back-end : Python, Django Web Framework, Docker, CORS headers
+
+Deployment : AWS EC2, RDS, S3
+
+- Python
+- Django Web Framework
+- AWS EC2, RDS, S3
+- CORS headers
+- MySQL
+- Git, Github
+- Docker
+
+**구현 기능**
+
+1. User
+회원가입, 로그인 (Bcrypt, JWT)
+이메일 인증
+비밀번호 재발급
+이미지 업로드 (AWS S3, boto3, Pillow, BytesIO)
+
+2. Store
+Store 위치정보 (주소, 위도, 경도)
+Store별 유저 정보
+
+3.Quest
+유저별 Quest 및 점수 확인
+리워드 신청
+Admin Mypage 리워드 조회 및 지급 (유저 이메일 발송)
+
+4. 랭킹 보드
+각 유저의 점수 요약 모달 창 구현
+필터에 따라 유저별 지점별 결과 구현
+시간별 순위 구현
+리프레시 버튼을 통해 랭킹 실시간 업데이트
+
+### 프로젝트 데모 영상
+
+[![Wepizza Project Demo](https://user-images.githubusercontent.com/53142539/79748620-b3769b00-8348-11ea-9266-4b56ddaa95e0.png
+)](https://youtu.be/RD1Ucct_ahg)
