@@ -1,6 +1,6 @@
 ### 프로젝트 소개
 
-GOPIZZA 직원들의 동기부여를 위한 랭킹 보드 시스템 개발 프로젝트입니다. 
+GOPIZZA 직원들의 동기부여를 위한 랭킹 보드 시스템 개발 기업 협업 프로젝트입니다. 
 
 [프로젝트 소개 PPT URL](https://docs.google.com/presentation/d/e/2PACX-1vR2SUN0QFHDZaLjHfjfot8na5aEdYGLGFxElQwxYAnwExe4bNSMMzSyPRnIzwhtYC-tZO_6pB8TC1Z1/pub?start=false&loop=false&delayms=3000&slide=id.p](https://docs.google.com/presentation/d/e/2PACX-1vR2SUN0QFHDZaLjHfjfot8na5aEdYGLGFxElQwxYAnwExe4bNSMMzSyPRnIzwhtYC-tZO_6pB8TC1Z1/pub?start=false&loop=false&delayms=3000&slide=id.p))
 
