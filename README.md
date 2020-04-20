@@ -29,10 +29,6 @@ Deployment : AWS EC2, RDS, S3
 - Git, Github
 - Docker
 
-### 프로젝트 데모 영상
-[![Wepizza Project Demo](https://user-images.githubusercontent.com/53142539/79748620-b3769b00-8348-11ea-9266-4b56ddaa95e0.png
-)](https://youtu.be/RD1Ucct_ahg)
-
 **구현 기능**
 
 **User**
@@ -59,6 +55,12 @@ System
 - 유저별 Quest 및 점수 확인
 - 리워드 신청
 - Admin Mypage 리워드 조회 및 지급 (유저 이메일 발송)
+
+
+### 프로젝트 데모 영상
+[![Wepizza Project Demo](https://user-images.githubusercontent.com/53142539/79748620-b3769b00-8348-11ea-9266-4b56ddaa95e0.png
+)](https://youtu.be/RD1Ucct_ahg)
+
 
 ### API Documentiaion
 
