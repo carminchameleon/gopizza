@@ -5,7 +5,7 @@ import Header from '../../shared/Header';
 import Kakaomap from './Kakaomap';
 
 const Map = () => {
-  //axios로 받아온 정보를 datas안에 저장하고, Kakaomap <props>으로 전달할 useState
+  //axios로 받아온 정보를 datas안에 저장하고, Kakaomap <props>으로 전달할 useState..
   const [datas, setDatas] = useState<any>([]);
 
   useEffect(() => {

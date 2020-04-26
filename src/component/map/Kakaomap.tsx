@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import Modal from 'react-modal';
 import axios from 'axios';
 import { PROFILEURL } from 'config';
-//잠깐
+//
 import './Kakaomap.css';
 Modal.setAppElement('#root'); //안써주면 업데이트 해달라고 오류가 뜬다.
 
